@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Send, Headset, HelpCircle, CreditCard, Bug, Settings, UserPlus } from "lucide-react";
+import { X, Send, Headset, HelpCircle, CreditCard, Bug, Settings, UserPlus, Star } from "lucide-react";
 
 // Notification sound using Web Audio API
 function playNotificationSound() {
@@ -49,6 +49,12 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
   const [sending, setSending] = useState(false);
   const [ticketId, setTicketId] = useState<string | null>(null);
   const [showTopics, setShowTopics] = useState(true);
+  const [showRating, setShowRating] = useState(false);
+  const [closedTicketId, setClosedTicketId] = useState<string | null>(null);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [ratingFeedback, setRatingFeedback] = useState("");
+  const [submittingRating, setSubmittingRating] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastMessageCountRef = useRef(0);
@@ -92,10 +98,13 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
         .then((r) => r.json())
         .then((data) => {
           if (data.ticket?.status === "closed") {
-            // Ticket was closed by admin — reset to allow new ticket
+            // Ticket was closed by admin — show rating screen
+            setClosedTicketId(data.ticket.id);
             setTicketId(null);
-            setMessages([]);
-            setShowTopics(true);
+            setShowRating(true);
+            setRating(0);
+            setHoverRating(0);
+            setRatingFeedback("");
             lastMessageCountRef.current = 0;
             return;
           }
@@ -157,6 +166,29 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
     sendMessage(message);
   }
 
+  async function submitRating() {
+    if (!closedTicketId || rating === 0) return;
+    setSubmittingRating(true);
+    try {
+      await fetch("/api/copilot/support", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "rate", ticketId: closedTicketId, rating, feedback: ratingFeedback }),
+      });
+    } catch {
+      // silently fail
+    }
+    finishRating();
+  }
+
+  function finishRating() {
+    setShowRating(false);
+    setClosedTicketId(null);
+    setMessages([]);
+    setShowTopics(true);
+    setSubmittingRating(false);
+  }
+
   if (!open) return null;
 
   const isDark = theme === "dark";
@@ -197,7 +229,82 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {showTopics && messages.length === 0 ? (
+        {showRating ? (
+          <div className="flex flex-col items-center justify-center h-full py-6">
+            <div className="w-14 h-14 rounded-2xl bg-green-500/15 flex items-center justify-center mb-4">
+              <Headset size={24} className="text-green-400" />
+            </div>
+            <h4 className={`text-sm font-bold mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>
+              Ticket Resolved
+            </h4>
+            <p className={`text-[11px] mb-5 text-center px-6 ${isDark ? "text-white/40" : "text-gray-500"}`}>
+              How was your support experience?
+            </p>
+
+            {/* Stars */}
+            <div className="flex gap-1.5 mb-5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  onClick={() => setRating(star)}
+                  className="p-1 transition-transform hover:scale-110"
+                >
+                  <Star
+                    size={28}
+                    className={`transition-colors ${
+                      star <= (hoverRating || rating)
+                        ? "text-[#FDB02F] fill-[#FDB02F]"
+                        : isDark ? "text-white/15" : "text-gray-300"
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Rating label */}
+            {rating > 0 && (
+              <p className={`text-[11px] font-medium mb-4 ${isDark ? "text-white/50" : "text-gray-500"}`}>
+                {["", "Poor", "Fair", "Good", "Great", "Excellent"][rating]}
+              </p>
+            )}
+
+            {/* Optional feedback */}
+            <textarea
+              value={ratingFeedback}
+              onChange={(e) => setRatingFeedback(e.target.value)}
+              placeholder="Any additional feedback? (optional)"
+              rows={2}
+              className={`w-full rounded-xl px-3 py-2 text-xs focus:outline-none resize-none mb-4 ${
+                isDark
+                  ? "bg-white/5 border border-white/10 text-white placeholder:text-white/20"
+                  : "bg-gray-50 border border-gray-200 text-gray-800 placeholder:text-gray-400"
+              }`}
+            />
+
+            {/* Buttons */}
+            <div className="flex gap-2 w-full">
+              <button
+                onClick={finishRating}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-medium transition-colors ${
+                  isDark
+                    ? "bg-white/5 text-white/50 hover:bg-white/10"
+                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                }`}
+              >
+                Skip
+              </button>
+              <button
+                onClick={submitRating}
+                disabled={rating === 0 || submittingRating}
+                className="flex-1 py-2.5 rounded-xl text-xs font-bold bg-[#FDB02F] text-[#07123A] hover:bg-[#FDAA40] disabled:opacity-30 transition-colors"
+              >
+                {submittingRating ? "Submitting..." : "Submit Rating"}
+              </button>
+            </div>
+          </div>
+        ) : showTopics && messages.length === 0 ? (
           <div className="py-2">
             <p className={`text-xs font-semibold mb-1 ${isDark ? "text-white/50" : "text-gray-600"}`}>
               How can we help you?

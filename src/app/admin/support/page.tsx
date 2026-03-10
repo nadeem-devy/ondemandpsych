@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Send, MessageCircle, XCircle, RefreshCw, UserPlus } from "lucide-react";
+import { Send, MessageCircle, XCircle, RefreshCw, UserPlus, Star } from "lucide-react";
 
 interface Ticket {
   id: string;
   userName: string;
   userEmail: string;
   status: string;
+  rating: number | null;
+  ratingFeedback: string | null;
   createdAt: string;
   updatedAt: string;
   messages: { content: string; sender: string; createdAt: string }[];
@@ -18,6 +20,8 @@ interface TicketDetail {
   userName: string;
   userEmail: string;
   status: string;
+  rating: number | null;
+  ratingFeedback: string | null;
   messages: { id: string; sender: string; content: string; createdAt: string }[];
 }
 
@@ -144,6 +148,13 @@ export default function AdminSupportPage() {
                   {t.messages[0].sender === "admin" ? "You: " : ""}{t.messages[0].content}
                 </p>
               )}
+              {t.rating && (
+                <div className="flex items-center gap-1 mt-1">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star key={s} size={10} className={s <= t.rating! ? "text-[#FDB02F] fill-[#FDB02F]" : "text-white/10"} />
+                  ))}
+                </div>
+              )}
               <p className="text-white/15 text-xs mt-1">
                 {new Date(t.updatedAt).toLocaleDateString()} {new Date(t.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </p>
@@ -189,13 +200,29 @@ export default function AdminSupportPage() {
                   </button>
                 )}
                 {activeTicket.status === "closed" && (
-                  <button
-                    onClick={() => updateStatus(activeTicket.id, "open")}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors"
-                  >
-                    <UserPlus size={12} />
-                    Reopen
-                  </button>
+                  <>
+                    {activeTicket.rating && (
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star key={s} size={12} className={s <= activeTicket.rating! ? "text-[#FDB02F] fill-[#FDB02F]" : "text-white/10"} />
+                          ))}
+                        </div>
+                        {activeTicket.ratingFeedback && (
+                          <span className="text-xs text-white/40 max-w-[200px] truncate" title={activeTicket.ratingFeedback}>
+                            &ldquo;{activeTicket.ratingFeedback}&rdquo;
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <button
+                      onClick={() => updateStatus(activeTicket.id, "open")}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors"
+                    >
+                      <UserPlus size={12} />
+                      Reopen
+                    </button>
+                  </>
                 )}
               </div>
             </div>

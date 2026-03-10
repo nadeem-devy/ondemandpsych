@@ -33,13 +33,33 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/copilot/support — send support message
+// POST /api/copilot/support — send support message or submit rating
 export async function POST(req: NextRequest) {
   try {
     const user = await getCopilotUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
+
+    // Handle rating submission
+    if (body.action === "rate") {
+      const { ticketId: rateTicketId, rating, feedback } = body;
+      if (!rateTicketId || !rating || rating < 1 || rating > 5) {
+        return NextResponse.json({ error: "Valid ticketId and rating (1-5) required" }, { status: 400 });
+      }
+      const ticket = await prisma.supportTicket.findFirst({
+        where: { id: rateTicketId, userId: user.id, status: "closed" },
+      });
+      if (!ticket) {
+        return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
+      }
+      await prisma.supportTicket.update({
+        where: { id: rateTicketId },
+        data: { rating, ratingFeedback: feedback || null },
+      });
+      return NextResponse.json({ success: true });
+    }
+
     const content = body.content;
     const ticketId = body.ticketId || null;
 

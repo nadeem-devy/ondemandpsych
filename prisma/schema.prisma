@@ -144,6 +144,8 @@ model SupportTicket {
   userName  String
   userEmail String
   status    String   @default("open") // open | assigned | closed
+  rating    Int?     // 1-5 star rating after ticket closed
+  ratingFeedback String? // optional text feedback
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
