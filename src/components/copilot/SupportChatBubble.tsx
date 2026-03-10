@@ -91,6 +91,14 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
       fetch(`/api/copilot/support?ticketId=${ticketId}`)
         .then((r) => r.json())
         .then((data) => {
+          if (data.ticket?.status === "closed") {
+            // Ticket was closed by admin — reset to allow new ticket
+            setTicketId(null);
+            setMessages([]);
+            setShowTopics(true);
+            lastMessageCountRef.current = 0;
+            return;
+          }
           if (data.ticket?.messages) {
             checkForNewAdminMessages(data.ticket.messages);
             setMessages(data.ticket.messages);

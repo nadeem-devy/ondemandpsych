@@ -49,11 +49,11 @@ export async function POST(req: NextRequest) {
 
     if (ticketId) {
       ticket = await prisma.supportTicket.findFirst({
-        where: { id: ticketId, userId: user.id },
+        where: { id: ticketId, userId: user.id, status: { not: "closed" } },
       });
     }
 
-    // Create new ticket if none exists
+    // Create new ticket if none exists or previous was closed
     if (!ticket) {
       ticket = await prisma.supportTicket.create({
         data: {
