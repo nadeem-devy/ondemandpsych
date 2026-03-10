@@ -2,17 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
-// One-time admin seed endpoint — only works if no admin users exist
-export async function POST(req: Request) {
-  const { secret } = await req.json();
-
-  if (secret !== process.env.AUTH_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const existingAdmin = await prisma.user.findFirst();
-  if (existingAdmin) {
-    return NextResponse.json({ error: "Admin user already exists" }, { status: 400 });
+// One-time admin seed — self-protecting: only works if zero users exist
+export async function GET() {
+  const count = await prisma.user.count();
+  if (count > 0) {
+    return NextResponse.json({ error: "Admin already exists. Seed disabled." }, { status: 400 });
   }
 
   const hashed = await bcrypt.hash("Admin@123", 12);
@@ -27,7 +21,7 @@ export async function POST(req: Request) {
   });
 
   return NextResponse.json({
-    message: "Admin created",
+    message: "Admin created successfully",
     email: user.email,
     note: "Default password is Admin@123 — change it immediately",
   });
