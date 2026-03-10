@@ -5,7 +5,7 @@ interface ButtonProps {
   variant?: "primary" | "outline" | "ghost" | "dark";
   href?: string;
   className?: string;
- ?: boolean;
+  external?: boolean;
   onClick?: () => void;
 }
 
@@ -14,7 +14,7 @@ export function Button({
   variant = "primary",
   href,
   className = "",
-  = false,
+  external = false,
   onClick,
 }: ButtonProps) {
   const base =
