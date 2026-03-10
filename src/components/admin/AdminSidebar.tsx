@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -30,7 +31,7 @@ const navGroups = [
       { href: "/admin/users", label: "Users", icon: Users },
       { href: "/admin/plans", label: "Plans", icon: CreditCard },
       { href: "/admin/transactions", label: "Transactions", icon: Receipt },
-      { href: "/admin/support", label: "Support", icon: Headset },
+      { href: "/admin/support", label: "Support", icon: Headset, badgeKey: "openTickets" as const },
     ],
   },
   {
@@ -62,6 +63,27 @@ const navGroups = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const [openTickets, setOpenTickets] = useState(0);
+
+  useEffect(() => {
+    if (pathname === "/admin/login") return;
+
+    function fetchTicketCount() {
+      fetch("/api/admin/support")
+        .then((r) => r.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            const open = data.filter((t: { status: string }) => t.status === "open" || t.status === "assigned").length;
+            setOpenTickets(open);
+          }
+        })
+        .catch(() => {});
+    }
+
+    fetchTicketCount();
+    const interval = setInterval(fetchTicketCount, 15000);
+    return () => clearInterval(interval);
+  }, [pathname]);
 
   if (pathname === "/admin/login") return null;
 
@@ -78,7 +100,7 @@ export function AdminSidebar() {
       <nav className="flex-1 p-4 space-y-4 overflow-y-auto">
         {navGroups.map((group) => (
           <div key={group.label}>
-            <p className="px-4 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/25">
+            <p className="px-4 mb-1.5 text-xs font-semibold uppercase tracking-wider text-white/25">
               {group.label}
             </p>
             <div className="space-y-0.5">
@@ -86,18 +108,24 @@ export function AdminSidebar() {
                 const isActive =
                   pathname === item.href ||
                   (item.href !== "/admin" && pathname.startsWith(item.href));
+                const badgeCount = item.badgeKey === "openTickets" ? openTickets : 0;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-base font-medium transition-colors ${
                       isActive
                         ? "bg-[#FDB02F]/15 text-[#FDB02F]"
                         : "text-white/60 hover:text-white hover:bg-white/5"
                     }`}
                   >
-                    <item.icon size={18} />
-                    {item.label}
+                    <item.icon size={20} />
+                    <span className="flex-1">{item.label}</span>
+                    {badgeCount > 0 && (
+                      <span className="min-w-[22px] h-[22px] flex items-center justify-center px-1.5 rounded-full text-[11px] font-bold bg-[#FDB02F] text-[#07123A]">
+                        {badgeCount}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
@@ -111,17 +139,17 @@ export function AdminSidebar() {
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-white/40 hover:text-white hover:bg-white/5 transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-base text-white/40 hover:text-white hover:bg-white/5 transition-colors"
         >
-          <Globe size={18} />
+          <Globe size={20} />
           View Site
         </Link>
         <form action="/api/auth/signout" method="POST">
           <button
             type="submit"
-            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-colors w-full"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-base text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-colors w-full"
           >
-            <LogOut size={18} />
+            <LogOut size={20} />
             Sign Out
           </button>
         </form>

@@ -1,7 +1,26 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { X, Send, Headset, HelpCircle, CreditCard, Bug, Settings, UserPlus } from "lucide-react";
+
+// Notification sound using Web Audio API
+function playNotificationSound() {
+  try {
+    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.3);
+  } catch {
+    // Audio not available
+  }
+}
 
 interface SupportMsg {
   id: string;
@@ -32,6 +51,17 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
   const [showTopics, setShowTopics] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastMessageCountRef = useRef(0);
+
+  const checkForNewAdminMessages = useCallback((newMessages: SupportMsg[]) => {
+    if (newMessages.length > lastMessageCountRef.current) {
+      const newOnes = newMessages.slice(lastMessageCountRef.current);
+      if (newOnes.some((m) => m.sender === "admin")) {
+        playNotificationSound();
+      }
+    }
+    lastMessageCountRef.current = newMessages.length;
+  }, []);
 
   // Load or create ticket
   useEffect(() => {
@@ -42,7 +72,9 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
       .then((data) => {
         if (data.ticket) {
           setTicketId(data.ticket.id);
-          setMessages(data.ticket.messages || []);
+          const msgs = data.ticket.messages || [];
+          setMessages(msgs);
+          lastMessageCountRef.current = msgs.length;
           setShowTopics(false);
         } else {
           setShowTopics(true);
@@ -60,6 +92,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
         .then((r) => r.json())
         .then((data) => {
           if (data.ticket?.messages) {
+            checkForNewAdminMessages(data.ticket.messages);
             setMessages(data.ticket.messages);
           }
         })
@@ -69,7 +102,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [open, ticketId]);
+  }, [open, ticketId, checkForNewAdminMessages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -94,7 +127,9 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
       const data = await res.json();
       if (data.ticket) {
         setTicketId(data.ticket.id);
-        setMessages(data.ticket.messages || []);
+        const msgs = data.ticket.messages || [];
+        setMessages(msgs);
+        lastMessageCountRef.current = msgs.length;
         setShowTopics(false);
       }
     } catch (err) {

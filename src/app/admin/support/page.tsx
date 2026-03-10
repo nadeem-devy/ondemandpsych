@@ -111,8 +111,8 @@ export default function AdminSupportPage() {
       {/* Tickets list */}
       <div className="w-80 border-r border-white/10 bg-[#07123A]/50 flex flex-col">
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
-          <h2 className="text-white text-sm font-bold flex items-center gap-2">
-            <MessageCircle size={16} className="text-[#FDB02F]" />
+          <h2 className="text-white text-lg font-bold flex items-center gap-2">
+            <MessageCircle size={20} className="text-[#FDB02F]" />
             Support Tickets
           </h2>
           <button onClick={loadTickets} className="p-1.5 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/5">
@@ -122,7 +122,7 @@ export default function AdminSupportPage() {
 
         <div className="flex-1 overflow-y-auto">
           {tickets.length === 0 && (
-            <p className="text-white/20 text-xs text-center py-12">No support tickets yet</p>
+            <p className="text-white/20 text-sm text-center py-12">No support tickets yet</p>
           )}
           {tickets.map((t) => (
             <button
@@ -133,18 +133,18 @@ export default function AdminSupportPage() {
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-white text-xs font-medium truncate">{t.userName}</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${statusColors[t.status] || statusColors.open}`}>
+                <span className="text-white text-sm font-medium truncate">{t.userName}</span>
+                <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${statusColors[t.status] || statusColors.open}`}>
                   {t.status}
                 </span>
               </div>
-              <p className="text-white/30 text-[11px] truncate">{t.userEmail}</p>
+              <p className="text-white/30 text-sm truncate">{t.userEmail}</p>
               {t.messages?.[0] && (
-                <p className="text-white/20 text-[11px] mt-1 truncate">
+                <p className="text-white/20 text-sm mt-1 truncate">
                   {t.messages[0].sender === "admin" ? "You: " : ""}{t.messages[0].content}
                 </p>
               )}
-              <p className="text-white/15 text-[10px] mt-1">
+              <p className="text-white/15 text-xs mt-1">
                 {new Date(t.updatedAt).toLocaleDateString()} {new Date(t.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </p>
             </button>
@@ -166,14 +166,14 @@ export default function AdminSupportPage() {
             {/* Header */}
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
               <div>
-                <h3 className="text-white text-sm font-bold">{activeTicket.userName}</h3>
-                <p className="text-white/30 text-xs">{activeTicket.userEmail}</p>
+                <h3 className="text-white text-lg font-bold">{activeTicket.userName}</h3>
+                <p className="text-white/30 text-sm">{activeTicket.userEmail}</p>
               </div>
               <div className="flex items-center gap-2">
                 {activeTicket.status === "open" && (
                   <button
                     onClick={() => updateStatus(activeTicket.id, "assigned")}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors font-medium"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors font-medium"
                   >
                     <UserPlus size={12} />
                     Join Chat
@@ -182,7 +182,7 @@ export default function AdminSupportPage() {
                 {activeTicket.status !== "closed" && (
                   <button
                     onClick={() => updateStatus(activeTicket.id, "closed")}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-colors"
                   >
                     <XCircle size={10} />
                     Close
@@ -191,7 +191,7 @@ export default function AdminSupportPage() {
                 {activeTicket.status === "closed" && (
                   <button
                     onClick={() => updateStatus(activeTicket.id, "open")}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors"
                   >
                     <UserPlus size={12} />
                     Reopen
@@ -213,7 +213,7 @@ export default function AdminSupportPage() {
                     </div>
                   ) : (
                     <div className={`flex ${msg.sender === "admin" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[70%] rounded-2xl px-4 py-3 text-sm ${
+                      <div className={`max-w-[70%] rounded-2xl px-4 py-3 text-base ${
                         msg.sender === "admin"
                           ? "bg-[#FDB02F] text-[#07123A]"
                           : "bg-white/5 text-white/70 border border-white/5"
@@ -242,7 +242,7 @@ export default function AdminSupportPage() {
                     onChange={(e) => setReply(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") handleReply(); }}
                     placeholder="Type your reply..."
-                    className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40"
+                    className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-base placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40"
                   />
                   <button
                     onClick={handleReply}

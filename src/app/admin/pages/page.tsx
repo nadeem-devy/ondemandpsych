@@ -1,8 +1,90 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Save, FileText, ChevronRight } from "lucide-react";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
+
+// Default content extracted from current hardcoded page components
+const defaultContent: Record<string, Record<string, Record<string, string>>> = {
+  home: {
+    hero: {
+      badge: "Built by Psychiatrists. Trusted in Real Clinical Settings.",
+      title: "Psychiatric Clinical Co-Pilot",
+      subtitle: "Real-time clinical decision support delivering diagnostic reasoning, safer prescribing, and chart-ready documentation in under 90 seconds.",
+      ctaText: "Try the Clinical Co-Pilot →",
+      ctaLink: "/copilot/register",
+    },
+    delivers: {
+      heading: "Psychiatric Clinical Co-Pilot for Real-World Psychiatry",
+      description: "On-Demand Psychiatry is a psychiatry-specific psychiatric clinical co-pilot, built with a clinician-in-the-loop design to support clinical reasoning in real-world settings rather than to automate care or replace judgment.",
+    },
+    features: {
+      heading: "Think Like 30+ Psychiatric Specialists",
+      subtitle: "Evidence-based psychiatric reasoning in real time",
+    },
+    "founder-spotlight": {
+      name: "Dr. Tanveer A. Padder, MD",
+      title: "A Clinician's Vision for Safer Psychiatry",
+      quote: "One thing became clear after years in emergency rooms, inpatient units, and outpatient clinics: physicians are forced to make important psychiatric choices under duress, often without the necessary support. On-Demand Psychiatry was created to change that.",
+    },
+    "three-pillars": {
+      heading: "Three Tools Transforming Psychiatric Care",
+    },
+    trust: {
+      heading: "Clinical Impact & Efficiency",
+    },
+    "closing-cta": {
+      heading: "Psychiatry Clinical Co-Pilot for High-Risk Clinical Decisions",
+      subtitle: "High-risk decisions shouldn't be made alone. On-Demand Psychiatry is here to support clinicians with real-time reasoning, safer decisions, and documentation that keeps pace.",
+    },
+  },
+  founder: {
+    hero: {
+      title: "Meet the Founder",
+      subtitle: "Dr. Tanveer A. Padder, MD",
+    },
+    bio: {
+      name: "Dr. Tanveer A. Padder, MD",
+      title: "Triple Board-Certified Psychiatrist",
+      quote: "Decades of frontline psychiatric decision-making — where high-risk judgments, complicated medications, and time constraints collide — formed the foundation of On-Demand Psychiatry.",
+    },
+  },
+  "features-benefits": {
+    hero: {
+      title: "Features & Benefits",
+      subtitle: "Every feature engineered for real-world psychiatric practice",
+    },
+    features: {
+      content: "<p>Designed for real-world psychiatric practice, the Co-Pilot supports clinicians in actual clinical situations — from diagnostic reasoning and medication decisions to risk assessment and documentation.</p><p>Every feature is built to reduce cognitive burden, improve clinical safety, and give you more time for your patients.</p>",
+    },
+  },
+  pricing: {
+    hero: {
+      title: "Simple, Transparent Pricing",
+      subtitle: "Full access to the Psychiatric Clinical Co-Pilot — no hidden fees, no EMR lock-in.",
+    },
+  },
+  "our-unique-approach-workflow": {
+    hero: {
+      title: "Approach & Workflow",
+      subtitle: "How the Psychiatric Clinical Co-Pilot Fits Into Every Clinical Visit",
+    },
+  },
+  "contact-us": {
+    hero: {
+      title: "Contact Us",
+      subtitle: "Reach the On-Demand Psychiatry team",
+    },
+    form: {
+      heading: "Contact Us",
+      description: "Have questions? We'd love to hear from you. Fill out the form and our team will get back to you promptly.",
+    },
+  },
+};
+
+function getDefaultContent(pageSlug: string, sectionId: string): Record<string, string> {
+  return defaultContent[pageSlug]?.[sectionId] || {};
+}
 
 const pages = [
   {
@@ -166,12 +248,23 @@ export default function PagesEditor() {
   const [formData, setFormData] = useState<SectionData>({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Load initial section on mount
+  useEffect(() => {
+    selectSection(pages[0], pages[0].sections[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function selectSection(page: Page, section: Section) {
     setActivePage(page);
     setActiveSection(section);
-    setFormData({});
     setSaved(false);
+    setLoading(true);
+
+    // Start with default content
+    const defaults = getDefaultContent(page.slug, section.id);
+    setFormData({ ...defaults });
 
     fetch(`/api/admin/content?page=${page.slug}`)
       .then((r) => r.json())
@@ -180,10 +273,14 @@ export default function PagesEditor() {
           const existing = data.find(
             (s: { sectionId: string }) => s.sectionId === section.id
           );
-          if (existing) setFormData(existing.content);
+          if (existing) {
+            // Merge: saved content overrides defaults
+            setFormData({ ...defaults, ...existing.content });
+          }
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }
 
   async function handleSave() {
@@ -214,27 +311,27 @@ export default function PagesEditor() {
     <div className="flex h-screen">
       {/* Page/Section sidebar */}
       <div className="w-72 border-r border-white/10 bg-[#07123A]/50 overflow-y-auto p-4">
-        <h2 className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-4">
+        <h2 className="text-white/40 text-sm font-semibold uppercase tracking-wider mb-4">
           Pages & Sections
         </h2>
         {pages.map((page) => (
           <div key={page.slug} className="mb-4">
-            <div className="flex items-center gap-2 text-white/60 text-sm font-medium mb-1 px-2">
-              <FileText size={14} />
+            <div className="flex items-center gap-2 text-white/60 text-base font-medium mb-1 px-2">
+              <FileText size={16} />
               {page.name}
             </div>
             {page.sections.map((section) => (
               <button
                 key={`${page.slug}-${section.id}`}
                 onClick={() => selectSection(page, section)}
-                className={`w-full text-left flex items-center gap-2 px-4 py-2 rounded-lg text-xs transition-colors ${
+                className={`w-full text-left flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-colors ${
                   activePage.slug === page.slug &&
                   activeSection.id === section.id
                     ? "bg-[#FDB02F]/15 text-[#FDB02F]"
                     : "text-white/40 hover:text-white/60 hover:bg-white/5"
                 }`}
               >
-                <ChevronRight size={12} />
+                <ChevronRight size={14} />
                 {section.label}
               </button>
             ))}
@@ -247,52 +344,62 @@ export default function PagesEditor() {
         <div className="max-w-3xl">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-xl font-bold text-white">
+              <h1 className="text-2xl font-bold text-white">
                 {activeSection.label}
               </h1>
-              <p className="text-white/40 text-xs mt-1">
+              <p className="text-white/40 text-sm mt-1">
                 {activePage.name} &rarr; {activeSection.label}
               </p>
             </div>
             <button
               onClick={handleSave}
               disabled={saving}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg text-base font-bold transition-all ${
                 saved
                   ? "bg-green-500/20 text-green-400 border border-green-500/30"
                   : "bg-[#FDB02F] text-[#07123A] hover:bg-[#FDAA40]"
               } disabled:opacity-50`}
             >
-              <Save size={16} />
+              <Save size={18} />
               {saving ? "Saving..." : saved ? "Saved!" : "Save Changes"}
             </button>
           </div>
 
-          {/* Dynamic fields */}
-          <div className="space-y-6">
-            {activeSection.fields.map((field) => (
-              <div key={field.name}>
-                <label className="block text-white/60 text-xs font-medium mb-2">
-                  {field.label}
-                </label>
-                {field.type === "rich" ? (
-                  <RichTextEditor
-                    content={formData[field.name] || ""}
-                    onChange={(html) => updateField(field.name, html)}
-                    placeholder={`Enter ${field.label.toLowerCase()}...`}
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    value={formData[field.name] || ""}
-                    onChange={(e) => updateField(field.name, e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
-                    placeholder={`Enter ${field.label.toLowerCase()}`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="space-y-6">
+              {activeSection.fields.map((field) => (
+                <div key={field.name} className="animate-pulse">
+                  <div className="h-4 w-32 bg-white/10 rounded mb-2" />
+                  <div className="h-12 bg-white/5 rounded-lg border border-white/10" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {activeSection.fields.map((field) => (
+                <div key={field.name}>
+                  <label className="block text-white/60 text-sm font-medium mb-2">
+                    {field.label}
+                  </label>
+                  {field.type === "rich" ? (
+                    <RichTextEditor
+                      content={formData[field.name] || ""}
+                      onChange={(html) => updateField(field.name, html)}
+                      placeholder={`Enter ${field.label.toLowerCase()}...`}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      value={formData[field.name] || ""}
+                      onChange={(e) => updateField(field.name, e.target.value)}
+                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
+                      placeholder={`Enter ${field.label.toLowerCase()}`}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
