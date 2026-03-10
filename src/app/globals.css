@@ -1,0 +1,339 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-navy-deep: #07123A;
+  --color-navy-card: #0D1B4B;
+  --color-orange-primary: #FDB02F;
+  --color-orange-accent: #FDAA40;
+  --color-orange-glow: rgba(253,176,47,0.15);
+  --color-text-muted: #8892A4;
+  --color-border-subtle: rgba(253,176,47,0.12);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-syne);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-body: var(--font-inter);
+}
+
+:root {
+  --navy-deep: #07123A;
+  --navy-card: #0D1B4B;
+  --orange-primary: #FDB02F;
+  --orange-accent: #FDAA40;
+  --orange-glow: rgba(253,176,47,0.15);
+  --text-muted: #8892A4;
+  --border-subtle: rgba(253,176,47,0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--navy-deep);
+  color: #ffffff;
+  font-family: var(--font-body), var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Glass card */
+.glass-card {
+  background: rgba(13,27,75,0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(253,176,47,0.12);
+  border-radius: 16px;
+}
+
+.glass-card-hover:hover {
+  border-color: rgba(253,176,47,0.4);
+}
+
+/* Orb styles */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-orange { background: #FDB02F; opacity: 0.07; }
+.orb-blue   { background: #1E40AF; opacity: 0.10; }
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(253,176,47,0.3);
+  border-radius: 3px;
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Scroll reveal */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero entrance */
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-animate > * {
+  animation: heroFadeIn 0.6s ease-out both;
+}
+.hero-animate > *:nth-child(1) { animation-delay: 0s; }
+.hero-animate > *:nth-child(2) { animation-delay: 0.1s; }
+.hero-animate > *:nth-child(3) { animation-delay: 0.2s; }
+.hero-animate > *:nth-child(4) { animation-delay: 0.3s; }
+.hero-animate > *:nth-child(5) { animation-delay: 0.4s; }
+.hero-animate > *:nth-child(6) { animation-delay: 0.5s; }
+
+/* Neural network background */
+@keyframes neuronFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(30px, -20px); }
+  50% { transform: translate(-10px, -40px); }
+  75% { transform: translate(-30px, -10px); }
+}
+@keyframes neuronFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-25px, 15px); }
+  50% { transform: translate(20px, 35px); }
+  75% { transform: translate(35px, -15px); }
+}
+@keyframes neuronFloat3 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(40px, 25px); }
+  66% { transform: translate(-20px, -30px); }
+}
+@keyframes neuronPulse {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.8); }
+}
+@keyframes synapseFire {
+  0% { stroke-dashoffset: 200; opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes brainwave {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.neuron-float-1 { animation: neuronFloat1 12s ease-in-out infinite; }
+.neuron-float-2 { animation: neuronFloat2 15s ease-in-out infinite; }
+.neuron-float-3 { animation: neuronFloat3 18s ease-in-out infinite; }
+.neuron-pulse { animation: neuronPulse 3s ease-in-out infinite; }
+.synapse-fire {
+  stroke-dasharray: 200;
+  animation: synapseFire 4s ease-in-out infinite;
+}
+.brainwave { animation: brainwave 8s linear infinite; }
+
+/* Bounce */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+.animate-bounce-slow {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+/* Selection */
+::selection {
+  background: rgba(253,176,47,0.3);
+  color: #ffffff;
+}
+
+/* Copilot font size variable */
+.copilot-message {
+  font-size: var(--copilot-font-size, 14px);
+}
+
+/* Copilot message formatting */
+.copilot-message strong { color: #ffffff; font-weight: 600; }
+.copilot-message em { color: rgba(253,176,47,0.7); font-style: italic; }
+.copilot-message .copilot-p { margin-bottom: 0.5rem; }
+.copilot-message .copilot-p:last-child { margin-bottom: 0; }
+
+/* Headers */
+.copilot-message .copilot-h1 {
+  font-size: 1.25rem; font-weight: 700; color: #ffffff;
+  margin: 1.25rem 0 0.5rem; padding-bottom: 0.375rem;
+  border-bottom: 1px solid rgba(253,176,47,0.15);
+  font-family: var(--font-syne), system-ui, sans-serif;
+}
+.copilot-message .copilot-h2 {
+  font-size: 1rem; font-weight: 700; color: #FDB02F;
+  margin: 1.25rem 0 0.5rem; padding-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(253,176,47,0.1);
+}
+.copilot-message .copilot-h2:first-child { margin-top: 0; }
+.copilot-message .copilot-h3 {
+  font-size: 0.875rem; font-weight: 600; color: rgba(255,255,255,0.85);
+  margin: 1rem 0 0.375rem;
+}
+
+/* Lists */
+.copilot-message .copilot-ul {
+  list-style: disc; padding-left: 1.25rem; margin: 0.375rem 0;
+}
+.copilot-message .copilot-ol {
+  list-style: decimal; padding-left: 1.25rem; margin: 0.375rem 0;
+}
+.copilot-message .copilot-uli,
+.copilot-message .copilot-oli {
+  margin-bottom: 0.25rem; color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+
+/* Tables */
+.copilot-message .copilot-table-wrap {
+  overflow-x: auto; margin: 0.75rem 0;
+  border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.08);
+}
+.copilot-message .copilot-table {
+  width: 100%; border-collapse: collapse; font-size: 0.75rem;
+}
+.copilot-message .copilot-table th {
+  text-align: left; padding: 0.5rem 0.75rem;
+  background: rgba(253,176,47,0.08); color: #FDB02F;
+  font-weight: 600; font-size: 0.6875rem; text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid rgba(253,176,47,0.12);
+}
+.copilot-message .copilot-table td {
+  padding: 0.5rem 0.75rem; color: rgba(255,255,255,0.6);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+}
+.copilot-message .copilot-table tr:last-child td {
+  border-bottom: none;
+}
+.copilot-message .copilot-table tr:hover td {
+  background: rgba(255,255,255,0.02);
+}
+
+/* Blockquotes — disclaimer */
+.copilot-message .copilot-blockquote {
+  border-left: 3px solid rgba(253,176,47,0.4);
+  padding: 0.625rem 1rem; margin: 0.5rem 0;
+  background: rgba(253,176,47,0.04);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: rgba(253,176,47,0.7); font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+/* Horizontal rule */
+.copilot-message .copilot-hr {
+  border: none; height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 1rem 0;
+}
+
+/* Inline code */
+.copilot-message .copilot-code {
+  background: rgba(255,255,255,0.06);
+  padding: 0.125rem 0.375rem; border-radius: 0.25rem;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.8em; color: rgba(253,176,47,0.8);
+}
+
+/* Checkbox placeholder */
+.copilot-message .copilot-checkbox {
+  color: rgba(255,255,255,0.25);
+}
+
+/* ─── Copilot Light Mode ─── */
+.copilot-light .copilot-message strong { color: #1a1a1a; }
+.copilot-light .copilot-message em { color: #b8860b; }
+
+.copilot-light .copilot-message .copilot-h1 {
+  color: #1a1a1a;
+  border-bottom-color: rgba(0,0,0,0.1);
+}
+.copilot-light .copilot-message .copilot-h2 {
+  color: #b8860b;
+  border-bottom-color: rgba(0,0,0,0.08);
+}
+.copilot-light .copilot-message .copilot-h3 {
+  color: #333333;
+}
+
+.copilot-light .copilot-message .copilot-uli,
+.copilot-light .copilot-message .copilot-oli {
+  color: #555555;
+}
+
+.copilot-light .copilot-message .copilot-table-wrap {
+  border-color: rgba(0,0,0,0.1);
+}
+.copilot-light .copilot-message .copilot-table th {
+  background: rgba(253,176,47,0.1);
+  color: #8b6914;
+  border-bottom-color: rgba(0,0,0,0.1);
+}
+.copilot-light .copilot-message .copilot-table td {
+  color: #555555;
+  border-bottom-color: rgba(0,0,0,0.05);
+}
+.copilot-light .copilot-message .copilot-table tr:hover td {
+  background: rgba(0,0,0,0.02);
+}
+
+.copilot-light .copilot-message .copilot-blockquote {
+  border-left-color: rgba(253,176,47,0.6);
+  background: rgba(253,176,47,0.06);
+  color: #8b6914;
+}
+
+.copilot-light .copilot-message .copilot-hr {
+  background: rgba(0,0,0,0.08);
+}
+
+.copilot-light .copilot-message .copilot-code {
+  background: rgba(0,0,0,0.06);
+  color: #8b6914;
+}
+
+.copilot-light .copilot-message .copilot-checkbox {
+  color: rgba(0,0,0,0.25);
+}

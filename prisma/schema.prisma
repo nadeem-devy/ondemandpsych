@@ -1,0 +1,322 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String?
+  role        String   @default("admin") // admin | superadmin
+  permissions String?  // JSON array of permissions e.g. ["users","support","content","plans","audit"]
+  isActive    Boolean  @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PageContent {
+  id        String   @id @default(cuid())
+  pageSlug  String
+  sectionId String
+  content   String   // JSON blob
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([pageSlug, sectionId])
+  @@index([pageSlug])
+}
+
+model BlogPost {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  excerpt         String?
+  content         String   // HTML from TipTap
+  featuredImage   String?
+  status          String   @default("draft") // draft | published
+  publishedAt     DateTime?
+  // SEO fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogTitle         String?
+  ogDescription   String?
+  ogImage         String?
+  canonicalUrl    String?
+  noIndex         Boolean  @default(false)
+  // Schema markup
+  schemaType      String?  @default("Article")
+  // Organization
+  category        String?
+  tags            String?  // comma-separated
+  author          String   @default("Dr. Tanveer A. Padder, MD")
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SiteSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   // JSON blob
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Copilot Client Dashboard ───
+
+model ClientUser {
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  password           String
+  name               String
+  avatar             String?
+  phone              String?
+  organization       String?
+  role               String?   // e.g. Psychiatrist, Nurse Practitioner
+  status             String    @default("active") // active | suspended | deactivated
+  // Plan & subscription
+  plan               String    @default("free") // free, basic, professional, enterprise
+  planExpiresAt      DateTime?
+  subscriptionStatus String    @default("trialing") // trialing | active | past_due | cancelled
+  stripeCustomerId   String?
+  stripeSubId        String?
+  // Trial tracking
+  trialMessageCount  Int       @default(0)
+  trialMessageLimit  Int       @default(10)
+  trialExpiresAt     DateTime?
+  // Compliance
+  jurisdiction       String?
+  licenseNumber      String?
+  licenseVerified    Boolean   @default(false)
+  consentVersion     String?
+  // Metadata
+  tags               String?   // comma-separated
+  notes              String?
+  lastLoginAt        DateTime?
+  emailVerified      Boolean   @default(false)
+  deletedAt          DateTime? // soft delete
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  chats        Chat[]
+  transactions Transaction[]
+
+  @@index([status])
+  @@index([plan])
+}
+
+model Chat {
+  id        String    @id @default(cuid())
+  title     String    @default("New Chat")
+  pinned    Boolean   @default(false)
+  archived  Boolean   @default(false)
+  userId    String
+  user      ClientUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  messages Message[]
+
+  @@index([userId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  role      String   // "user" | "assistant"
+  content   String
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([chatId])
+}
+
+model SupportTicket {
+  id        String   @id @default(cuid())
+  userId    String
+  userName  String
+  userEmail String
+  status    String   @default("open") // open | assigned | closed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages SupportMessage[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model SupportMessage {
+  id        String   @id @default(cuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  sender    String   // "user" | "admin"
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+}
+
+// ─── Audit & Admin ───
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String   // admin or client user id
+  actorEmail String
+  actorType  String   // "admin" | "client"
+  action     String   // e.g. "user.suspend", "plan.update", "login"
+  targetType String?  // e.g. "ClientUser", "Plan"
+  targetId   String?
+  details    String?  // JSON blob with before/after or extra context
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model Plan {
+  id            String   @id @default(cuid())
+  name          String   @unique // free, basic, professional, enterprise
+  displayName   String
+  description   String?
+  priceMonthly  Float    @default(0)
+  priceYearly   Float    @default(0)
+  messageLimit  Int      @default(-1) // -1 = unlimited
+  features      String?  // JSON array of feature strings
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Transaction {
+  id             String   @id @default(cuid())
+  userId         String
+  user           ClientUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type           String   // "subscription" | "one_time" | "refund"
+  amount         Float
+  currency       String   @default("usd")
+  status         String   @default("completed") // completed | pending | failed | refunded
+  planName       String?
+  stripePaymentId String?
+  description    String?
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ─── Session Management ───
+
+model AdminSession {
+  id        String   @id @default(cuid())
+  userId    String
+  email     String
+  userAgent String?
+  ipAddress String?
+  isActive  Boolean  @default(true)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([isActive])
+}
+
+// ─── OTP ───
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  userId    String
+  email     String
+  phone     String?
+  code      String
+  type      String   // "email_verify" | "login" | "password_reset"
+  attempts  Int      @default(0)
+  maxAttempts Int    @default(5)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([email])
+  @@index([code])
+}
+
+// ─── Consent ───
+
+model ConsentVersion {
+  id          String   @id @default(cuid())
+  version     String   @unique
+  title       String
+  content     String
+  isActive    Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model ConsentAcceptance {
+  id               String   @id @default(cuid())
+  userId           String
+  consentVersionId String
+  ipAddress        String?
+  userAgent        String?
+  acceptedAt       DateTime @default(now())
+
+  @@unique([userId, consentVersionId])
+  @@index([userId])
+}
+
+// ─── Content Library ───
+
+model ContentItem {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  fileUrl     String
+  fileType    String   // "pdf" | "docx" | "video" | "image"
+  fileSize    Int      @default(0)
+  tags        String?
+  category    String?
+  version     Int      @default(1)
+  accessPlans String   @default("all")
+  uploadedBy  String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([fileType])
+  @@index([category])
+}
+
+// ─── Email Templates ───
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  subject   String
+  body      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── IP Allowlist ───
+
+model IpAllowlist {
+  id          String   @id @default(cuid())
+  ipRange     String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
