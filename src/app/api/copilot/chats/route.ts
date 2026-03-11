@@ -22,17 +22,43 @@ export async function GET() {
   return NextResponse.json(chats);
 }
 
+// PATCH /api/copilot/chats — move chat to folder
+export async function PATCH(req: NextRequest) {
+  const user = await getCopilotUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id, folderId } = await req.json();
+  if (!id) return NextResponse.json({ error: "Chat ID required" }, { status: 400 });
+
+  const chat = await prisma.chat.findFirst({ where: { id, userId: user.id } });
+  if (!chat) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  // Validate folder belongs to user if provided
+  if (folderId) {
+    const folder = await prisma.chatFolder.findFirst({ where: { id: folderId, userId: user.id } });
+    if (!folder) return NextResponse.json({ error: "Folder not found" }, { status: 404 });
+  }
+
+  const updated = await prisma.chat.update({
+    where: { id },
+    data: { folderId: folderId || null },
+  });
+
+  return NextResponse.json(updated);
+}
+
 // POST /api/copilot/chats — create new chat
 export async function POST(req: NextRequest) {
   const user = await getCopilotUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { title } = await req.json().catch(() => ({ title: "New Chat" }));
+  const { title, folderId } = await req.json().catch(() => ({ title: "New Chat", folderId: undefined }));
 
   const chat = await prisma.chat.create({
     data: {
       title: title || "New Chat",
       userId: user.id,
+      ...(folderId && { folderId }),
     },
   });
 

@@ -13,8 +13,17 @@ interface ChatItem {
   id: string;
   title: string;
   pinned: boolean;
+  folderId?: string | null;
   updatedAt: string;
   messages?: { content: string; createdAt: string }[];
+}
+
+interface FolderItem {
+  id: string;
+  name: string;
+  icon?: string | null;
+  description?: string | null;
+  _count?: { chats: number };
 }
 
 interface MessageItem {
@@ -31,6 +40,7 @@ function CopilotChatInner() {
   const { theme, toggleTheme } = useTheme();
 
   const [chats, setChats] = useState<ChatItem[]>([]);
+  const [folders, setFolders] = useState<FolderItem[]>([]);
   const [messages, setMessages] = useState<MessageItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
@@ -71,9 +81,20 @@ function CopilotChatInner() {
       .catch(() => {});
   }, []);
 
+  // Load folders
+  const loadFolders = useCallback(() => {
+    fetch("/api/copilot/folders")
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setFolders(data); })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
-    if (authChecked) loadChats();
-  }, [authChecked, loadChats]);
+    if (authChecked) {
+      loadChats();
+      loadFolders();
+    }
+  }, [authChecked, loadChats, loadFolders]);
 
   // Load messages when chat changes
   useEffect(() => {
@@ -97,12 +118,12 @@ function CopilotChatInner() {
     localStorage.setItem("copilot-font-size", String(size));
   }
 
-  async function handleNewChat() {
+  async function handleNewChat(folderId?: string) {
     try {
       const res = await fetch("/api/copilot/chats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ folderId: folderId || undefined }),
       });
       const chat = await res.json();
       loadChats();
@@ -126,6 +147,44 @@ function CopilotChatInner() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, pinned }),
     });
+    loadChats();
+  }
+
+  async function handleMoveChat(chatId: string, folderId: string | null) {
+    await fetch("/api/copilot/chats", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: chatId, folderId }),
+    });
+    loadChats();
+    loadFolders();
+  }
+
+  async function handleCreateFolder(name: string) {
+    await fetch("/api/copilot/folders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+    loadFolders();
+  }
+
+  async function handleRenameFolder(id: string, name: string) {
+    await fetch("/api/copilot/folders", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, name }),
+    });
+    loadFolders();
+  }
+
+  async function handleDeleteFolder(id: string) {
+    await fetch("/api/copilot/folders", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    loadFolders();
     loadChats();
   }
 
@@ -197,20 +256,25 @@ function CopilotChatInner() {
         />
       )}
 
-      {/* Sidebar — hidden on mobile by default, slide-in drawer when open */}
+      {/* Sidebar */}
       <div className={`
         fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out md:relative md:transform-none md:z-auto
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}>
         <CopilotSidebar
           chats={chats}
+          folders={folders}
           activeChatId={chatId || undefined}
           userName={userName}
           userPlan={userPlan}
           onNewChat={handleNewChat}
           onDeleteChat={handleDeleteChat}
           onPinChat={handlePinChat}
-          onRefresh={loadChats}
+          onMoveChat={handleMoveChat}
+          onCreateFolder={handleCreateFolder}
+          onRenameFolder={handleRenameFolder}
+          onDeleteFolder={handleDeleteFolder}
+          onRefresh={() => { loadChats(); loadFolders(); }}
           onCloseMobile={() => setSidebarOpen(false)}
         />
       </div>
@@ -249,7 +313,7 @@ function CopilotChatInner() {
         />
       </div>
 
-      {/* Desktop QuickActions (hidden on mobile — shown in top bar instead) */}
+      {/* Desktop QuickActions */}
       <div className="hidden md:block">
         <QuickActions
           fontSize={fontSize}

@@ -123,8 +123,40 @@ export async function POST(req: NextRequest) {
     take: 50, // last 50 messages for context
   });
 
+  // Build folder context if chat belongs to a folder
+  let folderContext = "";
+  if (chat.folderId) {
+    const siblingChats = await prisma.chat.findMany({
+      where: { folderId: chat.folderId, userId: user.id, id: { not: chatId } },
+      orderBy: { updatedAt: "desc" },
+      take: 5,
+      include: {
+        messages: {
+          take: 4, // first 2 exchanges per chat
+          orderBy: { createdAt: "asc" },
+          select: { role: true, content: true },
+        },
+      },
+    });
+
+    if (siblingChats.length > 0) {
+      const folder = await prisma.chatFolder.findUnique({ where: { id: chat.folderId } });
+      const summaries = siblingChats
+        .filter((c) => c.messages.length > 0)
+        .map((c) => {
+          const preview = c.messages.map((m) => `${m.role}: ${m.content.slice(0, 200)}`).join("\n");
+          return `--- Chat: "${c.title}" ---\n${preview}`;
+        })
+        .join("\n\n");
+
+      if (summaries) {
+        folderContext = `\n\n[FOLDER CONTEXT: This chat is part of the "${folder?.name || "Unnamed"}" folder. The user has related previous conversations in this folder. Use them as reference when relevant:\n\n${summaries}\n\nEnd of folder context.]`;
+      }
+    }
+  }
+
   // Generate AI response via OpenAI
-  const aiContent = await generateAIResponse(history);
+  const aiContent = await generateAIResponse(history, folderContext);
   const assistantMessage = await prisma.message.create({
     data: { chatId, role: "assistant", content: aiContent },
   });
@@ -137,7 +169,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ userMessage, assistantMessage, trial: { remaining: trial.remaining > 0 ? trial.remaining - 1 : -1, limit: trial.limit } });
 }
 
-async function generateAIResponse(history: { role: string; content: string }[]): Promise<string> {
+async function generateAIResponse(history: { role: string; content: string }[], folderContext?: string): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
@@ -147,8 +179,10 @@ async function generateAIResponse(history: { role: string; content: string }[]):
   try {
     const openai = new OpenAI({ apiKey });
 
+    const systemContent = folderContext ? SYSTEM_PROMPT + folderContext : SYSTEM_PROMPT;
+
     const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: systemContent },
       ...history.map((m) => ({
         role: m.role as "user" | "assistant",
         content: m.content,
