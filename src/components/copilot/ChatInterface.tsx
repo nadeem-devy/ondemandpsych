@@ -125,19 +125,20 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
   if (!chatId || messages.length === 0) {
     return (
       <div className="flex-1 flex flex-col min-h-0">
-        <div className="flex-1 flex flex-col items-center justify-center px-6">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mb-6">
-            <BrainCircuit size={28} className="text-[#FDB02F]" />
+        <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mb-4 sm:mb-6">
+            <BrainCircuit size={24} className="text-[#FDB02F] sm:hidden" />
+            <BrainCircuit size={28} className="text-[#FDB02F] hidden sm:block" />
           </div>
-          <h2 className={`text-2xl font-bold font-[var(--font-syne)] mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
+          <h2 className={`text-xl sm:text-2xl font-bold font-[var(--font-syne)] mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
             Clinical Co-Pilot
           </h2>
-          <p className={`text-sm text-center max-w-md mb-10 ${isDark ? "text-white/40" : "text-gray-500"}`}>
+          <p className={`text-xs sm:text-sm text-center max-w-md mb-6 sm:mb-10 ${isDark ? "text-white/40" : "text-gray-500"}`}>
             Your psychiatry-specific clinical decision support. Ask about diagnosis,
             medication management, risk assessment, or documentation.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-lg">
             {promptSuggestions.map((s) => (
               <button
                 key={s.title}
@@ -145,15 +146,15 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                   setInput(s.prompt);
                   textareaRef.current?.focus();
                 }}
-                className={`text-left p-4 rounded-xl border transition-all group ${
+                className={`text-left p-3 sm:p-4 rounded-xl border transition-all group ${
                   isDark
                     ? "border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10"
                     : "border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300"
                 }`}
               >
-                <s.icon size={18} className="text-[#FDB02F]/60 mb-2 group-hover:text-[#FDB02F] transition-colors" />
-                <p className={`text-sm font-medium ${isDark ? "text-white/70" : "text-gray-700"}`}>{s.title}</p>
-                <p className={`text-xs mt-1 line-clamp-2 ${isDark ? "text-white/25" : "text-gray-400"}`}>{s.prompt}</p>
+                <s.icon size={18} className="text-[#FDB02F]/60 mb-1.5 sm:mb-2 group-hover:text-[#FDB02F] transition-colors" />
+                <p className={`text-xs sm:text-sm font-medium ${isDark ? "text-white/70" : "text-gray-700"}`}>{s.title}</p>
+                <p className={`text-[10px] sm:text-xs mt-1 line-clamp-2 ${isDark ? "text-white/25" : "text-gray-400"}`}>{s.prompt}</p>
               </button>
             ))}
           </div>
@@ -176,17 +177,17 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="max-w-4xl mx-auto py-6 px-4 space-y-6">
+        <div className="max-w-4xl mx-auto py-4 sm:py-6 px-3 sm:px-4 space-y-4 sm:space-y-6">
           {messages.map((msg) => (
-            <div key={msg.id} className={`flex gap-4 ${msg.role === "user" ? "justify-end" : ""}`}>
+            <div key={msg.id} className={`flex gap-2 sm:gap-4 ${msg.role === "user" ? "justify-end" : ""}`}>
               {msg.role === "assistant" && (
-                <div className="shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mt-1">
+                <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mt-1">
                   <Sparkles size={14} className="text-[#FDB02F]" />
                 </div>
               )}
-              <div className={`flex-1 ${msg.role === "user" ? "max-w-[75%]" : ""}`}>
+              <div className={`flex-1 min-w-0 ${msg.role === "user" ? "max-w-[85%] sm:max-w-[75%]" : ""}`}>
                 <div
-                  className={`rounded-2xl px-5 py-4 text-sm leading-relaxed ${
+                  className={`rounded-2xl px-3 py-3 sm:px-5 sm:py-4 text-sm leading-relaxed ${
                     msg.role === "user"
                       ? "bg-[#FDB02F] text-[#07123A]"
                       : isDark
@@ -206,10 +207,10 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
 
                 {/* Action buttons for assistant messages */}
                 {msg.role === "assistant" && (
-                  <div className="flex items-center gap-1 mt-2 ml-1">
+                  <div className="flex items-center gap-1 mt-1.5 sm:mt-2 ml-1">
                     <button
                       onClick={() => handleCopy(msg.id, msg.content)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
+                      className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
                         isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                       }`}
                     >
@@ -227,7 +228,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                     </button>
                     <button
                       onClick={() => handleExport(msg.content, "md")}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
+                      className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
                         isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                       }`}
                     >
@@ -236,7 +237,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                     </button>
                     <button
                       onClick={() => handleExport(msg.content, "txt")}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
+                      className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
                         isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                       }`}
                     >
@@ -247,7 +248,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                 )}
               </div>
               {msg.role === "user" && (
-                <div className={`shrink-0 w-8 h-8 rounded-xl flex items-center justify-center mt-1 ${isDark ? "bg-white/10" : "bg-gray-100"}`}>
+                <div className={`shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center mt-1 ${isDark ? "bg-white/10" : "bg-gray-100"}`}>
                   <User size={14} className={isDark ? "text-white/50" : "text-gray-500"} />
                 </div>
               )}
@@ -354,7 +355,7 @@ const ChatInput = forwardRef<
   }
 
   return (
-    <div className={`shrink-0 p-4 border-t ${isDark ? "border-white/5" : "border-gray-200"}`}>
+    <div className={`shrink-0 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-4 border-t ${isDark ? "border-white/5" : "border-gray-200"}`}>
       <div className="max-w-4xl mx-auto">
         <div className={`relative flex items-end rounded-2xl focus-within:border-[#FDB02F]/30 transition-colors ${
           isDark
@@ -368,14 +369,14 @@ const ChatInput = forwardRef<
             onKeyDown={onKeyDown}
             placeholder={isRecording ? "Listening..." : placeholder}
             rows={1}
-            className={`flex-1 bg-transparent px-5 py-4 text-sm focus:outline-none resize-none max-h-40 ${
+            className={`flex-1 bg-transparent px-3 py-3 sm:px-5 sm:py-4 text-sm focus:outline-none resize-none max-h-40 ${
               isDark ? "text-white placeholder:text-white/20" : "text-gray-800 placeholder:text-gray-400"
             }`}
           />
-          <div className="flex items-center gap-1 m-2">
+          <div className="flex items-center gap-1 m-1.5 sm:m-2">
             <button
               onClick={toggleTranscribe}
-              className={`p-2.5 rounded-xl transition-all ${
+              className={`p-2 sm:p-2.5 rounded-xl transition-all ${
                 isRecording
                   ? "bg-red-500 text-white animate-pulse"
                   : isDark
@@ -389,13 +390,13 @@ const ChatInput = forwardRef<
             <button
               onClick={onSend}
               disabled={!input.trim() || loading}
-              className="p-2.5 rounded-xl bg-[#FDB02F] text-[#07123A] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FDAA40] transition-colors"
+              className="p-2 sm:p-2.5 rounded-xl bg-[#FDB02F] text-[#07123A] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FDAA40] transition-colors"
             >
               <Send size={16} />
             </button>
           </div>
         </div>
-        <p className={`text-center text-xs mt-2.5 ${isDark ? "text-white/30" : "text-gray-500"}`}>
+        <p className={`text-center text-[10px] sm:text-xs mt-2 sm:mt-2.5 ${isDark ? "text-white/30" : "text-gray-500"}`}>
           For licensed healthcare providers only. Educational use only. Not medical advice. Clinician remains in control.
         </p>
       </div>

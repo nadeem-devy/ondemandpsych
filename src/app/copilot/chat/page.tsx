@@ -7,6 +7,7 @@ import { ChatInterface } from "@/components/copilot/ChatInterface";
 import { QuickActions } from "@/components/copilot/QuickActions";
 import { SupportChatBubble } from "@/components/copilot/SupportChatBubble";
 import { ThemeProvider, useTheme } from "@/components/copilot/ThemeProvider";
+import { Menu } from "lucide-react";
 
 interface ChatItem {
   id: string;
@@ -37,6 +38,7 @@ function CopilotChatInner() {
   const [authChecked, setAuthChecked] = useState(false);
   const [fontSize, setFontSize] = useState(15);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Check auth
   useEffect(() => {
@@ -83,6 +85,11 @@ function CopilotChatInner() {
       .then((r) => r.json())
       .then((data) => { if (Array.isArray(data)) setMessages(data); })
       .catch(() => {});
+  }, [chatId]);
+
+  // Close sidebar on mobile when navigating to a chat
+  useEffect(() => {
+    setSidebarOpen(false);
   }, [chatId]);
 
   function handleFontSizeChange(size: number) {
@@ -182,7 +189,19 @@ function CopilotChatInner() {
       className={`flex h-screen overflow-hidden ${isDark ? "bg-[#07123A]" : "bg-gray-50"}`}
       style={{ "--copilot-font-size": `${fontSize}px` } as React.CSSProperties}
     >
-      <div className="shrink-0">
+      {/* Mobile sidebar backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar — hidden on mobile by default, slide-in drawer when open */}
+      <div className={`
+        fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out md:relative md:transform-none md:z-auto
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+      `}>
         <CopilotSidebar
           chats={chats}
           activeChatId={chatId || undefined}
@@ -192,10 +211,36 @@ function CopilotChatInner() {
           onDeleteChat={handleDeleteChat}
           onPinChat={handlePinChat}
           onRefresh={loadChats}
+          onCloseMobile={() => setSidebarOpen(false)}
         />
       </div>
 
+      {/* Main chat area */}
       <div className={`flex-1 flex flex-col min-h-0 min-w-0 ${isDark ? "" : "copilot-light"}`}>
+        {/* Mobile top bar */}
+        <div className={`shrink-0 flex items-center gap-3 px-4 py-3 border-b md:hidden ${
+          isDark ? "border-white/5 bg-[#0A1628]" : "border-gray-200 bg-white"
+        }`}>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className={`p-2 rounded-xl transition-colors ${
+              isDark ? "text-white/60 hover:bg-white/5" : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            <Menu size={20} />
+          </button>
+          <img src="/logo.webp" alt="OnDemandPsych" className="h-8 w-auto" />
+          <div className="flex-1" />
+          <QuickActions
+            fontSize={fontSize}
+            onFontSizeChange={handleFontSizeChange}
+            theme={theme}
+            onThemeToggle={toggleTheme}
+            onOpenSupport={() => setSupportOpen(true)}
+            mobile
+          />
+        </div>
+
         <ChatInterface
           chatId={chatId}
           messages={messages}
@@ -204,13 +249,16 @@ function CopilotChatInner() {
         />
       </div>
 
-      <QuickActions
-        fontSize={fontSize}
-        onFontSizeChange={handleFontSizeChange}
-        theme={theme}
-        onThemeToggle={toggleTheme}
-        onOpenSupport={() => setSupportOpen(true)}
-      />
+      {/* Desktop QuickActions (hidden on mobile — shown in top bar instead) */}
+      <div className="hidden md:block">
+        <QuickActions
+          fontSize={fontSize}
+          onFontSizeChange={handleFontSizeChange}
+          theme={theme}
+          onThemeToggle={toggleTheme}
+          onOpenSupport={() => setSupportOpen(true)}
+        />
+      </div>
 
       <SupportChatBubble
         open={supportOpen}

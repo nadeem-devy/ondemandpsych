@@ -194,15 +194,15 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
   const isDark = theme === "dark";
 
   return (
-    <div className={`fixed right-16 bottom-6 z-50 w-[400px] rounded-2xl shadow-2xl flex flex-col overflow-hidden ${
-      isDark
-        ? "bg-[#0A1628] border border-white/10"
-        : "bg-white border border-gray-200"
+    <div className={`fixed z-50 flex flex-col overflow-hidden
+      inset-0 md:inset-auto md:right-16 md:bottom-6 md:w-[400px] md:h-[520px] md:rounded-2xl md:shadow-2xl
+      ${isDark
+        ? "bg-[#0A1628] md:border md:border-white/10"
+        : "bg-white md:border md:border-gray-200"
     }`}
-    style={{ height: "520px" }}
     >
       {/* Header */}
-      <div className={`shrink-0 flex items-center justify-between px-5 py-4 border-b ${
+      <div className={`shrink-0 flex items-center justify-between px-5 py-4 pt-[max(1rem,env(safe-area-inset-top))] border-b ${
         isDark ? "border-white/5 bg-[#0D1B4B]/60" : "border-gray-100 bg-gray-50"
       }`}>
         <div className="flex items-center gap-3">
@@ -385,7 +385,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
       </div>
 
       {/* Input */}
-      <div className={`shrink-0 p-3 border-t ${isDark ? "border-white/5" : "border-gray-100"}`}>
+      <div className={`shrink-0 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t ${isDark ? "border-white/5" : "border-gray-100"}`}>
         <div className={`flex items-center gap-2 rounded-xl px-3 py-2 ${
           isDark ? "bg-white/5 border border-white/5" : "bg-gray-50 border border-gray-200"
         }`}>

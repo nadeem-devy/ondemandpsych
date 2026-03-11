@@ -9,13 +9,13 @@ import {
   User,
   CreditCard,
   LogOut,
-
   Pin,
   Trash2,
   MoreHorizontal,
   PanelLeftClose,
   PanelLeft,
   Search,
+  X,
 } from "lucide-react";
 
 interface ChatItem {
@@ -35,6 +35,7 @@ interface CopilotSidebarProps {
   onDeleteChat: (id: string) => void;
   onPinChat: (id: string, pinned: boolean) => void;
   onRefresh: () => void;
+  onCloseMobile?: () => void;
 }
 
 export function CopilotSidebar({
@@ -45,6 +46,7 @@ export function CopilotSidebar({
   onNewChat,
   onDeleteChat,
   onPinChat,
+  onCloseMobile,
 }: CopilotSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -74,7 +76,7 @@ export function CopilotSidebar({
 
   if (collapsed) {
     return (
-      <div className="w-16 h-full bg-[#0A1628] border-r border-white/5 flex flex-col items-center py-4 gap-3">
+      <div className="w-16 h-full bg-[#0A1628] border-r border-white/5 hidden md:flex flex-col items-center py-4 gap-3">
         <button
           onClick={() => setCollapsed(false)}
           className="p-2 rounded-lg text-white/40 hover:text-white/60 hover:bg-white/5 transition-colors mb-1"
@@ -116,10 +118,20 @@ export function CopilotSidebar({
     <div className="w-72 bg-[#0A1628] border-r border-white/5 flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-white/5">
-        <div className="flex items-center justify-end mb-2">
+        <div className="flex items-center justify-between mb-2">
+          {/* Mobile close button */}
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="p-1.5 rounded-lg text-white/30 hover:text-white/50 hover:bg-white/5 transition-colors md:hidden"
+            >
+              <X size={16} />
+            </button>
+          )}
+          <div className="flex-1" />
           <button
             onClick={() => setCollapsed(true)}
-            className="p-1.5 rounded-lg text-white/30 hover:text-white/50 hover:bg-white/5 transition-colors"
+            className="p-1.5 rounded-lg text-white/30 hover:text-white/50 hover:bg-white/5 transition-colors hidden md:block"
           >
             <PanelLeftClose size={16} />
           </button>

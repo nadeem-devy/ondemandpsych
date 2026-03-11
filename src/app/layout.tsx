@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Inter, JetBrains_Mono, Syne } from "next/font/google";
 import "./globals.css";
 
@@ -25,6 +25,13 @@ const syne = Syne({
   subsets: ["latin"],
   weight: ["600", "700", "800"],
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: {
