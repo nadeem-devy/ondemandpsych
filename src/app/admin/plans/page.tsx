@@ -107,21 +107,21 @@ export default function PlansPage() {
                   </div>
                   <div>
                     <h3 className="text-white font-semibold text-sm">{plan.displayName}</h3>
-                    <p className="text-white/30 text-[11px]">{plan.name} • {plan.isActive ? "Active" : "Inactive"}</p>
+                    <p className="text-white/30 text-sm">{plan.name} • {plan.isActive ? "Active" : "Inactive"}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => handleUpdate(plan.id, { isActive: !plan.isActive })} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/50 text-[11px] hover:bg-white/10">
+                  <button onClick={() => handleUpdate(plan.id, { isActive: !plan.isActive })} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/50 text-sm hover:bg-white/10">
                     {plan.isActive ? "Deactivate" : "Activate"}
                   </button>
                   <button onClick={() => handleDelete(plan.id)} className="p-1.5 rounded-lg text-red-400/50 hover:text-red-400 hover:bg-red-400/10"><Trash2 size={14} /></button>
                 </div>
               </div>
               <div className="mt-4 grid grid-cols-4 gap-4">
-                <div><p className="text-[10px] text-white/30">Monthly</p><p className="text-white text-sm font-bold">${plan.priceMonthly}</p></div>
-                <div><p className="text-[10px] text-white/30">Yearly</p><p className="text-white text-sm font-bold">${plan.priceYearly}</p></div>
-                <div><p className="text-[10px] text-white/30">Message Limit</p><p className="text-white text-sm font-bold">{plan.messageLimit === -1 ? "Unlimited" : plan.messageLimit}</p></div>
-                <div><p className="text-[10px] text-white/30">Features</p><p className="text-white/50 text-[11px]">{plan.features ? JSON.parse(plan.features).join(", ") : "—"}</p></div>
+                <div><p className="text-xs text-white/30">Monthly</p><p className="text-white text-sm font-bold">${plan.priceMonthly}</p></div>
+                <div><p className="text-xs text-white/30">Yearly</p><p className="text-white text-sm font-bold">${plan.priceYearly}</p></div>
+                <div><p className="text-xs text-white/30">Message Limit</p><p className="text-white text-sm font-bold">{plan.messageLimit === -1 ? "Unlimited" : plan.messageLimit}</p></div>
+                <div><p className="text-xs text-white/30">Features</p><p className="text-white/50 text-sm">{plan.features ? JSON.parse(plan.features).join(", ") : "—"}</p></div>
               </div>
               {plan.description && <p className="mt-2 text-white/25 text-xs">{plan.description}</p>}
             </div>

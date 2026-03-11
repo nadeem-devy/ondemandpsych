@@ -213,7 +213,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
             <h3 className={`text-sm font-bold ${isDark ? "text-white" : "text-gray-900"}`}>Support Chat</h3>
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-              <span className={`text-[10px] ${isDark ? "text-white/40" : "text-gray-400"}`}>Online</span>
+              <span className={`text-xs ${isDark ? "text-white/40" : "text-gray-400"}`}>Online</span>
             </div>
           </div>
         </div>
@@ -237,7 +237,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
             <h4 className={`text-sm font-bold mb-1 ${isDark ? "text-white" : "text-gray-900"}`}>
               Ticket Resolved
             </h4>
-            <p className={`text-[11px] mb-5 text-center px-6 ${isDark ? "text-white/40" : "text-gray-500"}`}>
+            <p className={`text-sm mb-5 text-center px-6 ${isDark ? "text-white/40" : "text-gray-500"}`}>
               How was your support experience?
             </p>
 
@@ -265,7 +265,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
 
             {/* Rating label */}
             {rating > 0 && (
-              <p className={`text-[11px] font-medium mb-4 ${isDark ? "text-white/50" : "text-gray-500"}`}>
+              <p className={`text-sm font-medium mb-4 ${isDark ? "text-white/50" : "text-gray-500"}`}>
                 {["", "Poor", "Fair", "Good", "Great", "Excellent"][rating]}
               </p>
             )}
@@ -309,7 +309,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
             <p className={`text-xs font-semibold mb-1 ${isDark ? "text-white/50" : "text-gray-600"}`}>
               How can we help you?
             </p>
-            <p className={`text-[11px] mb-4 ${isDark ? "text-white/25" : "text-gray-400"}`}>
+            <p className={`text-sm mb-4 ${isDark ? "text-white/25" : "text-gray-400"}`}>
               Select a topic to get started
             </p>
             <div className="space-y-2">
@@ -343,7 +343,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
                 {msg.sender === "system" ? (
                   // System message (joined chat, closed, etc.)
                   <div className="flex justify-center my-2">
-                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-medium ${
+                    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
                       isDark
                         ? "bg-[#FDB02F]/10 text-[#FDB02F]/70 border border-[#FDB02F]/10"
                         : "bg-[#FDB02F]/10 text-[#b8860b] border border-[#FDB02F]/15"
@@ -364,12 +364,12 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
                       }`}
                     >
                       {msg.sender === "admin" && (
-                        <p className={`text-[10px] font-semibold mb-1 ${isDark ? "text-[#FDB02F]/70" : "text-[#FDB02F]"}`}>
+                        <p className={`text-xs font-semibold mb-1 ${isDark ? "text-[#FDB02F]/70" : "text-[#FDB02F]"}`}>
                           Support Team
                         </p>
                       )}
                       <p className="whitespace-pre-wrap">{msg.content}</p>
-                      <p className={`text-[9px] mt-1 ${
+                      <p className={`text-xs mt-1 ${
                         msg.sender === "user" ? "text-[#07123A]/40" : isDark ? "text-white/20" : "text-gray-400"
                       }`}>
                         {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}

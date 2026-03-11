@@ -182,7 +182,7 @@ export default function SubscriptionPage() {
           <div className="flex items-center gap-3">
             <img src="/logo.webp" alt="OnDemandPsych" className="h-10 w-auto" />
             <h1 className="text-lg font-bold text-white">Subscription</h1>
-            <span className="ml-2 text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-[#FDB02F]/10 text-[#FDB02F]">
+            <span className="ml-2 text-xs font-semibold uppercase px-2 py-0.5 rounded bg-[#FDB02F]/10 text-[#FDB02F]">
               {currentPlan}
             </span>
           </div>
@@ -258,7 +258,7 @@ export default function SubscriptionPage() {
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#FDB02F] text-[#07123A] text-[10px] font-bold uppercase tracking-wider">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#FDB02F] text-[#07123A] text-xs font-bold uppercase tracking-wider">
                     Most Popular
                   </div>
                 )}
@@ -277,7 +277,7 @@ export default function SubscriptionPage() {
                   <div>
                     <h3 className="text-white font-bold">{plan.name}</h3>
                     {isCurrent && (
-                      <span className="text-[10px] text-[#FDB02F] font-semibold uppercase">Current Plan</span>
+                      <span className="text-xs text-[#FDB02F] font-semibold uppercase">Current Plan</span>
                     )}
                   </div>
                 </div>
@@ -309,7 +309,7 @@ export default function SubscriptionPage() {
                   </div>
                 )}
 
-                <p className="mb-5 text-[11px] text-white/30 italic">Best for: {plan.bestFor}</p>
+                <p className="mb-5 text-sm text-white/30 italic">Best for: {plan.bestFor}</p>
 
                 <button
                   disabled={isCurrent}

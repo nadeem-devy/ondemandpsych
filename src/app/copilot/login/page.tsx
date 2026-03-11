@@ -122,7 +122,7 @@ export default function CopilotLogin() {
           </div>
         </div>
 
-        <p className="text-center text-white/20 text-[11px] mt-6">
+        <p className="text-center text-white/20 text-sm mt-6">
           By signing in, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

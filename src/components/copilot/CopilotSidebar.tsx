@@ -261,7 +261,7 @@ export function CopilotSidebar({
         {/* Pinned chats */}
         {pinnedChats.length > 0 && (
           <div className="mb-3">
-            <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/25">Pinned</p>
+            <p className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-white/25">Pinned</p>
             {pinnedChats.map((chat) => (
               <ChatRow
                 key={chat.id}
@@ -281,7 +281,7 @@ export function CopilotSidebar({
         {/* Folders */}
         {folders.length > 0 && (
           <div className="mb-3">
-            <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/25">Folders</p>
+            <p className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-white/25">Folders</p>
             {folders.map((folder) => {
               const folderChats = filtered.filter((c) => c.folderId === folder.id);
               const isExpanded = expandedFolders.has(folder.id);
@@ -317,7 +317,7 @@ export function CopilotSidebar({
                       ) : (
                         <span className="truncate flex-1 text-left">{folder.icon ? `${folder.icon} ` : ""}{folder.name}</span>
                       )}
-                      <span className="text-[10px] text-white/20 shrink-0">{folderChats.length}</span>
+                      <span className="text-xs text-white/20 shrink-0">{folderChats.length}</span>
                     </button>
 
                     {/* Folder context menu trigger */}
@@ -369,7 +369,7 @@ export function CopilotSidebar({
                   {isExpanded && (
                     <div className="ml-4 border-l border-white/5 pl-1">
                       {folderChats.length === 0 ? (
-                        <p className="px-3 py-2 text-[10px] text-white/15 italic">No chats yet</p>
+                        <p className="px-3 py-2 text-xs text-white/15 italic">No chats yet</p>
                       ) : (
                         folderChats.map((chat) => (
                           <ChatRow
@@ -396,7 +396,7 @@ export function CopilotSidebar({
         {/* Unfiled recent chats */}
         {unfiledChats.length > 0 && (
           <div>
-            <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/25">Recent</p>
+            <p className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-white/25">Recent</p>
             {unfiledChats.map((chat) => (
               <ChatRow
                 key={chat.id}
@@ -417,7 +417,7 @@ export function CopilotSidebar({
           <div className="text-center py-12 px-4">
             <MessageSquare size={32} className="mx-auto text-white/10 mb-3" />
             <p className="text-white/25 text-xs">No conversations yet</p>
-            <p className="text-white/15 text-[11px] mt-1">Start a new chat to begin</p>
+            <p className="text-white/15 text-sm mt-1">Start a new chat to begin</p>
           </div>
         )}
       </div>
@@ -445,7 +445,7 @@ export function CopilotSidebar({
         >
           <CreditCard size={16} />
           Subscription
-          <span className={`ml-auto text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded ${planColors[userPlan] || planColors.free}`}>
+          <span className={`ml-auto text-xs font-semibold uppercase px-1.5 py-0.5 rounded ${planColors[userPlan] || planColors.free}`}>
             {userPlan}
           </span>
         </Link>
@@ -537,7 +537,7 @@ function ChatRow({
               {chat.folderId && (
                 <button
                   onClick={() => onMoveToFolder(null)}
-                  className="w-full flex items-center gap-2 px-5 py-1.5 text-[11px] text-white/40 hover:text-white hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center gap-2 px-5 py-1.5 text-sm text-white/40 hover:text-white hover:bg-white/5 transition-colors"
                 >
                   Remove from folder
                 </button>
@@ -546,7 +546,7 @@ function ChatRow({
                 <button
                   key={f.id}
                   onClick={() => onMoveToFolder(f.id)}
-                  className={`w-full flex items-center gap-2 px-5 py-1.5 text-[11px] transition-colors ${
+                  className={`w-full flex items-center gap-2 px-5 py-1.5 text-sm transition-colors ${
                     chat.folderId === f.id
                       ? "text-[#FDB02F] bg-[#FDB02F]/5"
                       : "text-white/50 hover:text-white hover:bg-white/5"

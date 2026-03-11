@@ -79,11 +79,11 @@ export default function HealthPage() {
                 <p className="text-white text-xs font-medium capitalize">{name.replace(/_/g, " ")}</p>
                 <div className="flex items-center gap-1.5">
                   <Icon size={14} className={config.color} />
-                  <span className={`text-[10px] font-medium ${config.color}`}>{check.status}</span>
+                  <span className={`text-xs font-medium ${config.color}`}>{check.status}</span>
                 </div>
               </div>
-              {check.latency !== undefined && <p className="text-white/30 text-[10px]">Latency: {check.latency}ms</p>}
-              {check.details && <p className="text-white/20 text-[10px] mt-1">{check.details}</p>}
+              {check.latency !== undefined && <p className="text-white/30 text-xs">Latency: {check.latency}ms</p>}
+              {check.details && <p className="text-white/20 text-xs mt-1">{check.details}</p>}
             </div>
           );
         }) : null}

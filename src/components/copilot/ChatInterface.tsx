@@ -154,7 +154,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
               >
                 <s.icon size={18} className="text-[#FDB02F]/60 mb-1.5 sm:mb-2 group-hover:text-[#FDB02F] transition-colors" />
                 <p className={`text-xs sm:text-sm font-medium ${isDark ? "text-white/70" : "text-gray-700"}`}>{s.title}</p>
-                <p className={`text-[10px] sm:text-xs mt-1 line-clamp-2 ${isDark ? "text-white/25" : "text-gray-400"}`}>{s.prompt}</p>
+                <p className={`text-xs sm:text-xs mt-1 line-clamp-2 ${isDark ? "text-white/25" : "text-gray-400"}`}>{s.prompt}</p>
               </button>
             ))}
           </div>
@@ -210,7 +210,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                   <div className="flex items-center gap-1 mt-1.5 sm:mt-2 ml-1">
                     <button
                       onClick={() => handleCopy(msg.id, msg.content)}
-                      className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
+                      className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-sm transition-colors ${
                         isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                       }`}
                     >
@@ -228,7 +228,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                     </button>
                     <button
                       onClick={() => handleExport(msg.content, "md")}
-                      className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
+                      className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
                         isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                       }`}
                     >
@@ -237,7 +237,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                     </button>
                     <button
                       onClick={() => handleExport(msg.content, "txt")}
-                      className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] transition-colors ${
+                      className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
                         isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                       }`}
                     >
@@ -396,7 +396,7 @@ const ChatInput = forwardRef<
             </button>
           </div>
         </div>
-        <p className={`text-center text-[10px] sm:text-xs mt-2 sm:mt-2.5 ${isDark ? "text-white/30" : "text-gray-500"}`}>
+        <p className={`text-center text-xs sm:text-xs mt-2 sm:mt-2.5 ${isDark ? "text-white/30" : "text-gray-500"}`}>
           For licensed healthcare providers only. Educational use only. Not medical advice. Clinician remains in control.
         </p>
       </div>

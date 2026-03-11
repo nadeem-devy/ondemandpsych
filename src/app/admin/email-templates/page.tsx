@@ -95,8 +95,8 @@ export default function EmailTemplatesPage() {
                 <input value={editForm.subject} onChange={(e) => setEditForm({ ...editForm, subject: e.target.value })} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none" />
                 <textarea value={editForm.body} onChange={(e) => setEditForm({ ...editForm, body: e.target.value })} rows={6} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none resize-none font-mono" />
                 <div className="flex gap-2">
-                  <button onClick={() => handleSave(t.id)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#FDB02F] text-[#07123A] text-[11px] font-bold"><Save size={12} />Save</button>
-                  <button onClick={() => setEditing(null)} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/50 text-[11px]">Cancel</button>
+                  <button onClick={() => handleSave(t.id)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#FDB02F] text-[#07123A] text-sm font-bold"><Save size={12} />Save</button>
+                  <button onClick={() => setEditing(null)} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/50 text-sm">Cancel</button>
                 </div>
               </div>
             ) : (
@@ -105,12 +105,12 @@ export default function EmailTemplatesPage() {
                   <div className="w-9 h-9 rounded-lg bg-[#FDB02F]/10 flex items-center justify-center mt-0.5"><Mail size={14} className="text-[#FDB02F]" /></div>
                   <div>
                     <p className="text-white text-xs font-medium">{t.name}</p>
-                    <p className="text-white/30 text-[10px] font-mono">{t.slug}</p>
-                    <p className="text-white/40 text-[11px] mt-1">Subject: {t.subject}</p>
+                    <p className="text-white/30 text-xs font-mono">{t.slug}</p>
+                    <p className="text-white/40 text-sm mt-1">Subject: {t.subject}</p>
                   </div>
                 </div>
                 <div className="flex gap-1.5">
-                  <button onClick={() => { setEditing(t.id); setEditForm({ name: t.name, subject: t.subject, body: t.body }); }} className="px-2.5 py-1.5 rounded-lg bg-white/5 text-white/50 text-[11px] hover:bg-white/10">Edit</button>
+                  <button onClick={() => { setEditing(t.id); setEditForm({ name: t.name, subject: t.subject, body: t.body }); }} className="px-2.5 py-1.5 rounded-lg bg-white/5 text-white/50 text-sm hover:bg-white/10">Edit</button>
                   <button onClick={() => handleDelete(t.id)} className="p-1.5 rounded-lg text-red-400/50 hover:text-red-400 hover:bg-red-400/10"><Trash2 size={12} /></button>
                 </div>
               </div>

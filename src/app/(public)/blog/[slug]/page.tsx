@@ -129,7 +129,7 @@ export default async function BlogPostPage({ params }: Props) {
                 {post.tags.split(",").map((tag) => (
                   <span
                     key={tag.trim()}
-                    className="px-2.5 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-[10px] font-medium"
+                    className="px-2.5 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-xs font-medium"
                   >
                     {tag.trim()}
                   </span>

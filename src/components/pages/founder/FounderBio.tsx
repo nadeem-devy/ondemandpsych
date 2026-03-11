@@ -77,7 +77,7 @@ export function FounderBio() {
                       </p>
                     )}
                   </div>
-                  <span className="ml-auto text-[10px] font-mono text-white/15 shrink-0">
+                  <span className="ml-auto text-xs font-mono text-white/15 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>

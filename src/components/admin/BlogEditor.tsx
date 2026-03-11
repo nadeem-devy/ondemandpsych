@@ -471,13 +471,13 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                     )}
                   </div>
                   <div className="p-3 bg-white/5">
-                    <p className="text-white/30 text-[10px] uppercase">
+                    <p className="text-white/30 text-xs uppercase">
                       ondemandpsych.com
                     </p>
                     <p className="text-white text-xs font-medium mt-0.5 truncate">
                       {ogTitle || title || "Post Title"}
                     </p>
-                    <p className="text-white/40 text-[11px] mt-0.5 line-clamp-2">
+                    <p className="text-white/40 text-sm mt-0.5 line-clamp-2">
                       {ogDescription || excerpt || "Post description..."}
                     </p>
                   </div>

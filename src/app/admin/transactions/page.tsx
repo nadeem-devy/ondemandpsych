@@ -67,12 +67,12 @@ export default function TransactionsPage() {
         <div className="p-5 rounded-2xl bg-[#0D1B4B]/60 border border-white/10">
           <div className="flex items-center gap-2 mb-2"><DollarSign size={16} className="text-green-400" /></div>
           <p className="text-2xl font-bold text-white">${stats.totalRevenue.toFixed(2)}</p>
-          <p className="text-[11px] text-white/35">Total Revenue</p>
+          <p className="text-sm text-white/35">Total Revenue</p>
         </div>
         <div className="p-5 rounded-2xl bg-[#0D1B4B]/60 border border-white/10">
           <div className="flex items-center gap-2 mb-2"><AlertTriangle size={16} className="text-red-400" /></div>
           <p className="text-2xl font-bold text-white">{stats.failedCount}</p>
-          <p className="text-[11px] text-white/35">Failed Payments</p>
+          <p className="text-sm text-white/35">Failed Payments</p>
         </div>
       </div>
 
@@ -117,10 +117,10 @@ export default function TransactionsPage() {
             txns.length === 0 ? <tr><td colSpan={6} className="text-center py-12 text-white/30">No transactions yet</td></tr> :
             txns.map((t) => (
               <tr key={t.id} className="border-b border-white/5 hover:bg-white/[0.02]">
-                <td className="px-4 py-3"><p className="text-white/70">{t.user.name}</p><p className="text-white/30 text-[10px]">{t.user.email}</p></td>
+                <td className="px-4 py-3"><p className="text-white/70">{t.user.name}</p><p className="text-white/30 text-xs">{t.user.email}</p></td>
                 <td className="px-4 py-3 text-white/50 capitalize">{t.type}</td>
                 <td className="px-4 py-3 text-white font-medium">${t.amount.toFixed(2)}</td>
-                <td className="px-4 py-3"><span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusColors[t.status] || ""}`}>{t.status}</span></td>
+                <td className="px-4 py-3"><span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium border ${statusColors[t.status] || ""}`}>{t.status}</span></td>
                 <td className="px-4 py-3 text-white/40 capitalize">{t.planName || "—"}</td>
                 <td className="px-4 py-3 text-white/30">{new Date(t.createdAt).toLocaleDateString()}</td>
               </tr>
@@ -129,7 +129,7 @@ export default function TransactionsPage() {
         </table>
         {pagination.totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-white/5">
-            <p className="text-[11px] text-white/25">Page {pagination.page} of {pagination.totalPages}</p>
+            <p className="text-sm text-white/25">Page {pagination.page} of {pagination.totalPages}</p>
             <div className="flex gap-1">
               <button onClick={() => fetchTxns(pagination.page - 1)} disabled={pagination.page <= 1} className="p-1.5 rounded-lg text-white/30 hover:text-white disabled:opacity-20"><ChevronLeft size={14} /></button>
               <button onClick={() => fetchTxns(pagination.page + 1)} disabled={pagination.page >= pagination.totalPages} className="p-1.5 rounded-lg text-white/30 hover:text-white disabled:opacity-20"><ChevronRight size={14} /></button>

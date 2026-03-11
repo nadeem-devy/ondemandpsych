@@ -135,7 +135,7 @@ export default function UsersPage() {
             <option value="enterprise">Enterprise</option>
           </select>
           {(statusFilter || planFilter) && (
-            <button onClick={() => { setStatusFilter(""); setPlanFilter(""); }} className="text-[10px] text-white/30 hover:text-white/60 transition-colors">
+            <button onClick={() => { setStatusFilter(""); setPlanFilter(""); }} className="text-xs text-white/30 hover:text-white/60 transition-colors">
               Clear filters
             </button>
           )}
@@ -172,17 +172,17 @@ export default function UsersPage() {
                     <td className="px-4 py-3">
                       <div>
                         <p className="text-white font-medium">{u.name}</p>
-                        <p className="text-white/30 text-[11px]">{u.email}</p>
-                        {u.organization && <p className="text-white/20 text-[10px]">{u.organization}</p>}
+                        <p className="text-white/30 text-sm">{u.email}</p>
+                        {u.organization && <p className="text-white/20 text-xs">{u.organization}</p>}
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusColors[u.status] || statusColors.active}`}>
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium border ${statusColors[u.status] || statusColors.active}`}>
                         {u.status}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium capitalize border ${planColors[u.plan] || planColors.free}`}>
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium capitalize border ${planColors[u.plan] || planColors.free}`}>
                         {u.plan}
                       </span>
                     </td>
@@ -191,13 +191,13 @@ export default function UsersPage() {
                         <div className="w-12 h-1.5 bg-white/5 rounded-full overflow-hidden">
                           <div className="h-full bg-[#FDB02F]/50 rounded-full" style={{ width: `${Math.min(100, (u.trialMessageCount / u.trialMessageLimit) * 100)}%` }} />
                         </div>
-                        <span className="text-white/30 text-[10px]">{u.trialMessageCount}/{u.trialMessageLimit}</span>
+                        <span className="text-white/30 text-xs">{u.trialMessageCount}/{u.trialMessageLimit}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-white/40">{u._count.chats}</td>
-                    <td className="px-4 py-3 text-white/30 text-[11px]">{new Date(u.createdAt).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-white/30 text-sm">{new Date(u.createdAt).toLocaleDateString()}</td>
                     <td className="px-4 py-3 text-right">
-                      <Link href={`/admin/users/${u.id}`} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/5 text-white/50 hover:text-white hover:bg-white/10 transition-colors text-[11px]">
+                      <Link href={`/admin/users/${u.id}`} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/5 text-white/50 hover:text-white hover:bg-white/10 transition-colors text-sm">
                         <Eye size={12} />
                         View
                       </Link>
@@ -212,14 +212,14 @@ export default function UsersPage() {
         {/* Pagination */}
         {pagination.totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-white/5">
-            <p className="text-[11px] text-white/25">
+            <p className="text-sm text-white/25">
               Showing {(pagination.page - 1) * pagination.limit + 1}–{Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total}
             </p>
             <div className="flex items-center gap-1">
               <button onClick={() => fetchUsers(pagination.page - 1)} disabled={pagination.page <= 1} className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
                 <ChevronLeft size={14} />
               </button>
-              <span className="text-[11px] text-white/40 px-2">Page {pagination.page} of {pagination.totalPages}</span>
+              <span className="text-sm text-white/40 px-2">Page {pagination.page} of {pagination.totalPages}</span>
               <button onClick={() => fetchUsers(pagination.page + 1)} disabled={pagination.page >= pagination.totalPages} className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
                 <ChevronRight size={14} />
               </button>

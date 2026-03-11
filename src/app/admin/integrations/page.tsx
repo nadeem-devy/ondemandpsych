@@ -76,8 +76,8 @@ export default function IntegrationsPage() {
                 isHealthy ? <CheckCircle size={16} className="text-green-400" /> : <XCircle size={16} className="text-red-400" />}
               </div>
               <p className="text-white text-sm font-medium">{int.name}</p>
-              <p className="text-white/30 text-[11px] mt-0.5">{int.description}</p>
-              {check?.details && <p className="text-white/15 text-[10px] mt-2">{check.details}</p>}
+              <p className="text-white/30 text-sm mt-0.5">{int.description}</p>
+              {check?.details && <p className="text-white/15 text-xs mt-2">{check.details}</p>}
             </div>
           );
         })}
@@ -102,9 +102,9 @@ export default function IntegrationsPage() {
               <div key={entry.id} className="flex items-center justify-between py-2.5">
                 <div>
                   <p className="text-white text-xs font-mono">{entry.ipRange}</p>
-                  {entry.description && <p className="text-white/25 text-[10px]">{entry.description}</p>}
+                  {entry.description && <p className="text-white/25 text-xs">{entry.description}</p>}
                 </div>
-                <button onClick={() => removeIp(entry.id)} className="text-red-400/50 hover:text-red-400 text-[11px]">Remove</button>
+                <button onClick={() => removeIp(entry.id)} className="text-red-400/50 hover:text-red-400 text-sm">Remove</button>
               </div>
             ))}
           </div>

@@ -233,7 +233,7 @@ export default function AdminSupportPage() {
                 <div key={msg.id}>
                   {msg.sender === "system" ? (
                     <div className="flex justify-center my-2">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-medium bg-[#FDB02F]/10 text-[#FDB02F]/70 border border-[#FDB02F]/10">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#FDB02F]/10 text-[#FDB02F]/70 border border-[#FDB02F]/10">
                         <UserPlus size={10} />
                         {msg.content}
                       </div>
@@ -246,7 +246,7 @@ export default function AdminSupportPage() {
                           : "bg-white/5 text-white/70 border border-white/5"
                       }`}>
                         <p className="whitespace-pre-wrap">{msg.content}</p>
-                        <p className={`text-[10px] mt-1 ${
+                        <p className={`text-xs mt-1 ${
                           msg.sender === "admin" ? "text-[#07123A]/40" : "text-white/20"
                         }`}>
                           {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}

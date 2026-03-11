@@ -109,13 +109,13 @@ export default function ContentLibraryPage() {
                   <div className="w-10 h-10 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center"><Icon size={16} className="text-[#FDB02F]" /></div>
                   <div>
                     <p className="text-white text-xs font-medium">{item.title}</p>
-                    <p className="text-white/25 text-[10px]">{item.fileType.toUpperCase()} • v{item.version} • {item.accessPlans}</p>
+                    <p className="text-white/25 text-xs">{item.fileType.toUpperCase()} • v{item.version} • {item.accessPlans}</p>
                   </div>
                 </div>
                 <button onClick={() => handleDelete(item.id)} className="p-1.5 rounded-lg text-red-400/40 hover:text-red-400 hover:bg-red-400/10"><Trash2 size={12} /></button>
               </div>
-              {item.description && <p className="text-white/30 text-[11px] mt-2">{item.description}</p>}
-              {item.tags && <div className="flex flex-wrap gap-1 mt-2">{item.tags.split(",").map((t) => <span key={t} className="px-1.5 py-0.5 rounded text-[9px] bg-white/5 text-white/30">{t.trim()}</span>)}</div>}
+              {item.description && <p className="text-white/30 text-sm mt-2">{item.description}</p>}
+              {item.tags && <div className="flex flex-wrap gap-1 mt-2">{item.tags.split(",").map((t) => <span key={t} className="px-1.5 py-0.5 rounded text-xs bg-white/5 text-white/30">{t.trim()}</span>)}</div>}
             </div>
           );
         })}
