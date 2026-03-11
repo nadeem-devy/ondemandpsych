@@ -52,20 +52,20 @@ export function ThreePillars() {
                 {p.num}
               </span>
 
-              <span className="font-mono text-[#FDB02F] text-sm font-bold">
+              <span className="font-mono text-[#FDB02F] text-lg font-bold">
                 {p.num}
               </span>
               <h3 className="mt-4 text-xl font-bold text-white mb-4">
                 {p.title}
               </h3>
-              <p className="text-sm text-white/50 leading-relaxed mb-6">
+              <p className="text-lg text-white/50 leading-relaxed mb-6">
                 {p.body}
               </p>
               <Button
                 href="/copilot/login"
                
                 variant="outline"
-                className="text-sm"
+                className="text-lg"
               >
                 Get Started &rarr;
               </Button>

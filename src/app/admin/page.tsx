@@ -90,13 +90,13 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-4xl font-bold text-white">Dashboard</h1>
-          <p className="text-white/40 text-lg mt-1">Platform overview and analytics</p>
+          <p className="text-white/40 text-xl mt-1">Platform overview and analytics</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/admin/users" className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-sm font-medium hover:bg-white/10 transition-colors">
+          <Link href="/admin/users" className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-lg font-medium hover:bg-white/10 transition-colors">
             Manage Users
           </Link>
-          <Link href="/admin/support" className="px-4 py-2 rounded-lg bg-[#FDB02F]/10 border border-[#FDB02F]/20 text-[#FDB02F] text-sm font-medium hover:bg-[#FDB02F]/20 transition-colors">
+          <Link href="/admin/support" className="px-4 py-2 rounded-lg bg-[#FDB02F]/10 border border-[#FDB02F]/20 text-[#FDB02F] text-lg font-medium hover:bg-[#FDB02F]/20 transition-colors">
             {kpis && kpis.openTickets > 0 ? `${kpis.openTickets} Open Tickets` : "Support"}
           </Link>
         </div>
@@ -119,8 +119,8 @@ export default function AdminDashboard() {
                 {kpi.trend === "attention" && <ArrowDownRight size={14} className="text-orange-400" />}
               </div>
               <p className="text-3xl font-bold text-white">{kpi.value.toLocaleString()}</p>
-              <p className="text-sm text-white/35 mt-1">{kpi.label}</p>
-              <p className="text-lg text-white/20 mt-0.5">{kpi.sub}</p>
+              <p className="text-lg text-white/35 mt-1">{kpi.label}</p>
+              <p className="text-xl text-white/20 mt-0.5">{kpi.sub}</p>
             </div>
           ))}
         </div>
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
           <div className="rounded-2xl bg-[#0D1B4B]/40 border border-orange-400/20 p-5 mb-8">
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle size={18} className="text-orange-400" />
-              <h2 className="text-white font-semibold text-lg">Action Required</h2>
+              <h2 className="text-white font-semibold text-xl">Action Required</h2>
             </div>
             <div className="flex flex-wrap gap-3">
               {items.map((item) => (
@@ -150,8 +150,8 @@ export default function AdminDashboard() {
                     <item.icon size={13} className={item.color.split(" ")[0]} />
                   </div>
                   <div>
-                    <p className="text-white text-base font-bold">{item.count}</p>
-                    <p className="text-white/30 text-lg">{item.label}</p>
+                    <p className="text-white text-lg font-bold">{item.count}</p>
+                    <p className="text-white/30 text-xl">{item.label}</p>
                   </div>
                 </Link>
               ))}
@@ -164,40 +164,40 @@ export default function AdminDashboard() {
       {data && (
         <div className="grid md:grid-cols-2 gap-4 mb-8">
           <div className="p-6 rounded-2xl bg-[#0D1B4B]/40 border border-white/10">
-            <h2 className="text-white font-semibold text-lg mb-4">Plan Distribution</h2>
+            <h2 className="text-white font-semibold text-xl mb-4">Plan Distribution</h2>
             <div className="space-y-3">
               {data.planBreakdown.map((p) => {
                 const pct = kpis && kpis.totalUsers > 0 ? (p.count / kpis.totalUsers * 100) : 0;
                 return (
                   <div key={p.plan} className="flex items-center gap-3">
-                    <span className="text-sm text-white/50 w-28 capitalize">{p.plan}</span>
+                    <span className="text-lg text-white/50 w-28 capitalize">{p.plan}</span>
                     <div className="flex-1 h-3 bg-white/5 rounded-full overflow-hidden">
                       <div className="h-full bg-[#FDB02F]/60 rounded-full" style={{ width: `${pct}%` }} />
                     </div>
-                    <span className="text-sm text-white/40 w-20 text-right">{p.count} ({pct.toFixed(0)}%)</span>
+                    <span className="text-lg text-white/40 w-20 text-right">{p.count} ({pct.toFixed(0)}%)</span>
                   </div>
                 );
               })}
             </div>
           </div>
           <div className="p-6 rounded-2xl bg-[#0D1B4B]/40 border border-white/10">
-            <h2 className="text-white font-semibold text-lg mb-4">Trial & Conversion</h2>
+            <h2 className="text-white font-semibold text-xl mb-4">Trial & Conversion</h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
                 <p className="text-2xl font-bold text-white">{kpis?.freeUsers || 0}</p>
-                <p className="text-sm text-white/35 mt-1">Free Users</p>
+                <p className="text-lg text-white/35 mt-1">Free Users</p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
                 <p className="text-2xl font-bold text-white">{kpis?.paidUsers || 0}</p>
-                <p className="text-sm text-white/35 mt-1">Paid Users</p>
+                <p className="text-lg text-white/35 mt-1">Paid Users</p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
                 <p className="text-2xl font-bold text-[#FDB02F]">{kpis?.conversionRate || 0}%</p>
-                <p className="text-sm text-white/35 mt-1">Conversion Rate</p>
+                <p className="text-lg text-white/35 mt-1">Conversion Rate</p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
                 <p className="text-2xl font-bold text-orange-400">{kpis?.trialExhausted || 0}</p>
-                <p className="text-sm text-white/35 mt-1">Trial Exhausted</p>
+                <p className="text-lg text-white/35 mt-1">Trial Exhausted</p>
               </div>
             </div>
           </div>
@@ -205,22 +205,22 @@ export default function AdminDashboard() {
       )}
 
       {/* Quick Links */}
-      <h2 className="text-white font-semibold text-lg mb-3">Website Management</h2>
+      <h2 className="text-white font-semibold text-xl mb-3">Website Management</h2>
       <div className="grid md:grid-cols-3 gap-4 mb-8">
         {quickLinks.map((link) => (
           <Link key={link.href} href={link.href} className="group p-6 rounded-2xl bg-[#0D1B4B]/60 border border-white/10 hover:border-[#FDB02F]/25 transition-all">
             <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${link.color} flex items-center justify-center mb-4`}>
               <link.icon size={22} className="text-white/80" />
             </div>
-            <h3 className="text-white font-semibold text-base mb-1">{link.title}</h3>
-            <p className="text-white/40 text-sm">{link.description}</p>
+            <h3 className="text-white font-semibold text-lg mb-1">{link.title}</h3>
+            <p className="text-white/40 text-lg">{link.description}</p>
           </Link>
         ))}
       </div>
 
       {/* Managed Pages */}
       <div className="bg-[#0D1B4B]/40 border border-white/10 rounded-2xl p-6">
-        <h2 className="text-white font-semibold text-lg mb-4">Managed Pages</h2>
+        <h2 className="text-white font-semibold text-xl mb-4">Managed Pages</h2>
         <div className="space-y-2">
           {[
             { name: "Home", slug: "home", sections: 10 },
@@ -233,8 +233,8 @@ export default function AdminDashboard() {
             <Link key={page.slug} href={`/admin/pages?page=${page.slug}`} className="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-white/5 transition-colors group">
               <div className="flex items-center gap-3">
                 <FileText size={16} className="text-white/30" />
-                <span className="text-white/70 text-base font-medium">{page.name}</span>
-                <span className="text-white/20 text-sm">{page.sections} sections</span>
+                <span className="text-white/70 text-lg font-medium">{page.name}</span>
+                <span className="text-white/20 text-lg">{page.sections} sections</span>
               </div>
               <ExternalLink size={14} className="text-white/20 group-hover:text-[#FDB02F] transition-colors" />
             </Link>

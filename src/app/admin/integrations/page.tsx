@@ -59,11 +59,11 @@ export default function IntegrationsPage() {
     <div className="p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Integrations & Security</h1>
-        <p className="text-white/40 text-sm mt-1">External service health and IP access control</p>
+        <p className="text-white/40 text-lg mt-1">External service health and IP access control</p>
       </div>
 
       {/* Integration Status */}
-      <h2 className="text-white font-semibold text-sm mb-3">Service Status</h2>
+      <h2 className="text-white font-semibold text-lg mb-3">Service Status</h2>
       <div className="grid md:grid-cols-3 gap-4 mb-8">
         {integrations.map((int) => {
           const check = health?.checks[int.key];
@@ -75,36 +75,36 @@ export default function IntegrationsPage() {
                 {loading ? <RefreshCw size={14} className="text-white/20 animate-spin" /> :
                 isHealthy ? <CheckCircle size={16} className="text-green-400" /> : <XCircle size={16} className="text-red-400" />}
               </div>
-              <p className="text-white text-sm font-medium">{int.name}</p>
-              <p className="text-white/30 text-lg mt-0.5">{int.description}</p>
-              {check?.details && <p className="text-white/15 text-base mt-2">{check.details}</p>}
+              <p className="text-white text-lg font-medium">{int.name}</p>
+              <p className="text-white/30 text-xl mt-0.5">{int.description}</p>
+              {check?.details && <p className="text-white/15 text-lg mt-2">{check.details}</p>}
             </div>
           );
         })}
       </div>
 
       {/* IP Allowlist */}
-      <h2 className="text-white font-semibold text-sm mb-3">Admin IP Allowlist</h2>
-      <p className="text-white/30 text-lg mb-4">Restrict admin panel access to specific IP addresses. Leave empty to allow all IPs.</p>
+      <h2 className="text-white font-semibold text-lg mb-3">Admin IP Allowlist</h2>
+      <p className="text-white/30 text-xl mb-4">Restrict admin panel access to specific IP addresses. Leave empty to allow all IPs.</p>
 
       <div className="rounded-2xl bg-[#0D1B4B]/40 border border-white/10 p-5 mb-4">
         <div className="flex gap-3 mb-4">
-          <input placeholder="IP address or CIDR (e.g. 192.168.1.0/24)" value={newIp} onChange={(e) => setNewIp(e.target.value)} className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none" />
-          <input placeholder="Description (optional)" value={newIpDesc} onChange={(e) => setNewIpDesc(e.target.value)} className="w-48 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none" />
-          <button onClick={addIp} className="px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-lg font-bold hover:bg-[#FDAA40]">Add</button>
+          <input placeholder="IP address or CIDR (e.g. 192.168.1.0/24)" value={newIp} onChange={(e) => setNewIp(e.target.value)} className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xl placeholder:text-white/20 focus:outline-none" />
+          <input placeholder="Description (optional)" value={newIpDesc} onChange={(e) => setNewIpDesc(e.target.value)} className="w-48 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xl placeholder:text-white/20 focus:outline-none" />
+          <button onClick={addIp} className="px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-xl font-bold hover:bg-[#FDAA40]">Add</button>
         </div>
 
         {ipEntries.length === 0 ? (
-          <p className="text-white/20 text-lg text-center py-4">No IP restrictions configured. All IPs can access admin.</p>
+          <p className="text-white/20 text-xl text-center py-4">No IP restrictions configured. All IPs can access admin.</p>
         ) : (
           <div className="divide-y divide-white/5">
             {ipEntries.map((entry) => (
               <div key={entry.id} className="flex items-center justify-between py-2.5">
                 <div>
-                  <p className="text-white text-lg font-mono">{entry.ipRange}</p>
-                  {entry.description && <p className="text-white/25 text-base">{entry.description}</p>}
+                  <p className="text-white text-xl font-mono">{entry.ipRange}</p>
+                  {entry.description && <p className="text-white/25 text-lg">{entry.description}</p>}
                 </div>
-                <button onClick={() => removeIp(entry.id)} className="text-red-400/50 hover:text-red-400 text-lg">Remove</button>
+                <button onClick={() => removeIp(entry.id)} className="text-red-400/50 hover:text-red-400 text-xl">Remove</button>
               </div>
             ))}
           </div>

@@ -23,7 +23,7 @@ export function Capabilities90() {
         <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
           Fast, Safe, and Smart Psychiatric Guidance
         </h2>
-        <p className="mt-4 text-white/50 text-lg">
+        <p className="mt-4 text-white/50 text-xl">
           In under 90 seconds, it provides:
         </p>
 
@@ -31,7 +31,7 @@ export function Capabilities90() {
           {capabilities.map((cap) => (
             <div
               key={cap}
-              className="glass-card glass-card-hover px-5 py-4 text-sm text-white/70 text-center transition-all"
+              className="glass-card glass-card-hover px-5 py-4 text-lg text-white/70 text-center transition-all"
             >
               {cap}
             </div>

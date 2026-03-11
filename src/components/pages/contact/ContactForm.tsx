@@ -23,8 +23,8 @@ export function ContactForm() {
             </p>
 
             <div className="space-y-4 pt-4">
-              <div className="flex items-center gap-3 text-sm text-white/50">
-                <span className="w-8 h-8 rounded-full bg-[#FDB02F]/10 flex items-center justify-center text-[#FDB02F] text-lg">
+              <div className="flex items-center gap-3 text-lg text-white/50">
+                <span className="w-8 h-8 rounded-full bg-[#FDB02F]/10 flex items-center justify-center text-[#FDB02F] text-xl">
                   @
                 </span>
                 support@ondemandpsych.com
@@ -42,7 +42,7 @@ export function ContactForm() {
                 <h3 className="text-xl font-bold text-white mb-2">
                   Message Sent!
                 </h3>
-                <p className="text-sm text-white/50">
+                <p className="text-lg text-white/50">
                   We&apos;ll get back to you shortly.
                 </p>
               </div>
@@ -55,7 +55,7 @@ export function ContactForm() {
                 className="space-y-5"
               >
                 <div>
-                  <label className="block text-sm text-white/60 mb-2">
+                  <label className="block text-lg text-white/60 mb-2">
                     Name <span className="text-[#FDB02F]">*</span>
                   </label>
                   <input
@@ -66,7 +66,7 @@ export function ContactForm() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-white/60 mb-2">
+                  <label className="block text-lg text-white/60 mb-2">
                     Email <span className="text-[#FDB02F]">*</span>
                   </label>
                   <input
@@ -77,7 +77,7 @@ export function ContactForm() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-white/60 mb-2">
+                  <label className="block text-lg text-white/60 mb-2">
                     Role
                   </label>
                   <input
@@ -87,7 +87,7 @@ export function ContactForm() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-white/60 mb-2">
+                  <label className="block text-lg text-white/60 mb-2">
                     Message
                   </label>
                   <textarea

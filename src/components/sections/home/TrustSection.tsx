@@ -47,7 +47,7 @@ export function TrustSection() {
                   className="flex items-center gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/5"
                 >
                   <item.icon className="text-[#FDB02F] shrink-0" size={20} />
-                  <span className="text-sm text-white/70 flex-1">
+                  <span className="text-lg text-white/70 flex-1">
                     {item.label}
                   </span>
                   <span className="font-mono text-[#FDB02F] font-bold">
@@ -85,7 +85,7 @@ export function TrustSection() {
                   className="flex items-center gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/5"
                 >
                   <item.icon className="text-[#FDB02F] shrink-0" size={20} />
-                  <span className="text-sm text-white/70">{item.label}</span>
+                  <span className="text-lg text-white/70">{item.label}</span>
                 </div>
               ))}
             </div>

@@ -36,7 +36,7 @@ export function WorkflowIntro() {
               <div className="font-mono text-3xl font-bold text-[#FDB02F]/20">
                 WORKFLOW
               </div>
-              <div className="text-lg text-white/20 tracking-widest uppercase mt-2">
+              <div className="text-xl text-white/20 tracking-widest uppercase mt-2">
                 Clinical Integration
               </div>
             </div>

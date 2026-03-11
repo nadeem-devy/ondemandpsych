@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
           <img src="/logo.webp" alt="OnDemandPsych" className="h-40 w-auto mx-auto mb-4" />
-          <p className="text-white/40 text-sm">
+          <p className="text-white/40 text-lg">
             {step === "email" && "Enter your email to reset your password"}
             {step === "otp" && "Enter the 6-digit code sent to your email"}
             {step === "reset" && "Set your new password"}
@@ -116,7 +116,7 @@ export default function ForgotPasswordPage() {
 
         <div className="bg-[#0D1B4B]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm mb-5">
+            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-lg mb-5">
               {error}
             </div>
           )}
@@ -125,14 +125,14 @@ export default function ForgotPasswordPage() {
           {step === "email" && (
             <form onSubmit={handleSendOtp} className="space-y-5">
               <div>
-                <label className="block text-white/50 text-lg font-medium mb-2">Email Address</label>
+                <label className="block text-white/50 text-xl font-medium mb-2">Email Address</label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
                     placeholder="doctor@clinic.com"
                     required
                   />
@@ -141,7 +141,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-sm hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-lg hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all disabled:opacity-50"
               >
                 {loading ? "Sending..." : "Send Reset Code"}
               </button>
@@ -152,32 +152,32 @@ export default function ForgotPasswordPage() {
           {step === "otp" && (
             <form onSubmit={handleVerifyOtp} className="space-y-5">
               <div>
-                <label className="block text-white/50 text-lg font-medium mb-2">Verification Code</label>
+                <label className="block text-white/50 text-xl font-medium mb-2">Verification Code</label>
                 <div className="relative">
                   <ShieldCheck size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                   <input
                     type="text"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm text-center tracking-[0.5em] font-mono placeholder:text-white/20 placeholder:tracking-normal focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-lg text-center tracking-[0.5em] font-mono placeholder:text-white/20 placeholder:tracking-normal focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
                     placeholder="000000"
                     maxLength={6}
                     required
                   />
                 </div>
-                <p className="text-white/30 text-lg mt-2">Check your email for the 6-digit code</p>
+                <p className="text-white/30 text-xl mt-2">Check your email for the 6-digit code</p>
               </div>
               <button
                 type="submit"
                 disabled={loading || otp.length !== 6}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-sm hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-lg hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all disabled:opacity-50"
               >
                 {loading ? "Verifying..." : "Verify Code"}
               </button>
               <button
                 type="button"
                 onClick={() => { setStep("email"); setOtp(""); setError(""); }}
-                className="w-full text-white/30 text-lg hover:text-white/50 transition-colors"
+                className="w-full text-white/30 text-xl hover:text-white/50 transition-colors"
               >
                 Didn&apos;t receive it? Go back and try again
               </button>
@@ -188,28 +188,28 @@ export default function ForgotPasswordPage() {
           {step === "reset" && (
             <form onSubmit={handleResetPassword} className="space-y-5">
               <div>
-                <label className="block text-white/50 text-lg font-medium mb-2">New Password</label>
+                <label className="block text-white/50 text-xl font-medium mb-2">New Password</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
                     placeholder="Enter new password"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-white/50 text-lg font-medium mb-2">Confirm Password</label>
+                <label className="block text-white/50 text-xl font-medium mb-2">Confirm Password</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                   <input
                     type="password"
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
                     placeholder="Confirm new password"
                     required
                   />
@@ -218,7 +218,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-sm hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-lg hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all disabled:opacity-50"
               >
                 {loading ? "Resetting..." : "Reset Password"}
               </button>
@@ -231,10 +231,10 @@ export default function ForgotPasswordPage() {
               <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto">
                 <ShieldCheck size={32} className="text-green-400" />
               </div>
-              <p className="text-white text-sm font-medium">Your password has been reset</p>
+              <p className="text-white text-lg font-medium">Your password has been reset</p>
               <Link
                 href="/copilot/login"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-sm hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-lg hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all"
               >
                 Sign In Now
               </Link>
@@ -243,7 +243,7 @@ export default function ForgotPasswordPage() {
 
           {step !== "done" && (
             <div className="mt-6 pt-6 border-t border-white/5 text-center">
-              <Link href="/copilot/login" className="inline-flex items-center gap-1 text-white/30 text-lg hover:text-white/50 transition-colors">
+              <Link href="/copilot/login" className="inline-flex items-center gap-1 text-white/30 text-xl hover:text-white/50 transition-colors">
                 <ArrowLeft size={12} />
                 Back to Sign In
               </Link>

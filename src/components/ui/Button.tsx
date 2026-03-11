@@ -18,7 +18,7 @@ export function Button({
   onClick,
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg text-sm font-bold transition-all duration-300 cursor-pointer";
+    "inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg text-lg font-bold transition-all duration-300 cursor-pointer";
 
   const variants = {
     primary:

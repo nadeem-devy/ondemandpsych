@@ -99,9 +99,9 @@ export function KeyFeatures() {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <f.icon className="text-[#FDB02F]" size={18} />
-                  <h3 className="text-sm font-bold text-white">{f.title}</h3>
+                  <h3 className="text-lg font-bold text-white">{f.title}</h3>
                 </div>
-                <p className="text-sm text-white/50 leading-relaxed">
+                <p className="text-lg text-white/50 leading-relaxed">
                   {f.body}
                 </p>
               </div>

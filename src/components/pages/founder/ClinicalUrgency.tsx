@@ -51,8 +51,8 @@ export function ClinicalUrgency() {
               <div className="w-12 h-12 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center mb-4">
                 <u.icon className="text-[#FDB02F]" size={24} />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">{u.title}</h3>
-              <p className="text-sm text-white/50 leading-relaxed">{u.body}</p>
+              <h3 className="text-xl font-bold text-white mb-2">{u.title}</h3>
+              <p className="text-lg text-white/50 leading-relaxed">{u.body}</p>
             </GlassCard>
           ))}
         </div>

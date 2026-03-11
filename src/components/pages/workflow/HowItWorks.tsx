@@ -51,7 +51,7 @@ export function HowItWorks() {
           <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
             How It Works
           </h2>
-          <p className="mt-4 text-white/50 text-lg">4 simple steps</p>
+          <p className="mt-4 text-white/50 text-xl">4 simple steps</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -64,18 +64,18 @@ export function HowItWorks() {
 
               <div className="glass-card p-6 relative z-10 h-full">
                 <div className="w-12 h-12 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center mb-4">
-                  <span className="font-mono text-lg font-bold text-[#FDB02F]">
+                  <span className="font-mono text-xl font-bold text-[#FDB02F]">
                     {step.num}
                   </span>
                 </div>
-                <h3 className="text-base font-bold text-white mb-4">
+                <h3 className="text-lg font-bold text-white mb-4">
                   {step.title}
                 </h3>
                 <ul className="space-y-2">
                   {step.items.map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-2 text-sm text-white/50"
+                      className="flex items-start gap-2 text-lg text-white/50"
                     >
                       <span className="w-1 h-1 rounded-full bg-[#FDB02F] shrink-0 mt-2" />
                       {item}

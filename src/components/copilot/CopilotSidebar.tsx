@@ -198,7 +198,7 @@ export function CopilotSidebar({
         <div className="flex gap-2">
           <button
             onClick={() => onNewChat()}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#FDB02F] text-[#07123A] font-semibold text-sm hover:bg-[#FDAA40] transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#FDB02F] text-[#07123A] font-semibold text-lg hover:bg-[#FDAA40] transition-colors"
           >
             <Plus size={16} />
             New Chat
@@ -222,7 +222,7 @@ export function CopilotSidebar({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search chats..."
-            className="w-full pl-9 pr-3 py-2 rounded-lg bg-white/5 border border-white/5 text-white/70 text-lg placeholder:text-white/20 focus:outline-none focus:border-white/10 transition-colors"
+            className="w-full pl-9 pr-3 py-2 rounded-lg bg-white/5 border border-white/5 text-white/70 text-xl placeholder:text-white/20 focus:outline-none focus:border-white/10 transition-colors"
           />
         </div>
       </div>
@@ -238,7 +238,7 @@ export function CopilotSidebar({
               onKeyDown={(e) => { if (e.key === "Enter") handleCreateFolder(); if (e.key === "Escape") setCreatingFolder(false); }}
               placeholder="Folder name..."
               autoFocus
-              className="flex-1 px-3 py-1.5 rounded-lg bg-white/5 border border-[#FDB02F]/30 text-white/80 text-lg placeholder:text-white/20 focus:outline-none"
+              className="flex-1 px-3 py-1.5 rounded-lg bg-white/5 border border-[#FDB02F]/30 text-white/80 text-xl placeholder:text-white/20 focus:outline-none"
             />
             <button
               onClick={handleCreateFolder}
@@ -261,7 +261,7 @@ export function CopilotSidebar({
         {/* Pinned chats */}
         {pinnedChats.length > 0 && (
           <div className="mb-3">
-            <p className="px-2 py-1.5 text-base font-semibold uppercase tracking-wider text-white/25">Pinned</p>
+            <p className="px-2 py-1.5 text-lg font-semibold uppercase tracking-wider text-white/25">Pinned</p>
             {pinnedChats.map((chat) => (
               <ChatRow
                 key={chat.id}
@@ -281,7 +281,7 @@ export function CopilotSidebar({
         {/* Folders */}
         {folders.length > 0 && (
           <div className="mb-3">
-            <p className="px-2 py-1.5 text-base font-semibold uppercase tracking-wider text-white/25">Folders</p>
+            <p className="px-2 py-1.5 text-lg font-semibold uppercase tracking-wider text-white/25">Folders</p>
             {folders.map((folder) => {
               const folderChats = filtered.filter((c) => c.folderId === folder.id);
               const isExpanded = expandedFolders.has(folder.id);
@@ -293,7 +293,7 @@ export function CopilotSidebar({
                   <div className="relative group">
                     <button
                       onClick={() => toggleFolder(folder.id)}
-                      className="w-full flex items-center gap-2 px-2 py-2 rounded-xl text-sm transition-all text-white/60 hover:text-white/80 hover:bg-white/5"
+                      className="w-full flex items-center gap-2 px-2 py-2 rounded-xl text-lg transition-all text-white/60 hover:text-white/80 hover:bg-white/5"
                     >
                       {isExpanded ? <ChevronDown size={12} className="shrink-0" /> : <ChevronRight size={12} className="shrink-0" />}
                       {isExpanded
@@ -312,12 +312,12 @@ export function CopilotSidebar({
                           }}
                           onClick={(e) => e.stopPropagation()}
                           autoFocus
-                          className="flex-1 bg-white/5 border border-[#FDB02F]/30 rounded px-2 py-0.5 text-lg text-white/80 focus:outline-none"
+                          className="flex-1 bg-white/5 border border-[#FDB02F]/30 rounded px-2 py-0.5 text-xl text-white/80 focus:outline-none"
                         />
                       ) : (
                         <span className="truncate flex-1 text-left">{folder.icon ? `${folder.icon} ` : ""}{folder.name}</span>
                       )}
-                      <span className="text-base text-white/20 shrink-0">{folderChats.length}</span>
+                      <span className="text-lg text-white/20 shrink-0">{folderChats.length}</span>
                     </button>
 
                     {/* Folder context menu trigger */}
@@ -338,7 +338,7 @@ export function CopilotSidebar({
                       <div className="absolute right-0 top-full mt-1 z-50 bg-[#0D1B4B] border border-white/10 rounded-xl shadow-xl py-1 min-w-[160px]">
                         <button
                           onClick={() => { onNewChat(folder.id); setFolderMenuOpen(null); }}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xl text-white/60 hover:text-white hover:bg-white/5 transition-colors"
                         >
                           <Plus size={12} />
                           New Chat in Folder
@@ -349,14 +349,14 @@ export function CopilotSidebar({
                             setEditFolderName(folder.name);
                             setFolderMenuOpen(null);
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xl text-white/60 hover:text-white hover:bg-white/5 transition-colors"
                         >
                           <Pencil size={12} />
                           Rename Folder
                         </button>
                         <button
                           onClick={() => { onDeleteFolder(folder.id); setFolderMenuOpen(null); }}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-lg text-red-400/70 hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/5 transition-colors"
                         >
                           <Trash2 size={12} />
                           Delete Folder
@@ -369,7 +369,7 @@ export function CopilotSidebar({
                   {isExpanded && (
                     <div className="ml-4 border-l border-white/5 pl-1">
                       {folderChats.length === 0 ? (
-                        <p className="px-3 py-2 text-base text-white/15 italic">No chats yet</p>
+                        <p className="px-3 py-2 text-lg text-white/15 italic">No chats yet</p>
                       ) : (
                         folderChats.map((chat) => (
                           <ChatRow
@@ -396,7 +396,7 @@ export function CopilotSidebar({
         {/* Unfiled recent chats */}
         {unfiledChats.length > 0 && (
           <div>
-            <p className="px-2 py-1.5 text-base font-semibold uppercase tracking-wider text-white/25">Recent</p>
+            <p className="px-2 py-1.5 text-lg font-semibold uppercase tracking-wider text-white/25">Recent</p>
             {unfiledChats.map((chat) => (
               <ChatRow
                 key={chat.id}
@@ -416,8 +416,8 @@ export function CopilotSidebar({
         {chats.length === 0 && folders.length === 0 && (
           <div className="text-center py-12 px-4">
             <MessageSquare size={32} className="mx-auto text-white/10 mb-3" />
-            <p className="text-white/25 text-lg">No conversations yet</p>
-            <p className="text-white/15 text-lg mt-1">Start a new chat to begin</p>
+            <p className="text-white/25 text-xl">No conversations yet</p>
+            <p className="text-white/15 text-xl mt-1">Start a new chat to begin</p>
           </div>
         )}
       </div>
@@ -426,7 +426,7 @@ export function CopilotSidebar({
       <div className="border-t border-white/5 p-2 space-y-0.5">
         <Link
           href="/copilot/profile"
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-lg transition-colors ${
             pathname === "/copilot/profile"
               ? "bg-[#FDB02F]/10 text-[#FDB02F]"
               : "text-white/40 hover:text-white/60 hover:bg-white/5"
@@ -437,7 +437,7 @@ export function CopilotSidebar({
         </Link>
         <Link
           href="/copilot/subscription"
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-lg transition-colors ${
             pathname === "/copilot/subscription"
               ? "bg-[#FDB02F]/10 text-[#FDB02F]"
               : "text-white/40 hover:text-white/60 hover:bg-white/5"
@@ -445,13 +445,13 @@ export function CopilotSidebar({
         >
           <CreditCard size={16} />
           Subscription
-          <span className={`ml-auto text-base font-semibold uppercase px-1.5 py-0.5 rounded ${planColors[userPlan] || planColors.free}`}>
+          <span className={`ml-auto text-lg font-semibold uppercase px-1.5 py-0.5 rounded ${planColors[userPlan] || planColors.free}`}>
             {userPlan}
           </span>
         </Link>
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/40 hover:text-red-400 hover:bg-red-500/5 transition-colors"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-lg text-white/40 hover:text-red-400 hover:bg-red-500/5 transition-colors"
         >
           <LogOut size={16} />
           Sign Out
@@ -461,11 +461,11 @@ export function CopilotSidebar({
       {/* User info */}
       <div className="border-t border-white/5 p-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center text-[#FDB02F] text-lg font-bold">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center text-[#FDB02F] text-xl font-bold">
             {userName?.charAt(0)?.toUpperCase() || "U"}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white/70 text-lg font-medium truncate">{userName}</p>
+            <p className="text-white/70 text-xl font-medium truncate">{userName}</p>
           </div>
         </div>
       </div>
@@ -498,7 +498,7 @@ function ChatRow({
     <div className="relative group">
       <Link
         href={`/copilot/chat?id=${chat.id}`}
-        className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-all ${
+        className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-lg transition-all ${
           active
             ? "bg-white/10 text-white"
             : "text-white/50 hover:text-white/70 hover:bg-white/5"
@@ -520,14 +520,14 @@ function ChatRow({
         <div className="absolute right-0 top-full mt-1 z-50 bg-[#0D1B4B] border border-white/10 rounded-xl shadow-xl py-1 min-w-[160px]">
           <button
             onClick={onPin}
-            className="w-full flex items-center gap-2 px-3 py-2 text-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 text-xl text-white/60 hover:text-white hover:bg-white/5 transition-colors"
           >
             <Pin size={12} />
             {chat.pinned ? "Unpin" : "Pin chat"}
           </button>
           <button
             onClick={() => setShowFolderPicker(!showFolderPicker)}
-            className="w-full flex items-center gap-2 px-3 py-2 text-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 text-xl text-white/60 hover:text-white hover:bg-white/5 transition-colors"
           >
             <FolderInput size={12} />
             Move to Folder
@@ -537,7 +537,7 @@ function ChatRow({
               {chat.folderId && (
                 <button
                   onClick={() => onMoveToFolder(null)}
-                  className="w-full flex items-center gap-2 px-5 py-1.5 text-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors"
+                  className="w-full flex items-center gap-2 px-5 py-1.5 text-xl text-white/40 hover:text-white hover:bg-white/5 transition-colors"
                 >
                   Remove from folder
                 </button>
@@ -546,7 +546,7 @@ function ChatRow({
                 <button
                   key={f.id}
                   onClick={() => onMoveToFolder(f.id)}
-                  className={`w-full flex items-center gap-2 px-5 py-1.5 text-lg transition-colors ${
+                  className={`w-full flex items-center gap-2 px-5 py-1.5 text-xl transition-colors ${
                     chat.folderId === f.id
                       ? "text-[#FDB02F] bg-[#FDB02F]/5"
                       : "text-white/50 hover:text-white hover:bg-white/5"
@@ -560,7 +560,7 @@ function ChatRow({
           )}
           <button
             onClick={onDelete}
-            className="w-full flex items-center gap-2 px-3 py-2 text-lg text-red-400/70 hover:text-red-400 hover:bg-red-500/5 transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 text-xl text-red-400/70 hover:text-red-400 hover:bg-red-500/5 transition-colors"
           >
             <Trash2 size={12} />
             Delete

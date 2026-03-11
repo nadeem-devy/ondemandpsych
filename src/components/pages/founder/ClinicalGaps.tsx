@@ -32,10 +32,10 @@ export function ClinicalGaps() {
           <table className="w-full min-w-[640px]">
             <thead>
               <tr className="bg-[#FDB02F] text-[#07123A]">
-                <th className="text-left px-6 py-4 text-sm font-bold rounded-tl-xl">
+                <th className="text-left px-6 py-4 text-lg font-bold rounded-tl-xl">
                   Clinical Challenge
                 </th>
-                <th className="text-left px-6 py-4 text-sm font-bold rounded-tr-xl">
+                <th className="text-left px-6 py-4 text-lg font-bold rounded-tr-xl">
                   On-Demand Psychiatry Support
                 </th>
               </tr>
@@ -48,10 +48,10 @@ export function ClinicalGaps() {
                     i % 2 === 0 ? "bg-[#07123A]/40" : "bg-[#07123A]/20"
                   }`}
                 >
-                  <td className="px-6 py-4 text-sm text-white/70">
+                  <td className="px-6 py-4 text-lg text-white/70">
                     {gap.challenge}
                   </td>
-                  <td className="px-6 py-4 text-sm text-white/70">
+                  <td className="px-6 py-4 text-lg text-white/70">
                     {gap.solution}
                   </td>
                 </tr>

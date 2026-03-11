@@ -39,8 +39,8 @@ export function FounderBio() {
           <div className="relative">
             <div className="h-full rounded-2xl bg-gradient-to-b from-[#0D1B4B] to-[#07123A] border border-[#FDB02F]/20 overflow-hidden flex flex-col items-center justify-center p-8">
               <img src="/Dr Padder (1).webp" alt="Dr. Tanveer A. Padder, MD" className="w-full h-auto rounded-xl object-cover" />
-              <p className="text-white/60 text-lg mt-4">Dr. Tanveer A. Padder, MD</p>
-              <p className="text-[#FDB02F] text-sm font-medium">
+              <p className="text-white/60 text-xl mt-4">Dr. Tanveer A. Padder, MD</p>
+              <p className="text-[#FDB02F] text-lg font-medium">
                 Triple Board-Certified Psychiatrist
               </p>
             </div>
@@ -49,7 +49,7 @@ export function FounderBio() {
           {/* Credentials — redesigned */}
           <div className="space-y-8">
             <div>
-              <p className="text-[#FDB02F] text-lg font-semibold tracking-widest uppercase mb-3">
+              <p className="text-[#FDB02F] text-xl font-semibold tracking-widest uppercase mb-3">
                 Founder & Clinical Architect
               </p>
               <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
@@ -68,16 +68,16 @@ export function FounderBio() {
                     <cred.icon size={18} className="text-[#FDB02F]" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-white/85 leading-snug">
+                    <p className="text-lg font-medium text-white/85 leading-snug">
                       {cred.label}
                     </p>
                     {cred.highlight && (
-                      <p className="text-lg text-[#FDB02F]/70 mt-0.5">
+                      <p className="text-xl text-[#FDB02F]/70 mt-0.5">
                         {cred.highlight}
                       </p>
                     )}
                   </div>
-                  <span className="ml-auto text-base font-mono text-white/15 shrink-0">
+                  <span className="ml-auto text-lg font-mono text-white/15 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
@@ -90,7 +90,7 @@ export function FounderBio() {
                 <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
               </svg>
               <blockquote className="pl-8">
-                <p className="text-base text-white/65 italic leading-relaxed">
+                <p className="text-lg text-white/65 italic leading-relaxed">
                   Decades of frontline psychiatric decision-making &mdash; where
                   high-risk judgments, complicated medications, and time
                   constraints collide &mdash; formed the foundation of On-Demand

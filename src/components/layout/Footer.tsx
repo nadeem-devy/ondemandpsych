@@ -34,7 +34,7 @@ export function Footer() {
             <Link href="/" className="inline-flex items-center gap-2">
               <img src="/logo.webp" alt="OnDemandPsych" className="h-40 w-auto" />
             </Link>
-            <p className="text-sm text-white/50 leading-relaxed max-w-xs">
+            <p className="text-lg text-white/50 leading-relaxed max-w-xs">
               The World&apos;s First Psychiatric Clinical Co-Pilot — built by a
               psychiatrist, for clinicians.
             </p>
@@ -45,7 +45,7 @@ export function Footer() {
                     key={social}
                     href="#"
                     aria-label={social}
-                    className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/50 text-lg hover:border-[#FDB02F]/50 hover:text-[#FDB02F] transition-all"
+                    className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/50 text-xl hover:border-[#FDB02F]/50 hover:text-[#FDB02F] transition-all"
                   >
                     {social[0]}
                   </a>
@@ -56,7 +56,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4 tracking-wide">
+            <h4 className="text-lg font-semibold text-white mb-4 tracking-wide">
               Quick Links
             </h4>
             <ul className="space-y-2.5">
@@ -64,7 +64,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/50 hover:text-[#FDB02F] transition-colors"
+                    className="text-lg text-white/50 hover:text-[#FDB02F] transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -75,7 +75,7 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4 tracking-wide">
+            <h4 className="text-lg font-semibold text-white mb-4 tracking-wide">
               Resources
             </h4>
             <ul className="space-y-2.5">
@@ -83,7 +83,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/50 hover:text-[#FDB02F] transition-colors"
+                    className="text-lg text-white/50 hover:text-[#FDB02F] transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -94,7 +94,7 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h4 className="text-sm font-semibold text-white mb-4 tracking-wide">
+            <h4 className="text-lg font-semibold text-white mb-4 tracking-wide">
               Support
             </h4>
             <ul className="space-y-2.5">
@@ -102,7 +102,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-white/50 hover:text-[#FDB02F] transition-colors"
+                    className="text-lg text-white/50 hover:text-[#FDB02F] transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -114,10 +114,10 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-lg text-white/30">
+          <p className="text-xl text-white/30">
             &copy; 2025 On-Demand Psych. All rights reserved.
           </p>
-          <p className="text-lg text-white/20">
+          <p className="text-xl text-white/20">
             Built with clinical precision.
           </p>
         </div>
