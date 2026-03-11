@@ -130,12 +130,12 @@ export function CareSettings() {
               <h3 className="text-lg font-bold text-[#FDB02F] mb-1">
                 {s.title}
               </h3>
-              <p className="text-xs text-white/40 mb-4">({s.audience})</p>
+              <p className="text-base text-white/40 mb-4">({s.audience})</p>
               <ul className="space-y-2">
                 {s.bullets.map((b) => (
                   <li
                     key={b}
-                    className="flex items-start gap-2 text-sm text-white/60"
+                    className="flex items-start gap-2 text-lg text-white/60"
                   >
                     <span className="w-1 h-1 rounded-full bg-[#FDB02F] shrink-0 mt-2" />
                     {b}

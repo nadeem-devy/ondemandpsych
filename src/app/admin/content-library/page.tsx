@@ -62,9 +62,9 @@ export default function ContentLibraryPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-white">Content Library</h1>
-          <p className="text-white/40 text-sm mt-1">Manage PDFs, documents, videos, and resources</p>
+          <p className="text-white/40 text-lg mt-1">Manage PDFs, documents, videos, and resources</p>
         </div>
-        <button onClick={() => setShowCreate(!showCreate)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-xs font-bold hover:bg-[#FDAA40]">
+        <button onClick={() => setShowCreate(!showCreate)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-base font-bold hover:bg-[#FDAA40]">
           <Plus size={14} />
           Add Content
         </button>
@@ -73,28 +73,28 @@ export default function ContentLibraryPage() {
       {showCreate && (
         <div className="rounded-2xl bg-[#0D1B4B]/60 border border-[#FDB02F]/20 p-6 mb-6 space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
-            <input placeholder="File URL" value={form.fileUrl} onChange={(e) => setForm({ ...form, fileUrl: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
-            <select value={form.fileType} onChange={(e) => setForm({ ...form, fileType: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs focus:outline-none">
+            <input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-base placeholder:text-white/20 focus:outline-none" />
+            <input placeholder="File URL" value={form.fileUrl} onChange={(e) => setForm({ ...form, fileUrl: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-base placeholder:text-white/20 focus:outline-none" />
+            <select value={form.fileType} onChange={(e) => setForm({ ...form, fileType: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-base focus:outline-none">
               <option value="pdf">PDF</option><option value="docx">Word Doc</option><option value="video">Video</option><option value="image">Image</option>
             </select>
-            <input placeholder="Category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
-            <input placeholder="Tags (comma-separated)" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
-            <select value={form.accessPlans} onChange={(e) => setForm({ ...form, accessPlans: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs focus:outline-none">
+            <input placeholder="Category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-base placeholder:text-white/20 focus:outline-none" />
+            <input placeholder="Tags (comma-separated)" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-base placeholder:text-white/20 focus:outline-none" />
+            <select value={form.accessPlans} onChange={(e) => setForm({ ...form, accessPlans: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-base focus:outline-none">
               <option value="all">All Plans</option><option value="basic,professional,enterprise">Basic+</option><option value="professional,enterprise">Professional+</option><option value="enterprise">Enterprise Only</option>
             </select>
           </div>
-          <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none resize-none" />
+          <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-base placeholder:text-white/20 focus:outline-none resize-none" />
           <div className="flex gap-2">
-            <button onClick={handleCreate} className="px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-xs font-bold">Add</button>
-            <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg bg-white/5 text-white/50 text-xs">Cancel</button>
+            <button onClick={handleCreate} className="px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-base font-bold">Add</button>
+            <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg bg-white/5 text-white/50 text-base">Cancel</button>
           </div>
         </div>
       )}
 
       <div className="relative mb-4">
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
-        <input type="text" placeholder="Search content..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/25 focus:outline-none" />
+        <input type="text" placeholder="Search content..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-base placeholder:text-white/25 focus:outline-none" />
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -108,14 +108,14 @@ export default function ContentLibraryPage() {
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center"><Icon size={16} className="text-[#FDB02F]" /></div>
                   <div>
-                    <p className="text-white text-xs font-medium">{item.title}</p>
-                    <p className="text-white/25 text-xs">{item.fileType.toUpperCase()} • v{item.version} • {item.accessPlans}</p>
+                    <p className="text-white text-base font-medium">{item.title}</p>
+                    <p className="text-white/25 text-base">{item.fileType.toUpperCase()} • v{item.version} • {item.accessPlans}</p>
                   </div>
                 </div>
                 <button onClick={() => handleDelete(item.id)} className="p-1.5 rounded-lg text-red-400/40 hover:text-red-400 hover:bg-red-400/10"><Trash2 size={12} /></button>
               </div>
-              {item.description && <p className="text-white/30 text-sm mt-2">{item.description}</p>}
-              {item.tags && <div className="flex flex-wrap gap-1 mt-2">{item.tags.split(",").map((t) => <span key={t} className="px-1.5 py-0.5 rounded text-xs bg-white/5 text-white/30">{t.trim()}</span>)}</div>}
+              {item.description && <p className="text-white/30 text-lg mt-2">{item.description}</p>}
+              {item.tags && <div className="flex flex-wrap gap-1 mt-2">{item.tags.split(",").map((t) => <span key={t} className="px-1.5 py-0.5 rounded text-base bg-white/5 text-white/30">{t.trim()}</span>)}</div>}
             </div>
           );
         })}

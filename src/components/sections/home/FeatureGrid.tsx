@@ -42,7 +42,7 @@ export function FeatureGrid() {
                 {subspecialties.map((s) => (
                   <div
                     key={s}
-                    className="flex items-center gap-2 text-sm text-white/70"
+                    className="flex items-center gap-2 text-lg text-white/70"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] shrink-0" />
                     {s}
@@ -57,7 +57,7 @@ export function FeatureGrid() {
             <h3 className="text-base font-bold text-white mb-2">
               Safer Medication Decisions
             </h3>
-            <p className="text-sm text-white/50">
+            <p className="text-lg text-white/50">
               Interactions &middot; QTc Risk &middot; Labs &middot; Pregnancy &middot; Polypharmacy
             </p>
           </GlassCard>
@@ -66,7 +66,7 @@ export function FeatureGrid() {
             <h3 className="text-base font-bold text-white mb-2">
               Risk & Disposition
             </h3>
-            <p className="text-sm text-white/50">
+            <p className="text-lg text-white/50">
               Suicide Risk &middot; Agitation &middot; Capacity &middot; Admission &middot; Discharge
             </p>
           </GlassCard>
@@ -81,7 +81,7 @@ export function FeatureGrid() {
                 <h3 className="text-base font-bold text-white mb-1">
                   Documentation Co-Pilot
                 </h3>
-                <p className="text-sm text-white/50">
+                <p className="text-lg text-white/50">
                   Clear, audit-ready notes reducing documentation time
                   dramatically
                 </p>
@@ -93,7 +93,7 @@ export function FeatureGrid() {
             <h3 className="text-base font-bold text-white mb-2">
               ICD-10 & DSM-5-TR
             </h3>
-            <p className="text-sm text-white/50">
+            <p className="text-lg text-white/50">
               Accuracy &middot; Continuity &middot; Compliance
             </p>
           </GlassCard>
@@ -102,7 +102,7 @@ export function FeatureGrid() {
             <h3 className="text-base font-bold text-white mb-2">
               50% Higher Throughput
             </h3>
-            <p className="text-sm text-white/50">
+            <p className="text-lg text-white/50">
               Reduced cognitive burden &middot; Faster notes &middot; Clearer pathways
             </p>
           </GlassCard>

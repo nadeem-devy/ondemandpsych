@@ -43,7 +43,7 @@ export function FeaturesIntro() {
                   <div className="font-mono text-5xl font-bold text-[#FDB02F]/30">
                     AI
                   </div>
-                  <div className="text-xs text-white/20 tracking-widest uppercase">
+                  <div className="text-base text-white/20 tracking-widest uppercase">
                     Clinical Intelligence
                   </div>
                 </div>

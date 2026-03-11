@@ -75,7 +75,7 @@ export function HowItWorks() {
                   {step.items.map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-2 text-sm text-white/50"
+                      className="flex items-start gap-2 text-lg text-white/50"
                     >
                       <span className="w-1 h-1 rounded-full bg-[#FDB02F] shrink-0 mt-2" />
                       {item}

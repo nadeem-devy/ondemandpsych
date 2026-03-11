@@ -93,10 +93,10 @@ export default function AdminDashboard() {
           <p className="text-white/40 text-lg mt-1">Platform overview and analytics</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/admin/users" className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-sm font-medium hover:bg-white/10 transition-colors">
+          <Link href="/admin/users" className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-lg font-medium hover:bg-white/10 transition-colors">
             Manage Users
           </Link>
-          <Link href="/admin/support" className="px-4 py-2 rounded-lg bg-[#FDB02F]/10 border border-[#FDB02F]/20 text-[#FDB02F] text-sm font-medium hover:bg-[#FDB02F]/20 transition-colors">
+          <Link href="/admin/support" className="px-4 py-2 rounded-lg bg-[#FDB02F]/10 border border-[#FDB02F]/20 text-[#FDB02F] text-lg font-medium hover:bg-[#FDB02F]/20 transition-colors">
             {kpis && kpis.openTickets > 0 ? `${kpis.openTickets} Open Tickets` : "Support"}
           </Link>
         </div>
@@ -119,8 +119,8 @@ export default function AdminDashboard() {
                 {kpi.trend === "attention" && <ArrowDownRight size={14} className="text-orange-400" />}
               </div>
               <p className="text-3xl font-bold text-white">{kpi.value.toLocaleString()}</p>
-              <p className="text-sm text-white/35 mt-1">{kpi.label}</p>
-              <p className="text-xs text-white/20 mt-0.5">{kpi.sub}</p>
+              <p className="text-lg text-white/35 mt-1">{kpi.label}</p>
+              <p className="text-base text-white/20 mt-0.5">{kpi.sub}</p>
             </div>
           ))}
         </div>
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-white text-base font-bold">{item.count}</p>
-                    <p className="text-white/30 text-xs">{item.label}</p>
+                    <p className="text-white/30 text-base">{item.label}</p>
                   </div>
                 </Link>
               ))}
@@ -170,11 +170,11 @@ export default function AdminDashboard() {
                 const pct = kpis && kpis.totalUsers > 0 ? (p.count / kpis.totalUsers * 100) : 0;
                 return (
                   <div key={p.plan} className="flex items-center gap-3">
-                    <span className="text-sm text-white/50 w-28 capitalize">{p.plan}</span>
+                    <span className="text-lg text-white/50 w-28 capitalize">{p.plan}</span>
                     <div className="flex-1 h-3 bg-white/5 rounded-full overflow-hidden">
                       <div className="h-full bg-[#FDB02F]/60 rounded-full" style={{ width: `${pct}%` }} />
                     </div>
-                    <span className="text-sm text-white/40 w-20 text-right">{p.count} ({pct.toFixed(0)}%)</span>
+                    <span className="text-lg text-white/40 w-20 text-right">{p.count} ({pct.toFixed(0)}%)</span>
                   </div>
                 );
               })}
@@ -185,19 +185,19 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
                 <p className="text-2xl font-bold text-white">{kpis?.freeUsers || 0}</p>
-                <p className="text-sm text-white/35 mt-1">Free Users</p>
+                <p className="text-lg text-white/35 mt-1">Free Users</p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
                 <p className="text-2xl font-bold text-white">{kpis?.paidUsers || 0}</p>
-                <p className="text-sm text-white/35 mt-1">Paid Users</p>
+                <p className="text-lg text-white/35 mt-1">Paid Users</p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
                 <p className="text-2xl font-bold text-[#FDB02F]">{kpis?.conversionRate || 0}%</p>
-                <p className="text-sm text-white/35 mt-1">Conversion Rate</p>
+                <p className="text-lg text-white/35 mt-1">Conversion Rate</p>
               </div>
               <div className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
                 <p className="text-2xl font-bold text-orange-400">{kpis?.trialExhausted || 0}</p>
-                <p className="text-sm text-white/35 mt-1">Trial Exhausted</p>
+                <p className="text-lg text-white/35 mt-1">Trial Exhausted</p>
               </div>
             </div>
           </div>
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
               <link.icon size={22} className="text-white/80" />
             </div>
             <h3 className="text-white font-semibold text-base mb-1">{link.title}</h3>
-            <p className="text-white/40 text-sm">{link.description}</p>
+            <p className="text-white/40 text-lg">{link.description}</p>
           </Link>
         ))}
       </div>
@@ -234,7 +234,7 @@ export default function AdminDashboard() {
               <div className="flex items-center gap-3">
                 <FileText size={16} className="text-white/30" />
                 <span className="text-white/70 text-base font-medium">{page.name}</span>
-                <span className="text-white/20 text-sm">{page.sections} sections</span>
+                <span className="text-white/20 text-lg">{page.sections} sections</span>
               </div>
               <ExternalLink size={14} className="text-white/20 group-hover:text-[#FDB02F] transition-colors" />
             </Link>

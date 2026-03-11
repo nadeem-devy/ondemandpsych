@@ -52,7 +52,7 @@ export function ClinicalUrgency() {
                 <u.icon className="text-[#FDB02F]" size={24} />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{u.title}</h3>
-              <p className="text-sm text-white/50 leading-relaxed">{u.body}</p>
+              <p className="text-lg text-white/50 leading-relaxed">{u.body}</p>
             </GlassCard>
           ))}
         </div>

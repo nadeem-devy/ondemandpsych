@@ -311,7 +311,7 @@ export default function PagesEditor() {
     <div className="flex h-screen">
       {/* Page/Section sidebar */}
       <div className="w-72 border-r border-white/10 bg-[#07123A]/50 overflow-y-auto p-4">
-        <h2 className="text-white/40 text-sm font-semibold uppercase tracking-wider mb-4">
+        <h2 className="text-white/40 text-lg font-semibold uppercase tracking-wider mb-4">
           Pages & Sections
         </h2>
         {pages.map((page) => (
@@ -324,7 +324,7 @@ export default function PagesEditor() {
               <button
                 key={`${page.slug}-${section.id}`}
                 onClick={() => selectSection(page, section)}
-                className={`w-full text-left flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-colors ${
+                className={`w-full text-left flex items-center gap-2 px-4 py-2.5 rounded-lg text-lg transition-colors ${
                   activePage.slug === page.slug &&
                   activeSection.id === section.id
                     ? "bg-[#FDB02F]/15 text-[#FDB02F]"
@@ -347,7 +347,7 @@ export default function PagesEditor() {
               <h1 className="text-2xl font-bold text-white">
                 {activeSection.label}
               </h1>
-              <p className="text-white/40 text-sm mt-1">
+              <p className="text-white/40 text-lg mt-1">
                 {activePage.name} &rarr; {activeSection.label}
               </p>
             </div>
@@ -378,7 +378,7 @@ export default function PagesEditor() {
             <div className="space-y-6">
               {activeSection.fields.map((field) => (
                 <div key={field.name}>
-                  <label className="block text-white/60 text-sm font-medium mb-2">
+                  <label className="block text-white/60 text-lg font-medium mb-2">
                     {field.label}
                   </label>
                   {field.type === "rich" ? (

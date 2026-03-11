@@ -44,7 +44,7 @@ export function DeliversSection() {
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-[#FDB02F]/20 bg-gradient-to-r from-[#FDB02F]/8 to-[#FDB02F]/3 backdrop-blur-sm"
               >
                 <badge.icon size={16} className="text-[#FDB02F] shrink-0" />
-                <span className="text-xs font-medium text-white/75">{badge.label}</span>
+                <span className="text-base font-medium text-white/75">{badge.label}</span>
               </div>
             ))}
           </div>
@@ -69,7 +69,7 @@ export function DeliversSection() {
               {capabilities.map((item) => (
                 <div key={item} className="flex items-start gap-3">
                   <CheckCircle2 size={18} className="text-[#FDB02F] shrink-0 mt-0.5" />
-                  <p className="text-sm text-white/65 leading-relaxed">{item}</p>
+                  <p className="text-lg text-white/65 leading-relaxed">{item}</p>
                 </div>
               ))}
             </div>
@@ -77,7 +77,7 @@ export function DeliversSection() {
             <Button
               href="/copilot/register"
              
-              className="mt-4 text-sm px-7 py-3.5"
+              className="mt-4 text-lg px-7 py-3.5"
             >
               Start Free Trial &rarr;
             </Button>

@@ -59,8 +59,8 @@ export function WhoItsFor() {
               <div className="w-14 h-14 rounded-full bg-[#FDB02F]/10 flex items-center justify-center mx-auto mb-4">
                 <c.icon className="text-[#FDB02F]" size={24} />
               </div>
-              <h3 className="text-sm font-bold text-white mb-3">{c.title}</h3>
-              <p className="text-xs text-white/50 leading-relaxed">{c.body}</p>
+              <h3 className="text-lg font-bold text-white mb-3">{c.title}</h3>
+              <p className="text-base text-white/50 leading-relaxed">{c.body}</p>
             </GlassCard>
           ))}
         </div>

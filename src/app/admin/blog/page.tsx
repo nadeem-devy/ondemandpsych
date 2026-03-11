@@ -46,13 +46,13 @@ export default function BlogListPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">Blog Posts</h1>
-          <p className="text-white/40 text-sm mt-1">
+          <p className="text-white/40 text-lg mt-1">
             Create and manage blog articles
           </p>
         </div>
         <Link
           href="/admin/blog/new"
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#FDB02F] text-[#07123A] font-bold text-sm hover:bg-[#FDAA40] transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#FDB02F] text-[#07123A] font-bold text-lg hover:bg-[#FDAA40] transition-colors"
         >
           <Plus size={16} />
           New Post
@@ -60,14 +60,14 @@ export default function BlogListPage() {
       </div>
 
       {loading ? (
-        <div className="text-white/40 text-sm">Loading posts...</div>
+        <div className="text-white/40 text-lg">Loading posts...</div>
       ) : posts.length === 0 ? (
         <div className="text-center py-16 bg-[#0D1B4B]/40 border border-white/10 rounded-2xl">
           <PenSquare size={40} className="text-white/20 mx-auto mb-4" />
-          <p className="text-white/40 text-sm">No blog posts yet</p>
+          <p className="text-white/40 text-lg">No blog posts yet</p>
           <Link
             href="/admin/blog/new"
-            className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-lg bg-[#FDB02F] text-[#07123A] font-bold text-sm hover:bg-[#FDAA40] transition-colors"
+            className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-lg bg-[#FDB02F] text-[#07123A] font-bold text-lg hover:bg-[#FDAA40] transition-colors"
           >
             <Plus size={16} />
             Create your first post
@@ -78,19 +78,19 @@ export default function BlogListPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="text-left text-white/40 text-xs font-medium px-6 py-3">
+                <th className="text-left text-white/40 text-base font-medium px-6 py-3">
                   Title
                 </th>
-                <th className="text-left text-white/40 text-xs font-medium px-6 py-3">
+                <th className="text-left text-white/40 text-base font-medium px-6 py-3">
                   Status
                 </th>
-                <th className="text-left text-white/40 text-xs font-medium px-6 py-3">
+                <th className="text-left text-white/40 text-base font-medium px-6 py-3">
                   Category
                 </th>
-                <th className="text-left text-white/40 text-xs font-medium px-6 py-3">
+                <th className="text-left text-white/40 text-base font-medium px-6 py-3">
                   Date
                 </th>
-                <th className="text-right text-white/40 text-xs font-medium px-6 py-3">
+                <th className="text-right text-white/40 text-base font-medium px-6 py-3">
                   Actions
                 </th>
               </tr>
@@ -104,17 +104,17 @@ export default function BlogListPage() {
                   <td className="px-6 py-4">
                     <Link
                       href={`/admin/blog/${post.id}`}
-                      className="text-white text-sm font-medium hover:text-[#FDB02F] transition-colors"
+                      className="text-white text-lg font-medium hover:text-[#FDB02F] transition-colors"
                     >
                       {post.title}
                     </Link>
-                    <p className="text-white/30 text-xs mt-0.5">
+                    <p className="text-white/30 text-base mt-0.5">
                       /blog/{post.slug}
                     </p>
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-base font-medium ${
                         post.status === "published"
                           ? "bg-green-500/15 text-green-400"
                           : "bg-yellow-500/15 text-yellow-400"
@@ -128,10 +128,10 @@ export default function BlogListPage() {
                       {post.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-white/40 text-sm">
+                  <td className="px-6 py-4 text-white/40 text-lg">
                     {post.category || "—"}
                   </td>
-                  <td className="px-6 py-4 text-white/40 text-xs">
+                  <td className="px-6 py-4 text-white/40 text-base">
                     {new Date(
                       post.publishedAt || post.createdAt
                     ).toLocaleDateString()}

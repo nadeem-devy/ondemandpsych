@@ -31,7 +31,7 @@ export function Capabilities90() {
           {capabilities.map((cap) => (
             <div
               key={cap}
-              className="glass-card glass-card-hover px-5 py-4 text-sm text-white/70 text-center transition-all"
+              className="glass-card glass-card-hover px-5 py-4 text-lg text-white/70 text-center transition-all"
             >
               {cap}
             </div>

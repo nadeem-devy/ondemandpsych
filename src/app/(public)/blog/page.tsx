@@ -55,7 +55,7 @@ export default async function BlogPage() {
         <div className="mx-auto max-w-6xl px-6">
           {posts.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-white/40 text-sm">
+              <p className="text-white/40 text-lg">
                 No blog posts published yet. Check back soon!
               </p>
             </div>
@@ -85,24 +85,24 @@ export default async function BlogPage() {
                   {/* Content */}
                   <div className="p-5">
                     {post.category && (
-                      <span className="text-[#FDB02F] text-xs font-semibold uppercase tracking-wider">
+                      <span className="text-[#FDB02F] text-base font-semibold uppercase tracking-wider">
                         {post.category}
                       </span>
                     )}
-                    <h3 className="text-white font-semibold text-sm mt-1 group-hover:text-[#FDB02F] transition-colors line-clamp-2">
+                    <h3 className="text-white font-semibold text-lg mt-1 group-hover:text-[#FDB02F] transition-colors line-clamp-2">
                       {post.title}
                     </h3>
                     {post.excerpt && (
-                      <p className="text-white/40 text-xs mt-2 line-clamp-3">
+                      <p className="text-white/40 text-base mt-2 line-clamp-3">
                         {post.excerpt}
                       </p>
                     )}
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
-                      <span className="text-white/30 text-xs">
+                      <span className="text-white/30 text-base">
                         {post.author}
                       </span>
                       {post.publishedAt && (
-                        <span className="text-white/20 text-xs">
+                        <span className="text-white/20 text-base">
                           {new Date(post.publishedAt).toLocaleDateString()}
                         </span>
                       )}

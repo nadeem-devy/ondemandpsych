@@ -89,7 +89,7 @@ export function QuickActions({
                   <button
                     key={f.label}
                     onClick={() => { onFontSizeChange(f.value); setShowFontPicker(false); }}
-                    className={`w-8 h-8 rounded-lg text-sm font-bold transition-all ${
+                    className={`w-8 h-8 rounded-lg text-lg font-bold transition-all ${
                       fontSize === f.value
                         ? "bg-[#FDB02F] text-[#07123A]"
                         : theme === "dark"
@@ -178,7 +178,7 @@ export function QuickActions({
               <button
                 key={f.label}
                 onClick={() => { onFontSizeChange(f.value); setShowFontPicker(false); }}
-                className={`w-8 h-8 rounded-lg text-sm font-bold transition-all ${
+                className={`w-8 h-8 rounded-lg text-lg font-bold transition-all ${
                   fontSize === f.value
                     ? "bg-[#FDB02F] text-[#07123A]"
                     : theme === "dark"

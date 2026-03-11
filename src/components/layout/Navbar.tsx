@@ -50,7 +50,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-3 py-2 text-sm font-medium transition-colors ${
+                className={`relative px-3 py-2 text-lg font-medium transition-colors ${
                   isActive ? "text-[#FDB02F] font-semibold" : "text-white/70 hover:text-white"
                 }`}
               >
@@ -65,11 +65,11 @@ export function Navbar() {
 
         <div className="hidden lg:flex items-center gap-3">
           <Link href="/copilot/login"
-            className="px-5 py-2 text-sm font-medium text-[#FDB02F] border border-[#FDB02F]/40 rounded-lg hover:bg-[#FDB02F]/10 transition-all">
+            className="px-5 py-2 text-lg font-medium text-[#FDB02F] border border-[#FDB02F]/40 rounded-lg hover:bg-[#FDB02F]/10 transition-all">
             Login
           </Link>
           <Link href="/copilot/register"
-            className="px-5 py-2 text-sm font-bold text-[#07123A] bg-[#FDB02F] rounded-lg hover:bg-[#FDAA40] hover:shadow-[0_0_20px_rgba(253,176,47,0.4)] transition-all">
+            className="px-5 py-2 text-lg font-bold text-[#07123A] bg-[#FDB02F] rounded-lg hover:bg-[#FDAA40] hover:shadow-[0_0_20px_rgba(253,176,47,0.4)] transition-all">
             Sign Up
           </Link>
         </div>
@@ -86,7 +86,7 @@ export function Navbar() {
               const isActive = pathname === link.href;
               return (
                 <Link key={link.href} href={link.href}
-                  className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                  className={`block px-4 py-3 rounded-lg text-lg font-medium transition-colors ${
                     isActive ? "text-[#FDB02F] bg-[#FDB02F]/10" : "text-white/70 hover:text-white hover:bg-white/5"
                   }`}>
                   {link.label}
@@ -95,11 +95,11 @@ export function Navbar() {
             })}
             <div className="pt-4 space-y-2 border-t border-white/10">
               <Link href="/copilot/login"
-                className="block w-full text-center px-5 py-3 text-sm font-medium text-[#FDB02F] border border-[#FDB02F]/40 rounded-lg">
+                className="block w-full text-center px-5 py-3 text-lg font-medium text-[#FDB02F] border border-[#FDB02F]/40 rounded-lg">
                 Login
               </Link>
               <Link href="/copilot/register"
-                className="block w-full text-center px-5 py-3 text-sm font-bold text-[#07123A] bg-[#FDB02F] rounded-lg">
+                className="block w-full text-center px-5 py-3 text-lg font-bold text-[#07123A] bg-[#FDB02F] rounded-lg">
                 Sign Up
               </Link>
             </div>

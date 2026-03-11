@@ -14,7 +14,7 @@ export function PageHero({ title, subtitle, breadcrumb }: PageHeroProps) {
         <div className="orb orb-blue w-[300px] h-[300px] bottom-0 -left-20" />
       </div>
       <div className="relative z-10 mx-auto max-w-7xl px-6">
-        <div className="text-sm text-white/40 mb-6">
+        <div className="text-lg text-white/40 mb-6">
           <Link href="/" className="hover:text-[#FDB02F] transition-colors">
             Home
           </Link>

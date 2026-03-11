@@ -84,7 +84,7 @@ export default async function BlogPostPage({ params }: Props) {
       <SectionWrapper className="py-16 bg-[#07123A]">
         <article className="mx-auto max-w-3xl px-6">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs text-white/30 mb-8">
+          <div className="flex items-center gap-2 text-base text-white/30 mb-8">
             <Link href="/" className="hover:text-white/60 transition-colors">
               Home
             </Link>
@@ -102,14 +102,14 @@ export default async function BlogPostPage({ params }: Props) {
           {/* Header */}
           <header className="mb-10">
             {post.category && (
-              <span className="text-[#FDB02F] text-xs font-semibold uppercase tracking-wider">
+              <span className="text-[#FDB02F] text-base font-semibold uppercase tracking-wider">
                 {post.category}
               </span>
             )}
             <h1 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white mt-2 leading-tight">
               {post.title}
             </h1>
-            <div className="flex items-center gap-4 mt-4 text-white/40 text-sm">
+            <div className="flex items-center gap-4 mt-4 text-white/40 text-lg">
               <span>{post.author}</span>
               {post.publishedAt && (
                 <>
@@ -129,7 +129,7 @@ export default async function BlogPostPage({ params }: Props) {
                 {post.tags.split(",").map((tag) => (
                   <span
                     key={tag.trim()}
-                    className="px-2.5 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-xs font-medium"
+                    className="px-2.5 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-base font-medium"
                   >
                     {tag.trim()}
                   </span>
@@ -167,7 +167,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="mt-12 pt-8 border-t border-white/10">
             <Link
               href="/blog"
-              className="text-[#FDB02F] text-sm hover:underline"
+              className="text-[#FDB02F] text-lg hover:underline"
             >
               &larr; Back to Blog
             </Link>

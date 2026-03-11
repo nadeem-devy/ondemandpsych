@@ -41,12 +41,12 @@ export default function EditBlogPost() {
 
   if (loading) {
     return (
-      <div className="p-8 text-white/40 text-sm">Loading post...</div>
+      <div className="p-8 text-white/40 text-lg">Loading post...</div>
     );
   }
 
   if (!post) {
-    return <div className="p-8 text-white/40 text-sm">Post not found</div>;
+    return <div className="p-8 text-white/40 text-lg">Post not found</div>;
   }
 
   return <BlogEditor post={post} onSave={handleSave} saving={saving} />;

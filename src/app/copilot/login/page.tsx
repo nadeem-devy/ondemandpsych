@@ -48,27 +48,27 @@ export default function CopilotLogin() {
         {/* Logo */}
         <div className="text-center mb-8">
           <img src="/logo.webp" alt="OnDemandPsych" className="h-40 w-auto mx-auto mb-4" />
-          <p className="text-white/40 text-sm">Sign in to your clinical workspace</p>
+          <p className="text-white/40 text-lg">Sign in to your clinical workspace</p>
         </div>
 
         {/* Login card */}
         <div className="bg-[#0D1B4B]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
+              <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-lg">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-white/50 text-xs font-medium mb-2">Email Address</label>
+              <label className="block text-white/50 text-base font-medium mb-2">Email Address</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
                   placeholder="doctor@clinic.com"
                   required
                 />
@@ -76,14 +76,14 @@ export default function CopilotLogin() {
             </div>
 
             <div>
-              <label className="block text-white/50 text-xs font-medium mb-2">Password</label>
+              <label className="block text-white/50 text-base font-medium mb-2">Password</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 focus:bg-white/[0.07] transition-all"
                   placeholder="Enter your password"
                   required
                 />
@@ -91,7 +91,7 @@ export default function CopilotLogin() {
             </div>
 
             <div className="flex justify-end">
-              <Link href="/copilot/forgot-password" className="text-[#FDB02F]/70 hover:text-[#FDB02F] text-xs transition-colors">
+              <Link href="/copilot/forgot-password" className="text-[#FDB02F]/70 hover:text-[#FDB02F] text-base transition-colors">
                 Forgot password?
               </Link>
             </div>
@@ -99,7 +99,7 @@ export default function CopilotLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-sm hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-[#FDB02F] to-[#FDAA40] text-[#07123A] font-bold text-lg hover:shadow-lg hover:shadow-[#FDB02F]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-[#07123A]/30 border-t-[#07123A] rounded-full animate-spin" />
@@ -113,7 +113,7 @@ export default function CopilotLogin() {
           </form>
 
           <div className="mt-6 pt-6 border-t border-white/5 text-center">
-            <p className="text-white/30 text-xs">
+            <p className="text-white/30 text-base">
               Don&apos;t have an account?{" "}
               <Link href="/copilot/register" className="text-[#FDB02F] hover:text-[#FDAA40] font-medium transition-colors">
                 Create one
@@ -122,7 +122,7 @@ export default function CopilotLogin() {
           </div>
         </div>
 
-        <p className="text-center text-white/20 text-sm mt-6">
+        <p className="text-center text-white/20 text-lg mt-6">
           By signing in, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

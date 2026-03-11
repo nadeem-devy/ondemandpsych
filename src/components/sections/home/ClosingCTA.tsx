@@ -28,7 +28,7 @@ export function ClosingCTA() {
               <div className="font-mono text-xl md:text-2xl font-bold text-[#07123A]">
                 {s.value}
               </div>
-              <div className="text-xs text-[#07123A]/60 mt-1">{s.label}</div>
+              <div className="text-base text-[#07123A]/60 mt-1">{s.label}</div>
             </div>
           ))}
         </div>
@@ -39,13 +39,13 @@ export function ClosingCTA() {
             href="/copilot/register"
            
             variant="dark"
-            className="px-7 py-3 text-sm"
+            className="px-7 py-3 text-lg"
           >
             Start Free Trial
           </Button>
           <a
             href="/contact-us"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg text-sm font-bold transition-all duration-300 cursor-pointer border-2 border-[#07123A]/50 text-[#07123A] hover:bg-[#07123A]/10"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg text-lg font-bold transition-all duration-300 cursor-pointer border-2 border-[#07123A]/50 text-[#07123A] hover:bg-[#07123A]/10"
           >
             Request a Demo
           </a>

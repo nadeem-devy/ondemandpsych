@@ -76,7 +76,7 @@ export function SettingsTicker() {
             {[...tickerItems, ...tickerItems].map((item, i) => (
               <span
                 key={i}
-                className="mx-6 text-sm font-medium text-white/40"
+                className="mx-6 text-lg font-medium text-white/40"
               >
                 {item}
                 <span className="ml-6 text-[#FDB02F]/30">&middot;</span>
@@ -95,7 +95,7 @@ export function SettingsTicker() {
               <h3 className="text-lg font-bold text-white mb-2">
                 {card.title}
               </h3>
-              <p className="text-sm text-white/50 leading-relaxed">
+              <p className="text-lg text-white/50 leading-relaxed">
                 {card.body}
               </p>
             </GlassCard>

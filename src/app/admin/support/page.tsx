@@ -126,7 +126,7 @@ export default function AdminSupportPage() {
 
         <div className="flex-1 overflow-y-auto">
           {tickets.length === 0 && (
-            <p className="text-white/20 text-sm text-center py-12">No support tickets yet</p>
+            <p className="text-white/20 text-lg text-center py-12">No support tickets yet</p>
           )}
           {tickets.map((t) => (
             <button
@@ -137,14 +137,14 @@ export default function AdminSupportPage() {
               }`}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-white text-sm font-medium truncate">{t.userName}</span>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${statusColors[t.status] || statusColors.open}`}>
+                <span className="text-white text-lg font-medium truncate">{t.userName}</span>
+                <span className={`text-base px-2.5 py-1 rounded-full font-semibold ${statusColors[t.status] || statusColors.open}`}>
                   {t.status}
                 </span>
               </div>
-              <p className="text-white/30 text-sm truncate">{t.userEmail}</p>
+              <p className="text-white/30 text-lg truncate">{t.userEmail}</p>
               {t.messages?.[0] && (
-                <p className="text-white/20 text-sm mt-1 truncate">
+                <p className="text-white/20 text-lg mt-1 truncate">
                   {t.messages[0].sender === "admin" ? "You: " : ""}{t.messages[0].content}
                 </p>
               )}
@@ -155,7 +155,7 @@ export default function AdminSupportPage() {
                   ))}
                 </div>
               )}
-              <p className="text-white/15 text-xs mt-1">
+              <p className="text-white/15 text-base mt-1">
                 {new Date(t.updatedAt).toLocaleDateString()} {new Date(t.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </p>
             </button>
@@ -169,7 +169,7 @@ export default function AdminSupportPage() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <MessageCircle size={48} className="mx-auto text-white/10 mb-4" />
-              <p className="text-white/25 text-sm">Select a ticket to view conversation</p>
+              <p className="text-white/25 text-lg">Select a ticket to view conversation</p>
             </div>
           </div>
         ) : (
@@ -178,13 +178,13 @@ export default function AdminSupportPage() {
             <div className="p-4 border-b border-white/10 flex items-center justify-between">
               <div>
                 <h3 className="text-white text-lg font-bold">{activeTicket.userName}</h3>
-                <p className="text-white/30 text-sm">{activeTicket.userEmail}</p>
+                <p className="text-white/30 text-lg">{activeTicket.userEmail}</p>
               </div>
               <div className="flex items-center gap-2">
                 {activeTicket.status === "open" && (
                   <button
                     onClick={() => updateStatus(activeTicket.id, "assigned")}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors font-medium"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-lg text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors font-medium"
                   >
                     <UserPlus size={12} />
                     Join Chat
@@ -193,7 +193,7 @@ export default function AdminSupportPage() {
                 {activeTicket.status !== "closed" && (
                   <button
                     onClick={() => updateStatus(activeTicket.id, "closed")}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-lg text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-colors"
                   >
                     <XCircle size={10} />
                     Close
@@ -209,7 +209,7 @@ export default function AdminSupportPage() {
                           ))}
                         </div>
                         {activeTicket.ratingFeedback && (
-                          <span className="text-xs text-white/40 max-w-[200px] truncate" title={activeTicket.ratingFeedback}>
+                          <span className="text-base text-white/40 max-w-[200px] truncate" title={activeTicket.ratingFeedback}>
                             &ldquo;{activeTicket.ratingFeedback}&rdquo;
                           </span>
                         )}
@@ -217,7 +217,7 @@ export default function AdminSupportPage() {
                     )}
                     <button
                       onClick={() => updateStatus(activeTicket.id, "open")}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-lg text-green-400 bg-green-500/10 hover:bg-green-500/20 transition-colors"
                     >
                       <UserPlus size={12} />
                       Reopen
@@ -233,7 +233,7 @@ export default function AdminSupportPage() {
                 <div key={msg.id}>
                   {msg.sender === "system" ? (
                     <div className="flex justify-center my-2">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-[#FDB02F]/10 text-[#FDB02F]/70 border border-[#FDB02F]/10">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-base font-medium bg-[#FDB02F]/10 text-[#FDB02F]/70 border border-[#FDB02F]/10">
                         <UserPlus size={10} />
                         {msg.content}
                       </div>
@@ -246,7 +246,7 @@ export default function AdminSupportPage() {
                           : "bg-white/5 text-white/70 border border-white/5"
                       }`}>
                         <p className="whitespace-pre-wrap">{msg.content}</p>
-                        <p className={`text-xs mt-1 ${
+                        <p className={`text-base mt-1 ${
                           msg.sender === "admin" ? "text-[#07123A]/40" : "text-white/20"
                         }`}>
                           {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}

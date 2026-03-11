@@ -40,7 +40,7 @@ export function FounderBio() {
             <div className="h-full rounded-2xl bg-gradient-to-b from-[#0D1B4B] to-[#07123A] border border-[#FDB02F]/20 overflow-hidden flex flex-col items-center justify-center p-8">
               <img src="/Dr Padder (1).webp" alt="Dr. Tanveer A. Padder, MD" className="w-full h-auto rounded-xl object-cover" />
               <p className="text-white/60 text-lg mt-4">Dr. Tanveer A. Padder, MD</p>
-              <p className="text-[#FDB02F] text-sm font-medium">
+              <p className="text-[#FDB02F] text-lg font-medium">
                 Triple Board-Certified Psychiatrist
               </p>
             </div>
@@ -49,7 +49,7 @@ export function FounderBio() {
           {/* Credentials — redesigned */}
           <div className="space-y-8">
             <div>
-              <p className="text-[#FDB02F] text-xs font-semibold tracking-widest uppercase mb-3">
+              <p className="text-[#FDB02F] text-base font-semibold tracking-widest uppercase mb-3">
                 Founder & Clinical Architect
               </p>
               <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
@@ -68,16 +68,16 @@ export function FounderBio() {
                     <cred.icon size={18} className="text-[#FDB02F]" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-white/85 leading-snug">
+                    <p className="text-lg font-medium text-white/85 leading-snug">
                       {cred.label}
                     </p>
                     {cred.highlight && (
-                      <p className="text-xs text-[#FDB02F]/70 mt-0.5">
+                      <p className="text-base text-[#FDB02F]/70 mt-0.5">
                         {cred.highlight}
                       </p>
                     )}
                   </div>
-                  <span className="ml-auto text-xs font-mono text-white/15 shrink-0">
+                  <span className="ml-auto text-base font-mono text-white/15 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>

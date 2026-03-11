@@ -23,13 +23,13 @@ export function Benefits() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {benefits.map((b, i) => (
             <GlassCard key={b.label} className="p-8 text-center">
-              <span className="font-mono text-xs text-[#FDB02F]/40 mb-2 block">
+              <span className="font-mono text-base text-[#FDB02F]/40 mb-2 block">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="font-mono text-4xl font-bold text-[#FDB02F] mb-3">
                 {b.value}
               </div>
-              <p className="text-sm text-white/60">{b.label}</p>
+              <p className="text-lg text-white/60">{b.label}</p>
             </GlassCard>
           ))}
         </div>
