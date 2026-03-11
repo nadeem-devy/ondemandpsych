@@ -311,12 +311,12 @@ export default function PagesEditor() {
     <div className="flex h-screen">
       {/* Page/Section sidebar */}
       <div className="w-72 border-r border-white/10 bg-[#07123A]/50 overflow-y-auto p-4">
-        <h2 className="text-white/40 text-lg font-semibold uppercase tracking-wider mb-4">
+        <h2 className="text-white/40 text-sm font-semibold uppercase tracking-wider mb-4">
           Pages & Sections
         </h2>
         {pages.map((page) => (
           <div key={page.slug} className="mb-4">
-            <div className="flex items-center gap-2 text-white/60 text-lg font-medium mb-1 px-2">
+            <div className="flex items-center gap-2 text-white/60 text-base font-medium mb-1 px-2">
               <FileText size={16} />
               {page.name}
             </div>
@@ -324,7 +324,7 @@ export default function PagesEditor() {
               <button
                 key={`${page.slug}-${section.id}`}
                 onClick={() => selectSection(page, section)}
-                className={`w-full text-left flex items-center gap-2 px-4 py-2.5 rounded-lg text-lg transition-colors ${
+                className={`w-full text-left flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-colors ${
                   activePage.slug === page.slug &&
                   activeSection.id === section.id
                     ? "bg-[#FDB02F]/15 text-[#FDB02F]"
@@ -347,14 +347,14 @@ export default function PagesEditor() {
               <h1 className="text-2xl font-bold text-white">
                 {activeSection.label}
               </h1>
-              <p className="text-white/40 text-lg mt-1">
+              <p className="text-white/40 text-sm mt-1">
                 {activePage.name} &rarr; {activeSection.label}
               </p>
             </div>
             <button
               onClick={handleSave}
               disabled={saving}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg text-lg font-bold transition-all ${
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg text-base font-bold transition-all ${
                 saved
                   ? "bg-green-500/20 text-green-400 border border-green-500/30"
                   : "bg-[#FDB02F] text-[#07123A] hover:bg-[#FDAA40]"
@@ -378,7 +378,7 @@ export default function PagesEditor() {
             <div className="space-y-6">
               {activeSection.fields.map((field) => (
                 <div key={field.name}>
-                  <label className="block text-white/60 text-lg font-medium mb-2">
+                  <label className="block text-white/60 text-sm font-medium mb-2">
                     {field.label}
                   </label>
                   {field.type === "rich" ? (
@@ -392,7 +392,7 @@ export default function PagesEditor() {
                       type="text"
                       value={formData[field.name] || ""}
                       onChange={(e) => updateField(field.name, e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
+                      className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
                       placeholder={`Enter ${field.label.toLowerCase()}`}
                     />
                   )}

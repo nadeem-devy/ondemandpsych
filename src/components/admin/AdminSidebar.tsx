@@ -100,7 +100,7 @@ export function AdminSidebar() {
       <nav className="flex-1 p-4 space-y-4 overflow-y-auto">
         {navGroups.map((group) => (
           <div key={group.label}>
-            <p className="px-4 mb-1.5 text-xl font-semibold uppercase tracking-wider text-white/25">
+            <p className="px-4 mb-1.5 text-lg font-semibold uppercase tracking-wider text-white/25">
               {group.label}
             </p>
             <div className="space-y-0.5">
@@ -113,7 +113,7 @@ export function AdminSidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-lg font-medium transition-colors ${
+                    className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-base font-medium transition-colors ${
                       isActive
                         ? "bg-[#FDB02F]/15 text-[#FDB02F]"
                         : "text-white/60 hover:text-white hover:bg-white/5"
@@ -122,7 +122,7 @@ export function AdminSidebar() {
                     <item.icon size={20} />
                     <span className="flex-1">{item.label}</span>
                     {badgeCount > 0 && (
-                      <span className="min-w-[22px] h-[22px] flex items-center justify-center px-1.5 rounded-full text-xl font-bold bg-[#FDB02F] text-[#07123A]">
+                      <span className="min-w-[22px] h-[22px] flex items-center justify-center px-1.5 rounded-full text-lg font-bold bg-[#FDB02F] text-[#07123A]">
                         {badgeCount}
                       </span>
                     )}
@@ -139,7 +139,7 @@ export function AdminSidebar() {
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-base text-white/40 hover:text-white hover:bg-white/5 transition-colors"
         >
           <Globe size={20} />
           View Site
@@ -147,7 +147,7 @@ export function AdminSidebar() {
         <form action="/api/auth/signout" method="POST">
           <button
             type="submit"
-            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-lg text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-colors w-full"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-base text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-colors w-full"
           >
             <LogOut size={20} />
             Sign Out

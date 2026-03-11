@@ -123,14 +123,14 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
           <button
             onClick={() => handleSave("draft")}
             disabled={saving}
-            className="px-5 py-2.5 rounded-lg border border-white/10 text-white/60 text-lg font-medium hover:bg-white/5 transition-colors disabled:opacity-50"
+            className="px-5 py-2.5 rounded-lg border border-white/10 text-white/60 text-sm font-medium hover:bg-white/5 transition-colors disabled:opacity-50"
           >
             Save Draft
           </button>
           <button
             onClick={() => handleSave("published")}
             disabled={saving || !title}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-lg font-bold transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-all ${
               saved
                 ? "bg-green-500/20 text-green-400 border border-green-500/30"
                 : "bg-[#FDB02F] text-[#07123A] hover:bg-[#FDAA40]"
@@ -158,18 +158,18 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             type="text"
             value={title}
             onChange={(e) => handleTitleChange(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-xl font-bold focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
+            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-lg font-bold focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
             placeholder="Post title"
           />
 
           {/* Slug */}
           <div className="flex items-center gap-2">
-            <span className="text-white/30 text-xl">/blog/</span>
+            <span className="text-white/30 text-lg">/blog/</span>
             <input
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="flex-1 px-3 py-1.5 rounded bg-white/5 border border-white/10 text-white/60 text-xl focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
+              className="flex-1 px-3 py-1.5 rounded bg-white/5 border border-white/10 text-white/60 text-lg focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
             />
           </div>
 
@@ -178,7 +178,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
             rows={2}
-            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50 transition-colors resize-y"
+            className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50 transition-colors resize-y"
             placeholder="Brief excerpt (displayed in blog listings and meta description fallback)"
           />
 
@@ -194,19 +194,19 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
         <div className="space-y-4">
           {/* Status & Category */}
           <div className="bg-[#0D1B4B]/60 border border-white/10 rounded-xl p-4 space-y-3">
-            <h3 className="text-white text-lg font-semibold flex items-center gap-2">
+            <h3 className="text-white text-sm font-semibold flex items-center gap-2">
               <Tag size={14} className="text-[#FDB02F]" />
               Post Settings
             </h3>
 
             <div>
-              <label className="block text-white/40 text-xl mb-1">
+              <label className="block text-white/40 text-lg mb-1">
                 Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
               >
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
@@ -214,52 +214,52 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             </div>
 
             <div>
-              <label className="block text-white/40 text-xl mb-1">
+              <label className="block text-white/40 text-lg mb-1">
                 Category
               </label>
               <input
                 type="text"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                 placeholder="e.g., Clinical Insights"
               />
             </div>
 
             <div>
-              <label className="block text-white/40 text-xl mb-1">
+              <label className="block text-white/40 text-lg mb-1">
                 Tags (comma-separated)
               </label>
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                 placeholder="psychiatry, AI, clinical-support"
               />
             </div>
 
             <div>
-              <label className="block text-white/40 text-xl mb-1">
+              <label className="block text-white/40 text-lg mb-1">
                 Author
               </label>
               <input
                 type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
               />
             </div>
 
             <div>
-              <label className="block text-white/40 text-xl mb-1">
+              <label className="block text-white/40 text-lg mb-1">
                 Featured Image URL
               </label>
               <input
                 type="text"
                 value={featuredImage}
                 onChange={(e) => setFeaturedImage(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                 placeholder="https://..."
               />
             </div>
@@ -271,7 +271,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               onClick={() => setShowSeo(!showSeo)}
               className="w-full flex items-center justify-between p-4 text-left hover:bg-white/5 transition-colors"
             >
-              <span className="text-white text-lg font-semibold flex items-center gap-2">
+              <span className="text-white text-sm font-semibold flex items-center gap-2">
                 <Search size={14} className="text-[#FDB02F]" />
                 SEO Settings
               </span>
@@ -285,7 +285,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             {showSeo && (
               <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
                 <div>
-                  <label className="flex items-center justify-between text-white/40 text-xl mb-1">
+                  <label className="flex items-center justify-between text-white/40 text-lg mb-1">
                     <span>Meta Title</span>
                     <span
                       className={
@@ -299,13 +299,13 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                     type="text"
                     value={metaTitle}
                     onChange={(e) => setMetaTitle(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                     placeholder={title || "Defaults to post title"}
                   />
                 </div>
 
                 <div>
-                  <label className="flex items-center justify-between text-white/40 text-xl mb-1">
+                  <label className="flex items-center justify-between text-white/40 text-lg mb-1">
                     <span>Meta Description</span>
                     <span
                       className={
@@ -319,45 +319,45 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                     value={metaDescription}
                     onChange={(e) => setMetaDescription(e.target.value)}
                     rows={3}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50 resize-y"
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50 resize-y"
                     placeholder={excerpt || "Defaults to excerpt"}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-xl mb-1">
+                  <label className="block text-white/40 text-lg mb-1">
                     Meta Keywords
                   </label>
                   <input
                     type="text"
                     value={metaKeywords}
                     onChange={(e) => setMetaKeywords(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                     placeholder="keyword1, keyword2, keyword3"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-xl mb-1">
+                  <label className="block text-white/40 text-lg mb-1">
                     Canonical URL
                   </label>
                   <input
                     type="text"
                     value={canonicalUrl}
                     onChange={(e) => setCanonicalUrl(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                     placeholder="https://ondemandpsych.com/blog/..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-xl mb-1">
+                  <label className="block text-white/40 text-lg mb-1">
                     Schema Type
                   </label>
                   <select
                     value={schemaType}
                     onChange={(e) => setSchemaType(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                   >
                     <option value="Article">Article</option>
                     <option value="BlogPosting">BlogPosting</option>
@@ -372,23 +372,23 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                     onChange={(e) => setNoIndex(e.target.checked)}
                     className="rounded border-white/20"
                   />
-                  <span className="text-white/40 text-xl">
+                  <span className="text-white/40 text-lg">
                     noindex (hide from search engines)
                   </span>
                 </label>
 
                 {/* SEO Preview */}
                 <div className="mt-3 p-3 rounded-lg bg-white/5 border border-white/5">
-                  <p className="text-xl text-white/30 mb-2">
+                  <p className="text-lg text-white/30 mb-2">
                     Google Preview
                   </p>
-                  <p className="text-blue-400 text-lg font-medium truncate">
+                  <p className="text-blue-400 text-sm font-medium truncate">
                     {metaTitle || title || "Post Title"}
                   </p>
-                  <p className="text-green-400/60 text-xl truncate">
+                  <p className="text-green-400/60 text-lg truncate">
                     ondemandpsych.com/blog/{slug || "post-slug"}
                   </p>
-                  <p className="text-white/40 text-xl mt-1 line-clamp-2">
+                  <p className="text-white/40 text-lg mt-1 line-clamp-2">
                     {metaDescription || excerpt || "Post description..."}
                   </p>
                 </div>
@@ -402,7 +402,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
               onClick={() => setShowOg(!showOg)}
               className="w-full flex items-center justify-between p-4 text-left hover:bg-white/5 transition-colors"
             >
-              <span className="text-white text-lg font-semibold flex items-center gap-2">
+              <span className="text-white text-sm font-semibold flex items-center gap-2">
                 <Share2 size={14} className="text-[#FDB02F]" />
                 Social Sharing (OG)
               </span>
@@ -416,40 +416,40 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             {showOg && (
               <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
                 <div>
-                  <label className="block text-white/40 text-xl mb-1">
+                  <label className="block text-white/40 text-lg mb-1">
                     OG Title
                   </label>
                   <input
                     type="text"
                     value={ogTitle}
                     onChange={(e) => setOgTitle(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                     placeholder={title || "Defaults to post title"}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-xl mb-1">
+                  <label className="block text-white/40 text-lg mb-1">
                     OG Description
                   </label>
                   <textarea
                     value={ogDescription}
                     onChange={(e) => setOgDescription(e.target.value)}
                     rows={2}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50 resize-y"
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50 resize-y"
                     placeholder={excerpt || "Defaults to excerpt"}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-xl mb-1">
+                  <label className="block text-white/40 text-lg mb-1">
                     OG Image URL
                   </label>
                   <input
                     type="text"
                     value={ogImage}
                     onChange={(e) => setOgImage(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50"
+                    className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#FDB02F]/50"
                     placeholder="https://..."
                   />
                 </div>
@@ -471,13 +471,13 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                     )}
                   </div>
                   <div className="p-3 bg-white/5">
-                    <p className="text-white/30 text-lg uppercase">
+                    <p className="text-white/30 text-base uppercase">
                       ondemandpsych.com
                     </p>
-                    <p className="text-white text-xl font-medium mt-0.5 truncate">
+                    <p className="text-white text-lg font-medium mt-0.5 truncate">
                       {ogTitle || title || "Post Title"}
                     </p>
-                    <p className="text-white/40 text-xl mt-0.5 line-clamp-2">
+                    <p className="text-white/40 text-lg mt-0.5 line-clamp-2">
                       {ogDescription || excerpt || "Post description..."}
                     </p>
                   </div>

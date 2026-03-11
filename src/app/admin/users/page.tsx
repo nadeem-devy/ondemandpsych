@@ -93,9 +93,9 @@ export default function UsersPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-white">Users</h1>
-          <p className="text-white/40 text-lg mt-1">{pagination.total} total users</p>
+          <p className="text-white/40 text-sm mt-1">{pagination.total} total users</p>
         </div>
-        <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xl font-medium hover:bg-white/10 transition-colors">
+        <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-lg font-medium hover:bg-white/10 transition-colors">
           <Download size={14} />
           Export CSV
         </button>
@@ -110,10 +110,10 @@ export default function UsersPage() {
             placeholder="Search by name, email, or organization..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-xl placeholder:text-white/25 focus:outline-none focus:border-[#FDB02F]/30"
+            className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/25 focus:outline-none focus:border-[#FDB02F]/30"
           />
         </div>
-        <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-xl font-medium transition-colors ${showFilters ? "bg-[#FDB02F]/10 border-[#FDB02F]/20 text-[#FDB02F]" : "bg-white/5 border-white/10 text-white/50 hover:text-white/70"}`}>
+        <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-lg font-medium transition-colors ${showFilters ? "bg-[#FDB02F]/10 border-[#FDB02F]/20 text-[#FDB02F]" : "bg-white/5 border-white/10 text-white/50 hover:text-white/70"}`}>
           <Filter size={14} />
           Filters
         </button>
@@ -121,13 +121,13 @@ export default function UsersPage() {
 
       {showFilters && (
         <div className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-white/[0.02] border border-white/5">
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xl focus:outline-none">
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-lg focus:outline-none">
             <option value="">All Statuses</option>
             <option value="active">Active</option>
             <option value="suspended">Suspended</option>
             <option value="deactivated">Deactivated</option>
           </select>
-          <select value={planFilter} onChange={(e) => setPlanFilter(e.target.value)} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xl focus:outline-none">
+          <select value={planFilter} onChange={(e) => setPlanFilter(e.target.value)} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-lg focus:outline-none">
             <option value="">All Plans</option>
             <option value="free">Free</option>
             <option value="basic">Basic</option>
@@ -135,7 +135,7 @@ export default function UsersPage() {
             <option value="enterprise">Enterprise</option>
           </select>
           {(statusFilter || planFilter) && (
-            <button onClick={() => { setStatusFilter(""); setPlanFilter(""); }} className="text-lg text-white/30 hover:text-white/60 transition-colors">
+            <button onClick={() => { setStatusFilter(""); setPlanFilter(""); }} className="text-base text-white/30 hover:text-white/60 transition-colors">
               Clear filters
             </button>
           )}
@@ -145,7 +145,7 @@ export default function UsersPage() {
       {/* Table */}
       <div className="rounded-2xl bg-[#0D1B4B]/40 border border-white/10 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xl">
+          <table className="w-full text-lg">
             <thead>
               <tr className="border-b border-white/5">
                 <th className="text-left px-4 py-3 text-white/30 font-medium">User</th>
@@ -172,17 +172,17 @@ export default function UsersPage() {
                     <td className="px-4 py-3">
                       <div>
                         <p className="text-white font-medium">{u.name}</p>
-                        <p className="text-white/30 text-xl">{u.email}</p>
-                        {u.organization && <p className="text-white/20 text-lg">{u.organization}</p>}
+                        <p className="text-white/30 text-lg">{u.email}</p>
+                        {u.organization && <p className="text-white/20 text-base">{u.organization}</p>}
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-lg font-medium border ${statusColors[u.status] || statusColors.active}`}>
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-base font-medium border ${statusColors[u.status] || statusColors.active}`}>
                         {u.status}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-lg font-medium capitalize border ${planColors[u.plan] || planColors.free}`}>
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-base font-medium capitalize border ${planColors[u.plan] || planColors.free}`}>
                         {u.plan}
                       </span>
                     </td>
@@ -191,13 +191,13 @@ export default function UsersPage() {
                         <div className="w-12 h-1.5 bg-white/5 rounded-full overflow-hidden">
                           <div className="h-full bg-[#FDB02F]/50 rounded-full" style={{ width: `${Math.min(100, (u.trialMessageCount / u.trialMessageLimit) * 100)}%` }} />
                         </div>
-                        <span className="text-white/30 text-lg">{u.trialMessageCount}/{u.trialMessageLimit}</span>
+                        <span className="text-white/30 text-base">{u.trialMessageCount}/{u.trialMessageLimit}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-white/40">{u._count.chats}</td>
-                    <td className="px-4 py-3 text-white/30 text-xl">{new Date(u.createdAt).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-white/30 text-lg">{new Date(u.createdAt).toLocaleDateString()}</td>
                     <td className="px-4 py-3 text-right">
-                      <Link href={`/admin/users/${u.id}`} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/5 text-white/50 hover:text-white hover:bg-white/10 transition-colors text-xl">
+                      <Link href={`/admin/users/${u.id}`} className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/5 text-white/50 hover:text-white hover:bg-white/10 transition-colors text-lg">
                         <Eye size={12} />
                         View
                       </Link>
@@ -212,14 +212,14 @@ export default function UsersPage() {
         {/* Pagination */}
         {pagination.totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-white/5">
-            <p className="text-xl text-white/25">
+            <p className="text-lg text-white/25">
               Showing {(pagination.page - 1) * pagination.limit + 1}–{Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total}
             </p>
             <div className="flex items-center gap-1">
               <button onClick={() => fetchUsers(pagination.page - 1)} disabled={pagination.page <= 1} className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
                 <ChevronLeft size={14} />
               </button>
-              <span className="text-xl text-white/40 px-2">Page {pagination.page} of {pagination.totalPages}</span>
+              <span className="text-lg text-white/40 px-2">Page {pagination.page} of {pagination.totalPages}</span>
               <button onClick={() => fetchUsers(pagination.page + 1)} disabled={pagination.page >= pagination.totalPages} className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 disabled:opacity-20 disabled:cursor-not-allowed transition-colors">
                 <ChevronRight size={14} />
               </button>

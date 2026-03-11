@@ -41,12 +41,12 @@ export function OutcomeCards() {
               <div className="font-mono text-5xl font-bold text-[#FDB02F] mb-2">
                 {o.value}
               </div>
-              <p className="text-lg text-white/50 mb-6">{o.subtitle}</p>
+              <p className="text-sm text-white/50 mb-6">{o.subtitle}</p>
               <ul className="space-y-2 text-left">
                 {o.bullets.map((b) => (
                   <li
                     key={b}
-                    className="flex items-center gap-2 text-lg text-white/60"
+                    className="flex items-center gap-2 text-sm text-white/60"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] shrink-0" />
                     {b}

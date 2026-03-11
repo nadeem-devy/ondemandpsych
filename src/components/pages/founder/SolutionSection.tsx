@@ -34,7 +34,7 @@ export function SolutionSection() {
                 "Evidence-based protocols & guidelines",
                 "Clinician-in-the-loop design principles",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-lg text-white/60">
+                <li key={item} className="flex items-center gap-3 text-sm text-white/60">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] shrink-0" />
                   {item}
                 </li>
@@ -54,7 +54,7 @@ export function SolutionSection() {
                   i < specItems.length - 1 ? "border-b border-white/5" : ""
                 }`}
               >
-                <p className="text-white/80 text-lg leading-relaxed font-medium">
+                <p className="text-white/80 text-sm leading-relaxed font-medium">
                   {item}
                 </p>
               </div>

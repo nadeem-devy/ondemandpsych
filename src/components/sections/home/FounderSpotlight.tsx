@@ -20,7 +20,7 @@ export function FounderSpotlight() {
             </div>
             {/* Badge */}
             <div className="absolute bottom-6 left-6 bg-[#07123A]/90 backdrop-blur-md border border-[#FDB02F]/20 rounded-xl px-4 py-2">
-              <span className="text-xl font-semibold text-[#FDB02F]">
+              <span className="text-lg font-semibold text-[#FDB02F]">
                 Triple Board-Certified Psychiatrist
               </span>
             </div>
@@ -32,7 +32,7 @@ export function FounderSpotlight() {
             <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
               A Clinician&apos;s Vision for Safer Psychiatry
             </h2>
-            <p className="text-white/50 text-lg">
+            <p className="text-white/50 text-sm">
               Triple board-certified psychiatrist &middot; 25+ years &middot; 100,000+ patient
               encounters
             </p>
@@ -40,10 +40,10 @@ export function FounderSpotlight() {
             {/* Credential blocks */}
             <div className="space-y-4">
               <div className="flex gap-4">
-                <span className="font-mono text-[#FDB02F] font-bold text-lg shrink-0">
+                <span className="font-mono text-[#FDB02F] font-bold text-sm shrink-0">
                   01
                 </span>
-                <p className="text-white/60 text-lg leading-relaxed">
+                <p className="text-white/60 text-sm leading-relaxed">
                   With more than 25 years of clinical leadership experience in
                   emergency, inpatient, outpatient, and addiction psychiatry, Dr.
                   Tanveer A. Padder is a triple board-certified psychiatrist,
@@ -52,10 +52,10 @@ export function FounderSpotlight() {
                 </p>
               </div>
               <div className="flex gap-4">
-                <span className="font-mono text-[#FDB02F] font-bold text-lg shrink-0">
+                <span className="font-mono text-[#FDB02F] font-bold text-sm shrink-0">
                   02
                 </span>
-                <p className="text-white/60 text-lg leading-relaxed">
+                <p className="text-white/60 text-sm leading-relaxed">
                   Dr. Padder is the visionary behind the world&apos;s first Psychiatric
                   Clinical Co-Pilot. On-Demand Psychiatry was developed to assist
                   clinicians in making critical decisions in real-world
@@ -66,14 +66,14 @@ export function FounderSpotlight() {
 
             {/* Pull quote */}
             <blockquote className="border-l-4 border-[#FDB02F] pl-6 py-2">
-              <p className="italic text-white/70 text-lg leading-relaxed">
+              <p className="italic text-white/70 text-sm leading-relaxed">
                 &ldquo;One thing became clear after years in emergency rooms,
                 inpatient units, and outpatient clinics: physicians are forced to
                 make important psychiatric choices under duress, often without
                 the necessary support. On-Demand Psychiatry was created to
                 change that.&rdquo;
               </p>
-              <cite className="text-xl text-[#FDB02F] mt-2 block not-italic">
+              <cite className="text-lg text-[#FDB02F] mt-2 block not-italic">
                 — Dr. Tanveer A. Padder, MD
               </cite>
             </blockquote>

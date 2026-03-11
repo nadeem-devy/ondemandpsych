@@ -65,7 +65,7 @@ export function SettingsTicker() {
           <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl lg:text-5xl font-bold text-white">
             Workflow Support Across Every Psychiatric Setting
           </h2>
-          <p className="mt-4 text-white/50 text-xl">
+          <p className="mt-4 text-white/50 text-lg">
             Fits your existing workflow. No integration required.
           </p>
         </div>
@@ -76,7 +76,7 @@ export function SettingsTicker() {
             {[...tickerItems, ...tickerItems].map((item, i) => (
               <span
                 key={i}
-                className="mx-6 text-lg font-medium text-white/40"
+                className="mx-6 text-sm font-medium text-white/40"
               >
                 {item}
                 <span className="ml-6 text-[#FDB02F]/30">&middot;</span>
@@ -92,10 +92,10 @@ export function SettingsTicker() {
               <div className="w-12 h-12 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center mb-4">
                 <card.icon className="text-[#FDB02F]" size={24} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-lg font-bold text-white mb-2">
                 {card.title}
               </h3>
-              <p className="text-lg text-white/50 leading-relaxed">
+              <p className="text-sm text-white/50 leading-relaxed">
                 {card.body}
               </p>
             </GlassCard>

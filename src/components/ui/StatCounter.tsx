@@ -67,7 +67,7 @@ export function StatCounter({ value, label }: StatCounterProps) {
       <div className="font-mono text-2xl md:text-3xl font-bold text-[#FDB02F]">
         {display}
       </div>
-      <div className="text-lg text-white/50 mt-2">{label}</div>
+      <div className="text-sm text-white/50 mt-2">{label}</div>
     </div>
   );
 }

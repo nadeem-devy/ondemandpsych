@@ -70,10 +70,10 @@ export function CoreCapabilities() {
                 className="w-full flex items-center justify-between px-6 py-4 text-left cursor-pointer"
               >
                 <span className="flex items-center gap-3">
-                  <span className="font-mono text-[#FDB02F] text-xl font-bold">
+                  <span className="font-mono text-[#FDB02F] text-lg font-bold">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-lg font-semibold text-white">
+                  <span className="text-sm font-semibold text-white">
                     {tab.title}
                   </span>
                 </span>
@@ -95,7 +95,7 @@ export function CoreCapabilities() {
                       {tab.items.map((item) => (
                         <span
                           key={item}
-                          className="px-3 py-1.5 rounded-full bg-[#FDB02F]/5 border border-[#FDB02F]/10 text-xl text-white/60"
+                          className="px-3 py-1.5 rounded-full bg-[#FDB02F]/5 border border-[#FDB02F]/10 text-lg text-white/60"
                         >
                           {item}
                         </span>
