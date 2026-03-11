@@ -120,7 +120,7 @@ export default function AdminDashboard() {
               </div>
               <p className="text-3xl font-bold text-white">{kpi.value.toLocaleString()}</p>
               <p className="text-sm text-white/35 mt-1">{kpi.label}</p>
-              <p className="text-xs text-white/20 mt-0.5">{kpi.sub}</p>
+              <p className="text-lg text-white/20 mt-0.5">{kpi.sub}</p>
             </div>
           ))}
         </div>
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-white text-base font-bold">{item.count}</p>
-                    <p className="text-white/30 text-xs">{item.label}</p>
+                    <p className="text-white/30 text-lg">{item.label}</p>
                   </div>
                 </Link>
               ))}

@@ -157,20 +157,20 @@ export default function ProfilePage() {
           <div>
             <h2 className="text-xl font-bold text-white">{name}</h2>
             <p className="text-white/40 text-sm">{profile.email}</p>
-            <p className="text-[#FDB02F] text-xs font-semibold uppercase mt-1">{profile.plan} Plan</p>
+            <p className="text-[#FDB02F] text-lg font-semibold uppercase mt-1">{profile.plan} Plan</p>
           </div>
         </div>
 
         {/* Profile fields */}
         <div className="bg-[#0D1B4B]/40 border border-white/5 rounded-2xl p-6 space-y-5">
-          <h3 className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-2">Personal Information</h3>
+          <h3 className="text-white/60 text-lg font-semibold uppercase tracking-wider mb-2">Personal Information</h3>
 
           <Field icon={User} label="Full Name" value={name} onChange={setName} placeholder="Dr. John Smith" />
           <Field icon={Mail} label="Email" value={profile.email} disabled placeholder="" onChange={() => {}} />
           <Field icon={Phone} label="Phone" value={phone} onChange={setPhone} placeholder="+1 (555) 000-0000" />
           <Field icon={Building2} label="Organization" value={organization} onChange={setOrganization} placeholder="Hospital / Clinic name" />
           <div>
-            <label className="block text-white/40 text-xs font-medium mb-2">Clinical Role</label>
+            <label className="block text-white/40 text-lg font-medium mb-2">Clinical Role</label>
             <div className="relative">
               <Stethoscope size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
               <select
@@ -192,7 +192,7 @@ export default function ProfilePage() {
 
         {/* Password */}
         <div className="bg-[#0D1B4B]/40 border border-white/5 rounded-2xl p-6 space-y-5">
-          <h3 className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-2">Change Password</h3>
+          <h3 className="text-white/60 text-lg font-semibold uppercase tracking-wider mb-2">Change Password</h3>
 
           <Field icon={Lock} label="Current Password" value={currentPassword} onChange={setCurrentPassword} placeholder="Enter current password" type="password" />
           <Field icon={Lock} label="New Password" value={newPassword} onChange={setNewPassword} placeholder="Enter new password" type="password" />
@@ -238,7 +238,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-white/40 text-xs font-medium mb-2">{label}</label>
+      <label className="block text-white/40 text-lg font-medium mb-2">{label}</label>
       <div className="relative">
         <Icon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
         <input

@@ -138,7 +138,7 @@ export default function AdminSupportPage() {
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="text-white text-sm font-medium truncate">{t.userName}</span>
-                <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${statusColors[t.status] || statusColors.open}`}>
+                <span className={`text-lg px-2.5 py-1 rounded-full font-semibold ${statusColors[t.status] || statusColors.open}`}>
                   {t.status}
                 </span>
               </div>
@@ -155,7 +155,7 @@ export default function AdminSupportPage() {
                   ))}
                 </div>
               )}
-              <p className="text-white/15 text-xs mt-1">
+              <p className="text-white/15 text-lg mt-1">
                 {new Date(t.updatedAt).toLocaleDateString()} {new Date(t.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </p>
             </button>
@@ -209,7 +209,7 @@ export default function AdminSupportPage() {
                           ))}
                         </div>
                         {activeTicket.ratingFeedback && (
-                          <span className="text-xs text-white/40 max-w-[200px] truncate" title={activeTicket.ratingFeedback}>
+                          <span className="text-lg text-white/40 max-w-[200px] truncate" title={activeTicket.ratingFeedback}>
                             &ldquo;{activeTicket.ratingFeedback}&rdquo;
                           </span>
                         )}
@@ -233,7 +233,7 @@ export default function AdminSupportPage() {
                 <div key={msg.id}>
                   {msg.sender === "system" ? (
                     <div className="flex justify-center my-2">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-medium bg-[#FDB02F]/10 text-[#FDB02F]/70 border border-[#FDB02F]/10">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-base font-medium bg-[#FDB02F]/10 text-[#FDB02F]/70 border border-[#FDB02F]/10">
                         <UserPlus size={10} />
                         {msg.content}
                       </div>
@@ -246,7 +246,7 @@ export default function AdminSupportPage() {
                           : "bg-white/5 text-white/70 border border-white/5"
                       }`}>
                         <p className="whitespace-pre-wrap">{msg.content}</p>
-                        <p className={`text-[10px] mt-1 ${
+                        <p className={`text-base mt-1 ${
                           msg.sender === "admin" ? "text-[#07123A]/40" : "text-white/20"
                         }`}>
                           {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}

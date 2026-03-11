@@ -84,7 +84,7 @@ export default async function BlogPostPage({ params }: Props) {
       <SectionWrapper className="py-16 bg-[#07123A]">
         <article className="mx-auto max-w-3xl px-6">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs text-white/30 mb-8">
+          <div className="flex items-center gap-2 text-lg text-white/30 mb-8">
             <Link href="/" className="hover:text-white/60 transition-colors">
               Home
             </Link>
@@ -102,7 +102,7 @@ export default async function BlogPostPage({ params }: Props) {
           {/* Header */}
           <header className="mb-10">
             {post.category && (
-              <span className="text-[#FDB02F] text-xs font-semibold uppercase tracking-wider">
+              <span className="text-[#FDB02F] text-lg font-semibold uppercase tracking-wider">
                 {post.category}
               </span>
             )}
@@ -129,7 +129,7 @@ export default async function BlogPostPage({ params }: Props) {
                 {post.tags.split(",").map((tag) => (
                   <span
                     key={tag.trim()}
-                    className="px-2.5 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-[10px] font-medium"
+                    className="px-2.5 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-base font-medium"
                   >
                     {tag.trim()}
                   </span>

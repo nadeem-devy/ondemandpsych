@@ -48,7 +48,7 @@ export default function HealthPage() {
             {data ? `Last checked: ${new Date(data.timestamp).toLocaleTimeString()}` : "Loading..."}
           </p>
         </div>
-        <button onClick={fetchHealth} disabled={loading} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs font-medium hover:bg-white/10 disabled:opacity-50">
+        <button onClick={fetchHealth} disabled={loading} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-lg font-medium hover:bg-white/10 disabled:opacity-50">
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
           Refresh
         </button>
@@ -61,7 +61,7 @@ export default function HealthPage() {
             {data.status === "healthy" ? <CheckCircle size={24} className="text-green-400" /> : <XCircle size={24} className="text-red-400" />}
             <div>
               <p className="text-white font-bold text-lg">System {data.status === "healthy" ? "Healthy" : "Unhealthy"}</p>
-              <p className="text-white/40 text-xs">All services checked</p>
+              <p className="text-white/40 text-lg">All services checked</p>
             </div>
           </div>
         </div>
@@ -76,14 +76,14 @@ export default function HealthPage() {
           return (
             <div key={name} className="rounded-2xl bg-[#0D1B4B]/40 border border-white/10 p-5">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-white text-xs font-medium capitalize">{name.replace(/_/g, " ")}</p>
+                <p className="text-white text-lg font-medium capitalize">{name.replace(/_/g, " ")}</p>
                 <div className="flex items-center gap-1.5">
                   <Icon size={14} className={config.color} />
-                  <span className={`text-[10px] font-medium ${config.color}`}>{check.status}</span>
+                  <span className={`text-base font-medium ${config.color}`}>{check.status}</span>
                 </div>
               </div>
-              {check.latency !== undefined && <p className="text-white/30 text-[10px]">Latency: {check.latency}ms</p>}
-              {check.details && <p className="text-white/20 text-[10px] mt-1">{check.details}</p>}
+              {check.latency !== undefined && <p className="text-white/30 text-base">Latency: {check.latency}ms</p>}
+              {check.details && <p className="text-white/20 text-base mt-1">{check.details}</p>}
             </div>
           );
         }) : null}

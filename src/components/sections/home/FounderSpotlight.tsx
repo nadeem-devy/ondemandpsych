@@ -20,7 +20,7 @@ export function FounderSpotlight() {
             </div>
             {/* Badge */}
             <div className="absolute bottom-6 left-6 bg-[#07123A]/90 backdrop-blur-md border border-[#FDB02F]/20 rounded-xl px-4 py-2">
-              <span className="text-xs font-semibold text-[#FDB02F]">
+              <span className="text-lg font-semibold text-[#FDB02F]">
                 Triple Board-Certified Psychiatrist
               </span>
             </div>
@@ -73,7 +73,7 @@ export function FounderSpotlight() {
                 the necessary support. On-Demand Psychiatry was created to
                 change that.&rdquo;
               </p>
-              <cite className="text-xs text-[#FDB02F] mt-2 block not-italic">
+              <cite className="text-lg text-[#FDB02F] mt-2 block not-italic">
                 — Dr. Tanveer A. Padder, MD
               </cite>
             </blockquote>

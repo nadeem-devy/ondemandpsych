@@ -125,7 +125,7 @@ export default function ForgotPasswordPage() {
           {step === "email" && (
             <form onSubmit={handleSendOtp} className="space-y-5">
               <div>
-                <label className="block text-white/50 text-xs font-medium mb-2">Email Address</label>
+                <label className="block text-white/50 text-lg font-medium mb-2">Email Address</label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                   <input
@@ -152,7 +152,7 @@ export default function ForgotPasswordPage() {
           {step === "otp" && (
             <form onSubmit={handleVerifyOtp} className="space-y-5">
               <div>
-                <label className="block text-white/50 text-xs font-medium mb-2">Verification Code</label>
+                <label className="block text-white/50 text-lg font-medium mb-2">Verification Code</label>
                 <div className="relative">
                   <ShieldCheck size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                   <input
@@ -165,7 +165,7 @@ export default function ForgotPasswordPage() {
                     required
                   />
                 </div>
-                <p className="text-white/30 text-xs mt-2">Check your email for the 6-digit code</p>
+                <p className="text-white/30 text-lg mt-2">Check your email for the 6-digit code</p>
               </div>
               <button
                 type="submit"
@@ -177,7 +177,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="button"
                 onClick={() => { setStep("email"); setOtp(""); setError(""); }}
-                className="w-full text-white/30 text-xs hover:text-white/50 transition-colors"
+                className="w-full text-white/30 text-lg hover:text-white/50 transition-colors"
               >
                 Didn&apos;t receive it? Go back and try again
               </button>
@@ -188,7 +188,7 @@ export default function ForgotPasswordPage() {
           {step === "reset" && (
             <form onSubmit={handleResetPassword} className="space-y-5">
               <div>
-                <label className="block text-white/50 text-xs font-medium mb-2">New Password</label>
+                <label className="block text-white/50 text-lg font-medium mb-2">New Password</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                   <input
@@ -202,7 +202,7 @@ export default function ForgotPasswordPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-white/50 text-xs font-medium mb-2">Confirm Password</label>
+                <label className="block text-white/50 text-lg font-medium mb-2">Confirm Password</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                   <input
@@ -243,7 +243,7 @@ export default function ForgotPasswordPage() {
 
           {step !== "done" && (
             <div className="mt-6 pt-6 border-t border-white/5 text-center">
-              <Link href="/copilot/login" className="inline-flex items-center gap-1 text-white/30 text-xs hover:text-white/50 transition-colors">
+              <Link href="/copilot/login" className="inline-flex items-center gap-1 text-white/30 text-lg hover:text-white/50 transition-colors">
                 <ArrowLeft size={12} />
                 Back to Sign In
               </Link>

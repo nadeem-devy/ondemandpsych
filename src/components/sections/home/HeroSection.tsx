@@ -23,7 +23,7 @@ export function HeroSection() {
           {/* Left — Content */}
           <div className="hero-animate">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#FDB02F]/30 bg-[#FDB02F]/5 mb-6">
-              <span className="text-xs text-[#FDB02F] font-medium">
+              <span className="text-lg text-[#FDB02F] font-medium">
                 Built by Psychiatrists. Trusted in Real Clinical Settings.
               </span>
             </div>
@@ -53,7 +53,7 @@ export function HeroSection() {
 
             <div className="mt-8 flex flex-wrap items-start gap-x-5 gap-y-2">
               {trustItems.map((item) => (
-                <div key={item} className="flex items-center gap-2 text-xs text-white/45">
+                <div key={item} className="flex items-center gap-2 text-lg text-white/45">
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="shrink-0">
                     <path d="M13.5 4.5L6 12L2.5 8.5" stroke="#FDB02F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -73,15 +73,15 @@ export function HeroSection() {
                   <span className="w-2.5 h-2.5 rounded-full bg-white/10" />
                   <span className="w-2.5 h-2.5 rounded-full bg-white/10" />
                 </div>
-                <span className="text-[10px] text-white/30 ml-2 font-mono">copilot.ondemandpsych.com</span>
+                <span className="text-base text-white/30 ml-2 font-mono">copilot.ondemandpsych.com</span>
               </div>
 
               {/* Mock UI */}
               <div className="p-5 space-y-4">
                 {/* Input area */}
                 <div className="rounded-xl bg-[#07123A]/60 border border-white/5 p-4">
-                  <p className="text-[11px] text-white/30 font-mono mb-2">Patient Case Input</p>
-                  <p className="text-xs text-white/60 leading-relaxed">
+                  <p className="text-lg text-white/30 font-mono mb-2">Patient Case Input</p>
+                  <p className="text-lg text-white/60 leading-relaxed">
                     42yo male, presenting with auditory hallucinations, paranoid ideation,
                     medication non-adherence. Hx of schizoaffective disorder. Current: Risperidone 4mg...
                   </p>
@@ -91,23 +91,23 @@ export function HeroSection() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-lg bg-[#07123A]/60 border border-[#FDB02F]/10 p-3 group hover:border-[#FDB02F]/30 transition-all">
                     <Brain size={16} className="text-[#FDB02F] mb-2" />
-                    <p className="text-[10px] font-semibold text-white/80">Diagnostic Reasoning</p>
-                    <p className="text-[10px] text-white/40 mt-1">DSM-5-TR &middot; ICD-10</p>
+                    <p className="text-base font-semibold text-white/80">Diagnostic Reasoning</p>
+                    <p className="text-base text-white/40 mt-1">DSM-5-TR &middot; ICD-10</p>
                   </div>
                   <div className="rounded-lg bg-[#07123A]/60 border border-[#FDB02F]/10 p-3 group hover:border-[#FDB02F]/30 transition-all">
                     <Pill size={16} className="text-[#FDB02F] mb-2" />
-                    <p className="text-[10px] font-semibold text-white/80">Medication Safety</p>
-                    <p className="text-[10px] text-white/40 mt-1">212+ medications</p>
+                    <p className="text-base font-semibold text-white/80">Medication Safety</p>
+                    <p className="text-base text-white/40 mt-1">212+ medications</p>
                   </div>
                   <div className="rounded-lg bg-[#07123A]/60 border border-[#FDB02F]/10 p-3 group hover:border-[#FDB02F]/30 transition-all">
                     <AlertTriangle size={16} className="text-[#FDB02F] mb-2" />
-                    <p className="text-[10px] font-semibold text-white/80">Risk Assessment</p>
-                    <p className="text-[10px] text-white/40 mt-1">SAFE-T &middot; C-SSRS</p>
+                    <p className="text-base font-semibold text-white/80">Risk Assessment</p>
+                    <p className="text-base text-white/40 mt-1">SAFE-T &middot; C-SSRS</p>
                   </div>
                   <div className="rounded-lg bg-[#07123A]/60 border border-[#FDB02F]/10 p-3 group hover:border-[#FDB02F]/30 transition-all">
                     <FileText size={16} className="text-[#FDB02F] mb-2" />
-                    <p className="text-[10px] font-semibold text-white/80">Documentation</p>
-                    <p className="text-[10px] text-white/40 mt-1">&lt;90s chart-ready</p>
+                    <p className="text-base font-semibold text-white/80">Documentation</p>
+                    <p className="text-base text-white/40 mt-1">&lt;90s chart-ready</p>
                   </div>
                 </div>
 
@@ -115,21 +115,21 @@ export function HeroSection() {
                 <div className="rounded-xl bg-[#07123A]/60 border border-[#FDB02F]/10 p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <ClipboardCheck size={14} className="text-[#FDB02F]" />
-                    <p className="text-[10px] font-semibold text-[#FDB02F]">Co-Pilot Output</p>
-                    <span className="ml-auto text-[9px] text-white/20 font-mono">generated in 47s</span>
+                    <p className="text-base font-semibold text-[#FDB02F]">Co-Pilot Output</p>
+                    <span className="ml-auto text-base text-white/20 font-mono">generated in 47s</span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-start gap-2">
                       <span className="w-1 h-1 rounded-full bg-[#FDB02F] mt-1.5 shrink-0" />
-                      <p className="text-[10px] text-white/50">Primary: Schizoaffective disorder, bipolar type (F25.0)</p>
+                      <p className="text-base text-white/50">Primary: Schizoaffective disorder, bipolar type (F25.0)</p>
                     </div>
                     <div className="flex items-start gap-2">
                       <span className="w-1 h-1 rounded-full bg-[#FDB02F] mt-1.5 shrink-0" />
-                      <p className="text-[10px] text-white/50">Consider: Clozapine trial given treatment resistance</p>
+                      <p className="text-base text-white/50">Consider: Clozapine trial given treatment resistance</p>
                     </div>
                     <div className="flex items-start gap-2">
                       <span className="w-1 h-1 rounded-full bg-[#FDB02F] mt-1.5 shrink-0" />
-                      <p className="text-[10px] text-white/50">Risk: Moderate &mdash; safety plan recommended</p>
+                      <p className="text-base text-white/50">Risk: Moderate &mdash; safety plan recommended</p>
                     </div>
                   </div>
                 </div>
@@ -138,9 +138,9 @@ export function HeroSection() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Shield size={12} className="text-[#FDB02F]/50" />
-                    <span className="text-[9px] text-white/25">HIPAA-aligned &middot; Clinician-in-the-loop</span>
+                    <span className="text-base text-white/25">HIPAA-aligned &middot; Clinician-in-the-loop</span>
                   </div>
-                  <span className="text-[9px] text-white/15 font-mono">v3.2</span>
+                  <span className="text-base text-white/15 font-mono">v3.2</span>
                 </div>
               </div>
             </div>

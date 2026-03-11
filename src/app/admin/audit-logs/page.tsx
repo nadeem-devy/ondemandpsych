@@ -81,10 +81,10 @@ export default function AuditLogsPage() {
             placeholder="Search by email, action, or target..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/25 focus:outline-none focus:border-[#FDB02F]/30"
+            className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/25 focus:outline-none focus:border-[#FDB02F]/30"
           />
         </div>
-        <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-xs font-medium transition-colors ${showFilters ? "bg-[#FDB02F]/10 border-[#FDB02F]/20 text-[#FDB02F]" : "bg-white/5 border-white/10 text-white/50"}`}>
+        <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-lg font-medium transition-colors ${showFilters ? "bg-[#FDB02F]/10 border-[#FDB02F]/20 text-[#FDB02F]" : "bg-white/5 border-white/10 text-white/50"}`}>
           <Filter size={14} />
           Filters
         </button>
@@ -92,14 +92,14 @@ export default function AuditLogsPage() {
 
       {showFilters && (
         <div className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-white/[0.02] border border-white/5">
-          <select value={actorTypeFilter} onChange={(e) => setActorTypeFilter(e.target.value)} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs focus:outline-none">
+          <select value={actorTypeFilter} onChange={(e) => setActorTypeFilter(e.target.value)} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-lg focus:outline-none">
             <option value="">All Actor Types</option>
             <option value="admin">Admin</option>
             <option value="client">Client</option>
           </select>
-          <input type="text" value={actionFilter} onChange={(e) => setActionFilter(e.target.value)} placeholder="Filter by action (e.g. user.update)" className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-xs placeholder:text-white/20 focus:outline-none" />
+          <input type="text" value={actionFilter} onChange={(e) => setActionFilter(e.target.value)} placeholder="Filter by action (e.g. user.update)" className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white/70 text-lg placeholder:text-white/20 focus:outline-none" />
           {(actionFilter || actorTypeFilter) && (
-            <button onClick={() => { setActionFilter(""); setActorTypeFilter(""); }} className="text-[10px] text-white/30 hover:text-white/60">Clear</button>
+            <button onClick={() => { setActionFilter(""); setActorTypeFilter(""); }} className="text-base text-white/30 hover:text-white/60">Clear</button>
           )}
         </div>
       )}
@@ -121,12 +121,12 @@ export default function AuditLogsPage() {
                 <Clock size={12} className="text-white/15 mt-1 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-medium text-white/70">{log.actorEmail}</span>
-                    <span className={`text-[11px] font-mono ${actionColors[log.action] || "text-[#FDB02F]"}`}>{log.action}</span>
+                    <span className="text-lg font-medium text-white/70">{log.actorEmail}</span>
+                    <span className={`text-lg font-mono ${actionColors[log.action] || "text-[#FDB02F]"}`}>{log.action}</span>
                     {log.targetType && (
-                      <span className="text-[10px] text-white/20">{log.targetType} {log.targetId ? `#${log.targetId.slice(0, 8)}` : ""}</span>
+                      <span className="text-base text-white/20">{log.targetType} {log.targetId ? `#${log.targetId.slice(0, 8)}` : ""}</span>
                     )}
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full border ${log.actorType === "admin" ? "bg-purple-400/10 text-purple-400 border-purple-400/20" : "bg-blue-400/10 text-blue-400 border-blue-400/20"}`}>
+                    <span className={`text-base px-1.5 py-0.5 rounded-full border ${log.actorType === "admin" ? "bg-purple-400/10 text-purple-400 border-purple-400/20" : "bg-blue-400/10 text-blue-400 border-blue-400/20"}`}>
                       {log.actorType}
                     </span>
                   </div>
@@ -138,7 +138,7 @@ export default function AuditLogsPage() {
                           {Object.entries(parsed).map(([key, val]) => {
                             const change = val as { from: unknown; to: unknown };
                             return (
-                              <span key={key} className="text-[10px] text-white/20">
+                              <span key={key} className="text-base text-white/20">
                                 {key}: <span className="text-red-400/50 line-through">{String(change.from ?? "")}</span> → <span className="text-green-400/50">{String(change.to ?? "")}</span>
                               </span>
                             );
@@ -146,11 +146,11 @@ export default function AuditLogsPage() {
                         </div>
                       );
                     } catch {
-                      return <p className="text-[10px] text-white/15 mt-0.5 truncate">{log.details}</p>;
+                      return <p className="text-base text-white/15 mt-0.5 truncate">{log.details}</p>;
                     }
                   })()}
                 </div>
-                <span className="text-[10px] text-white/15 shrink-0 whitespace-nowrap">{new Date(log.createdAt).toLocaleString()}</span>
+                <span className="text-base text-white/15 shrink-0 whitespace-nowrap">{new Date(log.createdAt).toLocaleString()}</span>
               </div>
             ))}
           </div>
@@ -159,7 +159,7 @@ export default function AuditLogsPage() {
         {/* Pagination */}
         {pagination.totalPages > 1 && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-white/5">
-            <p className="text-[11px] text-white/25">
+            <p className="text-lg text-white/25">
               Page {pagination.page} of {pagination.totalPages} ({pagination.total} entries)
             </p>
             <div className="flex items-center gap-1">

@@ -125,7 +125,7 @@ export function PricingSection() {
             />
           </button>
           <span className={`text-sm font-medium ${yearly ? "text-white" : "text-white/40"}`}>
-            Yearly <span className="text-[#FDB02F] text-xs">(Save 25%)</span>
+            Yearly <span className="text-[#FDB02F] text-lg">(Save 25%)</span>
           </span>
         </div>
 
@@ -141,7 +141,7 @@ export function PricingSection() {
               }`}
             >
               {/* Badge */}
-              <span className="inline-block px-3 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-xs font-bold mb-4">
+              <span className="inline-block px-3 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-lg font-bold mb-4">
                 {plan.badge}
               </span>
 
@@ -175,11 +175,11 @@ export function PricingSection() {
 
               {plan.bonus && (
                 <div className="mt-4 p-3 rounded-lg bg-[#FDB02F]/5 border border-[#FDB02F]/10">
-                  <p className="text-xs text-[#FDB02F]">{plan.bonus}</p>
+                  <p className="text-lg text-[#FDB02F]">{plan.bonus}</p>
                 </div>
               )}
 
-              <p className="mt-4 text-xs text-white/40 italic">
+              <p className="mt-4 text-lg text-white/40 italic">
                 Best for: {plan.bestFor}
               </p>
 
@@ -200,7 +200,7 @@ export function PricingSection() {
         {/* Enterprise */}
         <div className="glass-card p-8 flex flex-col md:flex-row items-center gap-8">
           <div className="flex-1">
-            <span className="inline-block px-3 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-xs font-bold mb-3">
+            <span className="inline-block px-3 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-lg font-bold mb-3">
               ENTERPRISE & INSTITUTIONAL
             </span>
             <h3 className="text-xl font-bold text-white mb-2">

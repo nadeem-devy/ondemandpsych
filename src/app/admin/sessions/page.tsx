@@ -55,16 +55,16 @@ export default function SessionsPage() {
                     <Monitor size={16} className="text-white/30" />
                   </div>
                   <div>
-                    <p className="text-white text-xs font-medium">{s.email}</p>
-                    <p className="text-white/25 text-[10px] mt-0.5">{s.userAgent ? s.userAgent.slice(0, 60) + "..." : "Unknown device"}</p>
+                    <p className="text-white text-lg font-medium">{s.email}</p>
+                    <p className="text-white/25 text-base mt-0.5">{s.userAgent ? s.userAgent.slice(0, 60) + "..." : "Unknown device"}</p>
                     <div className="flex items-center gap-3 mt-1">
-                      <span className="text-[10px] text-white/20">IP: {s.ipAddress || "—"}</span>
-                      <span className="text-[10px] text-white/20">Last seen: {new Date(s.lastSeenAt).toLocaleString()}</span>
-                      <span className="text-[10px] text-white/20">Expires: {new Date(s.expiresAt).toLocaleString()}</span>
+                      <span className="text-base text-white/20">IP: {s.ipAddress || "—"}</span>
+                      <span className="text-base text-white/20">Last seen: {new Date(s.lastSeenAt).toLocaleString()}</span>
+                      <span className="text-base text-white/20">Expires: {new Date(s.expiresAt).toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
-                <button onClick={() => revokeSession(s.id)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] hover:bg-red-500/20">
+                <button onClick={() => revokeSession(s.id)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-lg hover:bg-red-500/20">
                   <Trash2 size={12} />
                   Revoke
                 </button>

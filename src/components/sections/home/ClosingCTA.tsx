@@ -28,7 +28,7 @@ export function ClosingCTA() {
               <div className="font-mono text-xl md:text-2xl font-bold text-[#07123A]">
                 {s.value}
               </div>
-              <div className="text-xs text-[#07123A]/60 mt-1">{s.label}</div>
+              <div className="text-lg text-[#07123A]/60 mt-1">{s.label}</div>
             </div>
           ))}
         </div>
