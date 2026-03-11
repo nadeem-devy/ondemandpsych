@@ -60,7 +60,7 @@ export function WhoItsFor() {
                 <c.icon className="text-[#FDB02F]" size={24} />
               </div>
               <h3 className="text-sm font-bold text-white mb-3">{c.title}</h3>
-              <p className="text-lg text-white/50 leading-relaxed">{c.body}</p>
+              <p className="text-xs text-white/50 leading-relaxed">{c.body}</p>
             </GlassCard>
           ))}
         </div>

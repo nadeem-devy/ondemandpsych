@@ -49,7 +49,7 @@ export function FounderBio() {
           {/* Credentials — redesigned */}
           <div className="space-y-8">
             <div>
-              <p className="text-[#FDB02F] text-lg font-semibold tracking-widest uppercase mb-3">
+              <p className="text-[#FDB02F] text-xs font-semibold tracking-widest uppercase mb-3">
                 Founder & Clinical Architect
               </p>
               <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
@@ -72,12 +72,12 @@ export function FounderBio() {
                       {cred.label}
                     </p>
                     {cred.highlight && (
-                      <p className="text-lg text-[#FDB02F]/70 mt-0.5">
+                      <p className="text-xs text-[#FDB02F]/70 mt-0.5">
                         {cred.highlight}
                       </p>
                     )}
                   </div>
-                  <span className="ml-auto text-base font-mono text-white/15 shrink-0">
+                  <span className="ml-auto text-[10px] font-mono text-white/15 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>

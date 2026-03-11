@@ -85,7 +85,7 @@ export default async function BlogPage() {
                   {/* Content */}
                   <div className="p-5">
                     {post.category && (
-                      <span className="text-[#FDB02F] text-base font-semibold uppercase tracking-wider">
+                      <span className="text-[#FDB02F] text-[10px] font-semibold uppercase tracking-wider">
                         {post.category}
                       </span>
                     )}
@@ -93,16 +93,16 @@ export default async function BlogPage() {
                       {post.title}
                     </h3>
                     {post.excerpt && (
-                      <p className="text-white/40 text-lg mt-2 line-clamp-3">
+                      <p className="text-white/40 text-xs mt-2 line-clamp-3">
                         {post.excerpt}
                       </p>
                     )}
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
-                      <span className="text-white/30 text-base">
+                      <span className="text-white/30 text-[10px]">
                         {post.author}
                       </span>
                       {post.publishedAt && (
-                        <span className="text-white/20 text-base">
+                        <span className="text-white/20 text-[10px]">
                           {new Date(post.publishedAt).toLocaleDateString()}
                         </span>
                       )}

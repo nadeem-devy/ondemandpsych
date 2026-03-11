@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
           )}
 
           <div>
-            <label className="block text-white/60 text-lg font-medium mb-1.5">
+            <label className="block text-white/60 text-xs font-medium mb-1.5">
               Email
             </label>
             <input
@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
           </div>
 
           <div>
-            <label className="block text-white/60 text-lg font-medium mb-1.5">
+            <label className="block text-white/60 text-xs font-medium mb-1.5">
               Password
             </label>
             <input

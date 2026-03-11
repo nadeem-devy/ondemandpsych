@@ -182,7 +182,7 @@ export default function SubscriptionPage() {
           <div className="flex items-center gap-3">
             <img src="/logo.webp" alt="OnDemandPsych" className="h-10 w-auto" />
             <h1 className="text-lg font-bold text-white">Subscription</h1>
-            <span className="ml-2 text-base font-semibold uppercase px-2 py-0.5 rounded bg-[#FDB02F]/10 text-[#FDB02F]">
+            <span className="ml-2 text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-[#FDB02F]/10 text-[#FDB02F]">
               {currentPlan}
             </span>
           </div>
@@ -236,7 +236,7 @@ export default function SubscriptionPage() {
               />
             </button>
             <span className={`text-sm font-medium ${yearly ? "text-white" : "text-white/40"}`}>
-              Yearly <span className="text-[#FDB02F] text-lg">(Save 25%)</span>
+              Yearly <span className="text-[#FDB02F] text-xs">(Save 25%)</span>
             </span>
           </div>
         </div>
@@ -258,13 +258,13 @@ export default function SubscriptionPage() {
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#FDB02F] text-[#07123A] text-base font-bold uppercase tracking-wider">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#FDB02F] text-[#07123A] text-[10px] font-bold uppercase tracking-wider">
                     Most Popular
                   </div>
                 )}
 
                 {/* Badge */}
-                <span className="inline-block w-fit px-3 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-lg font-bold mb-4">
+                <span className="inline-block w-fit px-3 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-xs font-bold mb-4">
                   {plan.badge}
                 </span>
 
@@ -277,7 +277,7 @@ export default function SubscriptionPage() {
                   <div>
                     <h3 className="text-white font-bold">{plan.name}</h3>
                     {isCurrent && (
-                      <span className="text-base text-[#FDB02F] font-semibold uppercase">Current Plan</span>
+                      <span className="text-[10px] text-[#FDB02F] font-semibold uppercase">Current Plan</span>
                     )}
                   </div>
                 </div>
@@ -298,18 +298,18 @@ export default function SubscriptionPage() {
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2.5">
                       <Check size={14} className={`shrink-0 mt-0.5 ${plan.popular ? "text-[#FDB02F]" : "text-white/30"}`} />
-                      <span className="text-white/55 text-lg leading-relaxed">{f}</span>
+                      <span className="text-white/55 text-xs leading-relaxed">{f}</span>
                     </li>
                   ))}
                 </ul>
 
                 {plan.bonus && (
                   <div className="mb-4 p-3 rounded-lg bg-[#FDB02F]/5 border border-[#FDB02F]/10">
-                    <p className="text-lg text-[#FDB02F]">{plan.bonus}</p>
+                    <p className="text-xs text-[#FDB02F]">{plan.bonus}</p>
                   </div>
                 )}
 
-                <p className="mb-5 text-lg text-white/30 italic">Best for: {plan.bestFor}</p>
+                <p className="mb-5 text-[11px] text-white/30 italic">Best for: {plan.bestFor}</p>
 
                 <button
                   disabled={isCurrent}
@@ -331,7 +331,7 @@ export default function SubscriptionPage() {
         {/* Enterprise card */}
         <div className="bg-[#0D1B4B]/60 backdrop-blur-md border border-emerald-500/20 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8">
           <div className="flex-1">
-            <span className="inline-block px-3 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-lg font-bold mb-3">
+            <span className="inline-block px-3 py-1 rounded-full bg-[#FDB02F]/10 text-[#FDB02F] text-xs font-bold mb-3">
               ENTERPRISE & INSTITUTIONAL
             </span>
             <h3 className="text-xl font-bold text-white mb-2">Custom Pricing</h3>
@@ -343,7 +343,7 @@ export default function SubscriptionPage() {
               {plans.find((p) => p.id === "enterprise")!.features.map((f) => (
                 <li key={f} className="flex items-start gap-2">
                   <Check size={12} className="text-emerald-400 shrink-0 mt-0.5" />
-                  <span className="text-white/50 text-lg">{f}</span>
+                  <span className="text-white/50 text-xs">{f}</span>
                 </li>
               ))}
             </ul>
@@ -357,7 +357,7 @@ export default function SubscriptionPage() {
         </div>
 
         <div className="mt-10 text-center">
-          <p className="text-white/20 text-lg">
+          <p className="text-white/20 text-xs">
             All plans include HIPAA-aligned workflows. Payment processing is handled securely via Stripe.
           </p>
         </div>

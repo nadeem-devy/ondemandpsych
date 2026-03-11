@@ -78,19 +78,19 @@ export default function BlogListPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="text-left text-white/40 text-lg font-medium px-6 py-3">
+                <th className="text-left text-white/40 text-xs font-medium px-6 py-3">
                   Title
                 </th>
-                <th className="text-left text-white/40 text-lg font-medium px-6 py-3">
+                <th className="text-left text-white/40 text-xs font-medium px-6 py-3">
                   Status
                 </th>
-                <th className="text-left text-white/40 text-lg font-medium px-6 py-3">
+                <th className="text-left text-white/40 text-xs font-medium px-6 py-3">
                   Category
                 </th>
-                <th className="text-left text-white/40 text-lg font-medium px-6 py-3">
+                <th className="text-left text-white/40 text-xs font-medium px-6 py-3">
                   Date
                 </th>
-                <th className="text-right text-white/40 text-lg font-medium px-6 py-3">
+                <th className="text-right text-white/40 text-xs font-medium px-6 py-3">
                   Actions
                 </th>
               </tr>
@@ -108,13 +108,13 @@ export default function BlogListPage() {
                     >
                       {post.title}
                     </Link>
-                    <p className="text-white/30 text-lg mt-0.5">
+                    <p className="text-white/30 text-xs mt-0.5">
                       /blog/{post.slug}
                     </p>
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-lg font-medium ${
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                         post.status === "published"
                           ? "bg-green-500/15 text-green-400"
                           : "bg-yellow-500/15 text-yellow-400"
@@ -131,7 +131,7 @@ export default function BlogListPage() {
                   <td className="px-6 py-4 text-white/40 text-sm">
                     {post.category || "—"}
                   </td>
-                  <td className="px-6 py-4 text-white/40 text-lg">
+                  <td className="px-6 py-4 text-white/40 text-xs">
                     {new Date(
                       post.publishedAt || post.createdAt
                     ).toLocaleDateString()}

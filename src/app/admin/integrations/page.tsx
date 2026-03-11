@@ -76,8 +76,8 @@ export default function IntegrationsPage() {
                 isHealthy ? <CheckCircle size={16} className="text-green-400" /> : <XCircle size={16} className="text-red-400" />}
               </div>
               <p className="text-white text-sm font-medium">{int.name}</p>
-              <p className="text-white/30 text-lg mt-0.5">{int.description}</p>
-              {check?.details && <p className="text-white/15 text-base mt-2">{check.details}</p>}
+              <p className="text-white/30 text-[11px] mt-0.5">{int.description}</p>
+              {check?.details && <p className="text-white/15 text-[10px] mt-2">{check.details}</p>}
             </div>
           );
         })}
@@ -85,26 +85,26 @@ export default function IntegrationsPage() {
 
       {/* IP Allowlist */}
       <h2 className="text-white font-semibold text-sm mb-3">Admin IP Allowlist</h2>
-      <p className="text-white/30 text-lg mb-4">Restrict admin panel access to specific IP addresses. Leave empty to allow all IPs.</p>
+      <p className="text-white/30 text-xs mb-4">Restrict admin panel access to specific IP addresses. Leave empty to allow all IPs.</p>
 
       <div className="rounded-2xl bg-[#0D1B4B]/40 border border-white/10 p-5 mb-4">
         <div className="flex gap-3 mb-4">
-          <input placeholder="IP address or CIDR (e.g. 192.168.1.0/24)" value={newIp} onChange={(e) => setNewIp(e.target.value)} className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none" />
-          <input placeholder="Description (optional)" value={newIpDesc} onChange={(e) => setNewIpDesc(e.target.value)} className="w-48 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none" />
-          <button onClick={addIp} className="px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-lg font-bold hover:bg-[#FDAA40]">Add</button>
+          <input placeholder="IP address or CIDR (e.g. 192.168.1.0/24)" value={newIp} onChange={(e) => setNewIp(e.target.value)} className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
+          <input placeholder="Description (optional)" value={newIpDesc} onChange={(e) => setNewIpDesc(e.target.value)} className="w-48 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
+          <button onClick={addIp} className="px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-xs font-bold hover:bg-[#FDAA40]">Add</button>
         </div>
 
         {ipEntries.length === 0 ? (
-          <p className="text-white/20 text-lg text-center py-4">No IP restrictions configured. All IPs can access admin.</p>
+          <p className="text-white/20 text-xs text-center py-4">No IP restrictions configured. All IPs can access admin.</p>
         ) : (
           <div className="divide-y divide-white/5">
             {ipEntries.map((entry) => (
               <div key={entry.id} className="flex items-center justify-between py-2.5">
                 <div>
-                  <p className="text-white text-lg font-mono">{entry.ipRange}</p>
-                  {entry.description && <p className="text-white/25 text-base">{entry.description}</p>}
+                  <p className="text-white text-xs font-mono">{entry.ipRange}</p>
+                  {entry.description && <p className="text-white/25 text-[10px]">{entry.description}</p>}
                 </div>
-                <button onClick={() => removeIp(entry.id)} className="text-red-400/50 hover:text-red-400 text-lg">Remove</button>
+                <button onClick={() => removeIp(entry.id)} className="text-red-400/50 hover:text-red-400 text-[11px]">Remove</button>
               </div>
             ))}
           </div>

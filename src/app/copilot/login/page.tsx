@@ -61,7 +61,7 @@ export default function CopilotLogin() {
             )}
 
             <div>
-              <label className="block text-white/50 text-lg font-medium mb-2">Email Address</label>
+              <label className="block text-white/50 text-xs font-medium mb-2">Email Address</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <input
@@ -76,7 +76,7 @@ export default function CopilotLogin() {
             </div>
 
             <div>
-              <label className="block text-white/50 text-lg font-medium mb-2">Password</label>
+              <label className="block text-white/50 text-xs font-medium mb-2">Password</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <input
@@ -91,7 +91,7 @@ export default function CopilotLogin() {
             </div>
 
             <div className="flex justify-end">
-              <Link href="/copilot/forgot-password" className="text-[#FDB02F]/70 hover:text-[#FDB02F] text-lg transition-colors">
+              <Link href="/copilot/forgot-password" className="text-[#FDB02F]/70 hover:text-[#FDB02F] text-xs transition-colors">
                 Forgot password?
               </Link>
             </div>
@@ -113,7 +113,7 @@ export default function CopilotLogin() {
           </form>
 
           <div className="mt-6 pt-6 border-t border-white/5 text-center">
-            <p className="text-white/30 text-lg">
+            <p className="text-white/30 text-xs">
               Don&apos;t have an account?{" "}
               <Link href="/copilot/register" className="text-[#FDB02F] hover:text-[#FDAA40] font-medium transition-colors">
                 Create one
@@ -122,7 +122,7 @@ export default function CopilotLogin() {
           </div>
         </div>
 
-        <p className="text-center text-white/20 text-lg mt-6">
+        <p className="text-center text-white/20 text-[11px] mt-6">
           By signing in, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

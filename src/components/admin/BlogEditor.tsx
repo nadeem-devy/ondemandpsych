@@ -164,12 +164,12 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
 
           {/* Slug */}
           <div className="flex items-center gap-2">
-            <span className="text-white/30 text-lg">/blog/</span>
+            <span className="text-white/30 text-xs">/blog/</span>
             <input
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              className="flex-1 px-3 py-1.5 rounded bg-white/5 border border-white/10 text-white/60 text-lg focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
+              className="flex-1 px-3 py-1.5 rounded bg-white/5 border border-white/10 text-white/60 text-xs focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
             />
           </div>
 
@@ -200,7 +200,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             </h3>
 
             <div>
-              <label className="block text-white/40 text-lg mb-1">
+              <label className="block text-white/40 text-xs mb-1">
                 Status
               </label>
               <select
@@ -214,7 +214,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             </div>
 
             <div>
-              <label className="block text-white/40 text-lg mb-1">
+              <label className="block text-white/40 text-xs mb-1">
                 Category
               </label>
               <input
@@ -227,7 +227,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             </div>
 
             <div>
-              <label className="block text-white/40 text-lg mb-1">
+              <label className="block text-white/40 text-xs mb-1">
                 Tags (comma-separated)
               </label>
               <input
@@ -240,7 +240,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             </div>
 
             <div>
-              <label className="block text-white/40 text-lg mb-1">
+              <label className="block text-white/40 text-xs mb-1">
                 Author
               </label>
               <input
@@ -252,7 +252,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             </div>
 
             <div>
-              <label className="block text-white/40 text-lg mb-1">
+              <label className="block text-white/40 text-xs mb-1">
                 Featured Image URL
               </label>
               <input
@@ -285,7 +285,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             {showSeo && (
               <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
                 <div>
-                  <label className="flex items-center justify-between text-white/40 text-lg mb-1">
+                  <label className="flex items-center justify-between text-white/40 text-xs mb-1">
                     <span>Meta Title</span>
                     <span
                       className={
@@ -305,7 +305,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 </div>
 
                 <div>
-                  <label className="flex items-center justify-between text-white/40 text-lg mb-1">
+                  <label className="flex items-center justify-between text-white/40 text-xs mb-1">
                     <span>Meta Description</span>
                     <span
                       className={
@@ -325,7 +325,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-lg mb-1">
+                  <label className="block text-white/40 text-xs mb-1">
                     Meta Keywords
                   </label>
                   <input
@@ -338,7 +338,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-lg mb-1">
+                  <label className="block text-white/40 text-xs mb-1">
                     Canonical URL
                   </label>
                   <input
@@ -351,7 +351,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-lg mb-1">
+                  <label className="block text-white/40 text-xs mb-1">
                     Schema Type
                   </label>
                   <select
@@ -372,23 +372,23 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                     onChange={(e) => setNoIndex(e.target.checked)}
                     className="rounded border-white/20"
                   />
-                  <span className="text-white/40 text-lg">
+                  <span className="text-white/40 text-xs">
                     noindex (hide from search engines)
                   </span>
                 </label>
 
                 {/* SEO Preview */}
                 <div className="mt-3 p-3 rounded-lg bg-white/5 border border-white/5">
-                  <p className="text-lg text-white/30 mb-2">
+                  <p className="text-xs text-white/30 mb-2">
                     Google Preview
                   </p>
                   <p className="text-blue-400 text-sm font-medium truncate">
                     {metaTitle || title || "Post Title"}
                   </p>
-                  <p className="text-green-400/60 text-lg truncate">
+                  <p className="text-green-400/60 text-xs truncate">
                     ondemandpsych.com/blog/{slug || "post-slug"}
                   </p>
-                  <p className="text-white/40 text-lg mt-1 line-clamp-2">
+                  <p className="text-white/40 text-xs mt-1 line-clamp-2">
                     {metaDescription || excerpt || "Post description..."}
                   </p>
                 </div>
@@ -416,7 +416,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
             {showOg && (
               <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
                 <div>
-                  <label className="block text-white/40 text-lg mb-1">
+                  <label className="block text-white/40 text-xs mb-1">
                     OG Title
                   </label>
                   <input
@@ -429,7 +429,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-lg mb-1">
+                  <label className="block text-white/40 text-xs mb-1">
                     OG Description
                   </label>
                   <textarea
@@ -442,7 +442,7 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                 </div>
 
                 <div>
-                  <label className="block text-white/40 text-lg mb-1">
+                  <label className="block text-white/40 text-xs mb-1">
                     OG Image URL
                   </label>
                   <input
@@ -471,13 +471,13 @@ export function BlogEditor({ post, onSave, saving }: BlogEditorProps) {
                     )}
                   </div>
                   <div className="p-3 bg-white/5">
-                    <p className="text-white/30 text-base uppercase">
+                    <p className="text-white/30 text-[10px] uppercase">
                       ondemandpsych.com
                     </p>
-                    <p className="text-white text-lg font-medium mt-0.5 truncate">
+                    <p className="text-white text-xs font-medium mt-0.5 truncate">
                       {ogTitle || title || "Post Title"}
                     </p>
-                    <p className="text-white/40 text-lg mt-0.5 line-clamp-2">
+                    <p className="text-white/40 text-[11px] mt-0.5 line-clamp-2">
                       {ogDescription || excerpt || "Post description..."}
                     </p>
                   </div>

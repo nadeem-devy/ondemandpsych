@@ -67,7 +67,7 @@ export default function PlansPage() {
           <h1 className="text-2xl font-bold text-white">Plans Management</h1>
           <p className="text-white/40 text-sm mt-1">Create and manage subscription plans</p>
         </div>
-        <button onClick={() => setShowCreate(!showCreate)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-lg font-bold hover:bg-[#FDAA40] transition-colors">
+        <button onClick={() => setShowCreate(!showCreate)} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-xs font-bold hover:bg-[#FDAA40] transition-colors">
           <Plus size={14} />
           New Plan
         </button>
@@ -77,17 +77,17 @@ export default function PlansPage() {
         <div className="rounded-2xl bg-[#0D1B4B]/60 border border-[#FDB02F]/20 p-6 mb-6 space-y-4">
           <h3 className="text-white font-semibold text-sm">Create New Plan</h3>
           <div className="grid grid-cols-2 gap-4">
-            <input placeholder="Internal name (e.g. basic)" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none" />
-            <input placeholder="Display name (e.g. Basic Plan)" value={form.displayName} onChange={(e) => setForm({ ...form, displayName: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none" />
-            <input placeholder="Monthly price" type="number" value={form.priceMonthly} onChange={(e) => setForm({ ...form, priceMonthly: parseFloat(e.target.value) })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none" />
-            <input placeholder="Yearly price" type="number" value={form.priceYearly} onChange={(e) => setForm({ ...form, priceYearly: parseFloat(e.target.value) })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none" />
-            <input placeholder="Message limit (-1 = unlimited)" type="number" value={form.messageLimit} onChange={(e) => setForm({ ...form, messageLimit: parseInt(e.target.value) })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none" />
-            <input placeholder="Features (comma-separated)" value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none" />
+            <input placeholder="Internal name (e.g. basic)" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
+            <input placeholder="Display name (e.g. Basic Plan)" value={form.displayName} onChange={(e) => setForm({ ...form, displayName: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
+            <input placeholder="Monthly price" type="number" value={form.priceMonthly} onChange={(e) => setForm({ ...form, priceMonthly: parseFloat(e.target.value) })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none" />
+            <input placeholder="Yearly price" type="number" value={form.priceYearly} onChange={(e) => setForm({ ...form, priceYearly: parseFloat(e.target.value) })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none" />
+            <input placeholder="Message limit (-1 = unlimited)" type="number" value={form.messageLimit} onChange={(e) => setForm({ ...form, messageLimit: parseInt(e.target.value) })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none" />
+            <input placeholder="Features (comma-separated)" value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none" />
           </div>
-          <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-lg placeholder:text-white/20 focus:outline-none resize-none" rows={2} />
+          <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs placeholder:text-white/20 focus:outline-none resize-none" rows={2} />
           <div className="flex gap-2">
-            <button onClick={handleCreate} className="px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-lg font-bold">Create Plan</button>
-            <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg bg-white/5 text-white/50 text-lg">Cancel</button>
+            <button onClick={handleCreate} className="px-4 py-2 rounded-lg bg-[#FDB02F] text-[#07123A] text-xs font-bold">Create Plan</button>
+            <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg bg-white/5 text-white/50 text-xs">Cancel</button>
           </div>
         </div>
       )}
@@ -107,23 +107,23 @@ export default function PlansPage() {
                   </div>
                   <div>
                     <h3 className="text-white font-semibold text-sm">{plan.displayName}</h3>
-                    <p className="text-white/30 text-lg">{plan.name} • {plan.isActive ? "Active" : "Inactive"}</p>
+                    <p className="text-white/30 text-[11px]">{plan.name} • {plan.isActive ? "Active" : "Inactive"}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => handleUpdate(plan.id, { isActive: !plan.isActive })} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/50 text-lg hover:bg-white/10">
+                  <button onClick={() => handleUpdate(plan.id, { isActive: !plan.isActive })} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/50 text-[11px] hover:bg-white/10">
                     {plan.isActive ? "Deactivate" : "Activate"}
                   </button>
                   <button onClick={() => handleDelete(plan.id)} className="p-1.5 rounded-lg text-red-400/50 hover:text-red-400 hover:bg-red-400/10"><Trash2 size={14} /></button>
                 </div>
               </div>
               <div className="mt-4 grid grid-cols-4 gap-4">
-                <div><p className="text-base text-white/30">Monthly</p><p className="text-white text-sm font-bold">${plan.priceMonthly}</p></div>
-                <div><p className="text-base text-white/30">Yearly</p><p className="text-white text-sm font-bold">${plan.priceYearly}</p></div>
-                <div><p className="text-base text-white/30">Message Limit</p><p className="text-white text-sm font-bold">{plan.messageLimit === -1 ? "Unlimited" : plan.messageLimit}</p></div>
-                <div><p className="text-base text-white/30">Features</p><p className="text-white/50 text-lg">{plan.features ? JSON.parse(plan.features).join(", ") : "—"}</p></div>
+                <div><p className="text-[10px] text-white/30">Monthly</p><p className="text-white text-sm font-bold">${plan.priceMonthly}</p></div>
+                <div><p className="text-[10px] text-white/30">Yearly</p><p className="text-white text-sm font-bold">${plan.priceYearly}</p></div>
+                <div><p className="text-[10px] text-white/30">Message Limit</p><p className="text-white text-sm font-bold">{plan.messageLimit === -1 ? "Unlimited" : plan.messageLimit}</p></div>
+                <div><p className="text-[10px] text-white/30">Features</p><p className="text-white/50 text-[11px]">{plan.features ? JSON.parse(plan.features).join(", ") : "—"}</p></div>
               </div>
-              {plan.description && <p className="mt-2 text-white/25 text-lg">{plan.description}</p>}
+              {plan.description && <p className="mt-2 text-white/25 text-xs">{plan.description}</p>}
             </div>
           ))
         )}

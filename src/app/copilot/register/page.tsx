@@ -88,7 +88,7 @@ export default function CopilotRegister() {
             )}
 
             <div>
-              <label className="block text-white/50 text-lg font-medium mb-2">Full Name</label>
+              <label className="block text-white/50 text-xs font-medium mb-2">Full Name</label>
               <div className="relative">
                 <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <input
@@ -103,7 +103,7 @@ export default function CopilotRegister() {
             </div>
 
             <div>
-              <label className="block text-white/50 text-lg font-medium mb-2">Email Address</label>
+              <label className="block text-white/50 text-xs font-medium mb-2">Email Address</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <input
@@ -118,7 +118,7 @@ export default function CopilotRegister() {
             </div>
 
             <div>
-              <label className="block text-white/50 text-lg font-medium mb-2">Clinical Role</label>
+              <label className="block text-white/50 text-xs font-medium mb-2">Clinical Role</label>
               <div className="relative">
                 <Stethoscope size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <select
@@ -139,7 +139,7 @@ export default function CopilotRegister() {
             </div>
 
             <div>
-              <label className="block text-white/50 text-lg font-medium mb-2">Password</label>
+              <label className="block text-white/50 text-xs font-medium mb-2">Password</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <input
@@ -154,7 +154,7 @@ export default function CopilotRegister() {
             </div>
 
             <div>
-              <label className="block text-white/50 text-lg font-medium mb-2">Confirm Password</label>
+              <label className="block text-white/50 text-xs font-medium mb-2">Confirm Password</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25" />
                 <input
@@ -185,7 +185,7 @@ export default function CopilotRegister() {
           </form>
 
           <div className="mt-6 pt-6 border-t border-white/5 text-center">
-            <p className="text-white/30 text-lg">
+            <p className="text-white/30 text-xs">
               Already have an account?{" "}
               <Link href="/copilot/login" className="text-[#FDB02F] hover:text-[#FDAA40] font-medium transition-colors">
                 Sign in

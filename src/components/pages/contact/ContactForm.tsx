@@ -24,7 +24,7 @@ export function ContactForm() {
 
             <div className="space-y-4 pt-4">
               <div className="flex items-center gap-3 text-sm text-white/50">
-                <span className="w-8 h-8 rounded-full bg-[#FDB02F]/10 flex items-center justify-center text-[#FDB02F] text-lg">
+                <span className="w-8 h-8 rounded-full bg-[#FDB02F]/10 flex items-center justify-center text-[#FDB02F] text-xs">
                   @
                 </span>
                 support@ondemandpsych.com

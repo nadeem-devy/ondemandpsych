@@ -74,7 +74,7 @@ export default function SettingsPage() {
 
           <form onSubmit={handlePasswordChange} className="space-y-3">
             <div>
-              <label className="block text-white/40 text-lg mb-1">
+              <label className="block text-white/40 text-xs mb-1">
                 Current Password
               </label>
               <input
@@ -86,7 +86,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-white/40 text-lg mb-1">
+              <label className="block text-white/40 text-xs mb-1">
                 New Password
               </label>
               <input
@@ -98,7 +98,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-white/40 text-lg mb-1">
+              <label className="block text-white/40 text-xs mb-1">
                 Confirm New Password
               </label>
               <input

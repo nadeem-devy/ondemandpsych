@@ -100,7 +100,7 @@ export function AdminSidebar() {
       <nav className="flex-1 p-4 space-y-4 overflow-y-auto">
         {navGroups.map((group) => (
           <div key={group.label}>
-            <p className="px-4 mb-1.5 text-lg font-semibold uppercase tracking-wider text-white/25">
+            <p className="px-4 mb-1.5 text-xs font-semibold uppercase tracking-wider text-white/25">
               {group.label}
             </p>
             <div className="space-y-0.5">
@@ -122,7 +122,7 @@ export function AdminSidebar() {
                     <item.icon size={20} />
                     <span className="flex-1">{item.label}</span>
                     {badgeCount > 0 && (
-                      <span className="min-w-[22px] h-[22px] flex items-center justify-center px-1.5 rounded-full text-lg font-bold bg-[#FDB02F] text-[#07123A]">
+                      <span className="min-w-[22px] h-[22px] flex items-center justify-center px-1.5 rounded-full text-[11px] font-bold bg-[#FDB02F] text-[#07123A]">
                         {badgeCount}
                       </span>
                     )}
