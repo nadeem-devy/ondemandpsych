@@ -74,15 +74,14 @@ export default function UploadDocumentPage() {
       return;
     }
 
-    // Bulk file upload — batch in groups of 5 to avoid timeout
-    const batchSize = 5;
+    // Upload files one at a time to avoid timeouts on serverless
     const allResults: UploadResult[] = [];
     setProgress({ current: 0, total: files.length });
 
-    for (let i = 0; i < files.length; i += batchSize) {
-      const batch = files.slice(i, i + batchSize);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       const formData = new FormData();
-      batch.forEach((f) => formData.append("file", f));
+      formData.append("file", file);
       if (category) formData.append("category", category);
       if (tags) formData.append("tags", tags);
 
@@ -91,11 +90,13 @@ export default function UploadDocumentPage() {
         const data = await res.json();
         if (data.results) {
           allResults.push(...data.results);
+        } else if (data.error) {
+          allResults.push({ name: file.name, status: "failed", error: data.error });
         }
-      } catch {
-        batch.forEach((f) => allResults.push({ name: f.name, status: "failed", error: "Network error" }));
+      } catch (err) {
+        allResults.push({ name: file.name, status: "failed", error: err instanceof Error ? err.message : "Network error — function may have timed out" });
       }
-      setProgress({ current: Math.min(i + batchSize, files.length), total: files.length });
+      setProgress({ current: i + 1, total: files.length });
       setResults([...allResults]);
     }
 
