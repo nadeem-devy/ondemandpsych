@@ -20,11 +20,10 @@ async function extractText(buffer: Buffer, ext: string): Promise<string> {
   }
 
   if (ext === "pdf") {
-    const { PDFParse } = await import("pdf-parse");
-    const pdf = new PDFParse({ data: new Uint8Array(buffer) });
-    const result = await pdf.getText();
-    await pdf.destroy();
-    return result.text;
+    const { getDocumentProxy, extractText: pdfExtract } = await import("unpdf");
+    const pdf = await getDocumentProxy(new Uint8Array(buffer));
+    const { text } = await pdfExtract(pdf, { mergePages: true });
+    return text;
   }
 
   if (["docx", "doc", "pptx", "ppt", "xlsx"].includes(ext)) {
