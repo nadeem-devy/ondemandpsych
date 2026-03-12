@@ -343,15 +343,16 @@ model RagDocument {
 }
 
 model RagChunk {
-  id         String   @id @default(cuid())
-  documentId String
-  document   RagDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  content    String
-  chunkIndex Int
-  tokenCount Int      @default(0)
-  metadata   String?  // JSON blob (page number, section title, etc.)
-  embedding  String?  // JSON array of floats (vector stored as text for compatibility)
-  createdAt  DateTime @default(now())
+  id            String                          @id @default(cuid())
+  documentId    String
+  document      RagDocument                     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  content       String
+  chunkIndex    Int
+  tokenCount    Int                             @default(0)
+  metadata      String?                         // JSON blob
+  embedding     String?                         // JSON fallback
+  embedding_vec Unsupported("vector(1536)")?    // pgvector native column
+  createdAt     DateTime                        @default(now())
 
   @@index([documentId])
 }

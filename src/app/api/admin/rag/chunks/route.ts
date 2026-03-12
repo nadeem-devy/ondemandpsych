@@ -48,6 +48,14 @@ export async function PUT(req: NextRequest) {
     },
   });
 
+  // Update pgvector column
+  const vectorStr = `[${embedding.join(",")}]`;
+  await prisma.$executeRawUnsafe(
+    `UPDATE "RagChunk" SET embedding_vec = $1::vector WHERE id = $2`,
+    vectorStr,
+    id
+  );
+
   return NextResponse.json(chunk);
 }
 

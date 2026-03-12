@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { prisma } from "./prisma";
+import { Prisma } from "@prisma/client";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -46,20 +47,20 @@ export function chunkText(
 }
 
 /**
- * Cosine similarity between two vectors.
+ * Store an embedding in the pgvector column using raw SQL.
  */
-function cosineSimilarity(a: number[], b: number[]): number {
-  let dot = 0, magA = 0, magB = 0;
-  for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    magA += a[i] * a[i];
-    magB += b[i] * b[i];
-  }
-  return dot / (Math.sqrt(magA) * Math.sqrt(magB));
+async function storeEmbedding(chunkId: string, embedding: number[]) {
+  const vectorStr = `[${embedding.join(",")}]`;
+  await prisma.$executeRawUnsafe(
+    `UPDATE "RagChunk" SET embedding_vec = $1::vector WHERE id = $2`,
+    vectorStr,
+    chunkId
+  );
 }
 
 /**
- * Retrieve top-K relevant chunks for a query.
+ * Retrieve top-K relevant chunks using pgvector cosine distance.
+ * Uses the HNSW index for fast approximate nearest neighbor search.
  */
 export async function retrieveChunks(
   query: string,
@@ -67,32 +68,54 @@ export async function retrieveChunks(
   similarityThreshold = 0.7
 ) {
   const queryEmbedding = await generateEmbedding(query);
+  const vectorStr = `[${queryEmbedding.join(",")}]`;
 
-  // Get all chunks that have embeddings
-  const allChunks = await prisma.ragChunk.findMany({
-    where: { embedding: { not: null } },
-    include: { document: { select: { title: true, category: true } } },
-  });
+  // pgvector: <=> is cosine distance (0 = identical, 2 = opposite)
+  // similarity = 1 - distance
+  const distanceThreshold = 1 - similarityThreshold;
 
-  // Calculate similarity scores
-  const scored = allChunks
-    .map((chunk) => {
-      const embedding = JSON.parse(chunk.embedding!) as number[];
-      const similarity = cosineSimilarity(queryEmbedding, embedding);
-      return { ...chunk, similarity };
-    })
-    .filter((c) => c.similarity >= similarityThreshold)
-    .sort((a, b) => b.similarity - a.similarity)
-    .slice(0, topK);
+  const results: {
+    id: string;
+    documentId: string;
+    content: string;
+    chunkIndex: number;
+    tokenCount: number;
+    metadata: string | null;
+    distance: number;
+    docTitle: string;
+    docCategory: string | null;
+  }[] = await prisma.$queryRawUnsafe(
+    `SELECT
+       c.id, c."documentId", c.content, c."chunkIndex", c."tokenCount", c.metadata,
+       (c.embedding_vec <=> $1::vector) as distance,
+       d.title as "docTitle", d.category as "docCategory"
+     FROM "RagChunk" c
+     JOIN "RagDocument" d ON d.id = c."documentId"
+     WHERE c.embedding_vec IS NOT NULL
+       AND (c.embedding_vec <=> $1::vector) <= $2
+     ORDER BY c.embedding_vec <=> $1::vector
+     LIMIT $3`,
+    vectorStr,
+    distanceThreshold,
+    topK
+  );
 
-  return scored;
+  return results.map((r) => ({
+    id: r.id,
+    documentId: r.documentId,
+    content: r.content,
+    chunkIndex: r.chunkIndex,
+    tokenCount: r.tokenCount,
+    metadata: r.metadata,
+    similarity: 1 - Number(r.distance),
+    document: { title: r.docTitle, category: r.docCategory },
+  }));
 }
 
 /**
- * Process a document: chunk text, generate embeddings, store in DB.
+ * Process a document: chunk text, generate embeddings, store in DB with pgvector.
  */
 export async function processDocument(documentId: string, text: string) {
-  // Get settings
   const settings = await prisma.ragSettings.findFirst();
   const chunkSize = settings?.chunkSize ?? 500;
   const chunkOverlap = settings?.chunkOverlap ?? 50;
@@ -110,18 +133,23 @@ export async function processDocument(documentId: string, text: string) {
     // Chunk the text
     const chunks = chunkText(text, chunkSize, chunkOverlap);
 
-    // Generate embeddings and store chunks
+    // Generate embeddings and store chunks with pgvector
     for (let i = 0; i < chunks.length; i++) {
       const embedding = await generateEmbedding(chunks[i], embeddingModel);
-      await prisma.ragChunk.create({
+
+      // Create the chunk record
+      const chunk = await prisma.ragChunk.create({
         data: {
           documentId,
           content: chunks[i],
           chunkIndex: i,
           tokenCount: Math.round(chunks[i].split(/\s+/).length / 0.75),
-          embedding: JSON.stringify(embedding),
+          embedding: JSON.stringify(embedding), // JSON fallback
         },
       });
+
+      // Store native pgvector embedding
+      await storeEmbedding(chunk.id, embedding);
     }
 
     await prisma.ragDocument.update({
@@ -148,7 +176,6 @@ export async function processDocument(documentId: string, text: string) {
 export async function ragQuery(userQuery: string, userId?: string) {
   const start = Date.now();
 
-  // Get active prompt and settings
   const [activePrompt, settings] = await Promise.all([
     prisma.ragPrompt.findFirst({ where: { isActive: true } }),
     prisma.ragSettings.findFirst(),
@@ -164,13 +191,12 @@ export async function ragQuery(userQuery: string, userId?: string) {
     activePrompt?.systemPrompt ??
     "You are a psychiatric clinical co-pilot. Use the provided context to answer questions accurately. If the context doesn't contain relevant information, say so.";
 
-  // Retrieve relevant chunks
+  // Retrieve relevant chunks via pgvector
   const chunks = await retrieveChunks(userQuery, topK, threshold);
   const context = chunks
     .map((c, i) => `[Source ${i + 1}: ${c.document.title}]\n${c.content}`)
     .join("\n\n---\n\n");
 
-  // Build messages
   const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
     { role: "system", content: `${systemPrompt}\n\n## Relevant Context:\n${context}` },
     { role: "user", content: userQuery },
@@ -187,7 +213,6 @@ export async function ragQuery(userQuery: string, userId?: string) {
   const latencyMs = Date.now() - start;
   const tokensUsed = completion.usage?.total_tokens ?? 0;
 
-  // Log the query
   await prisma.ragQueryLog.create({
     data: {
       query: userQuery,
