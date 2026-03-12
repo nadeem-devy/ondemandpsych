@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { processDocument } from "@/lib/rag";
-import { PDFParse } from "pdf-parse";
-import { parseOffice } from "officeparser";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile } from "fs/promises";
 import { tmpdir } from "os";
 import path from "path";
 
@@ -14,6 +12,7 @@ const ALLOWED_TYPES = ["txt", "md", "csv", "pdf", "docx", "doc", "pptx", "ppt", 
 
 /**
  * Extract text content from various file types.
+ * Uses dynamic imports to avoid crashing the module on Vercel.
  */
 async function extractText(buffer: Buffer, ext: string): Promise<string> {
   if (ext === "txt" || ext === "md" || ext === "csv") {
@@ -21,6 +20,7 @@ async function extractText(buffer: Buffer, ext: string): Promise<string> {
   }
 
   if (ext === "pdf") {
+    const { PDFParse } = await import("pdf-parse");
     const pdf = new PDFParse({ data: new Uint8Array(buffer) });
     const result = await pdf.getText();
     await pdf.destroy();
@@ -28,7 +28,7 @@ async function extractText(buffer: Buffer, ext: string): Promise<string> {
   }
 
   if (["docx", "doc", "pptx", "ppt", "xlsx"].includes(ext)) {
-    // officeparser needs a file path on disk — write to /tmp
+    const { parseOffice } = await import("officeparser");
     const tmpPath = path.join(tmpdir(), `rag-${Date.now()}.${ext}`);
     await writeFile(tmpPath, buffer);
     const result = await parseOffice(tmpPath);
