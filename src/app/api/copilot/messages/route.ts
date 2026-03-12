@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCopilotUser } from "@/lib/copilot-auth";
 import { checkTrialLimit, incrementTrialCount } from "@/lib/trial-guard";
+import { retrieveChunks } from "@/lib/rag";
 import OpenAI from "openai";
 
 const SYSTEM_PROMPT = `You are the OnDemandPsych Clinical Co-Pilot — the world's first psychiatric clinical decision-support tool built by a triple board-certified psychiatrist.
@@ -155,8 +156,35 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // RAG: retrieve relevant knowledge chunks
+  let ragContext = "";
+  try {
+    const settings = await prisma.ragSettings.findFirst();
+    const topK = settings?.retrievalLimit ?? 5;
+    const threshold = settings?.similarityThreshold ?? 0.7;
+    const chunks = await retrieveChunks(content, topK, threshold);
+    if (chunks.length > 0) {
+      ragContext = "\n\n[KNOWLEDGE BASE CONTEXT — Use this evidence-based information when relevant to the query:\n\n" +
+        chunks.map((c, i) => `[Source ${i + 1}: ${c.document.title}]\n${c.content}`).join("\n\n---\n\n") +
+        "\n\nEnd of knowledge base context.]";
+
+      // Log RAG query for analytics
+      await prisma.ragQueryLog.create({
+        data: {
+          query: content,
+          chunksUsed: chunks.length,
+          latencyMs: 0,
+          tokensUsed: 0,
+          userId: user.id,
+        },
+      });
+    }
+  } catch {
+    // RAG retrieval failed — continue without it
+  }
+
   // Generate AI response via OpenAI
-  const aiContent = await generateAIResponse(history, folderContext);
+  const aiContent = await generateAIResponse(history, (folderContext || "") + ragContext);
   const assistantMessage = await prisma.message.create({
     data: { chatId, role: "assistant", content: aiContent },
   });

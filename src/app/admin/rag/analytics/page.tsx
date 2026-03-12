@@ -1,0 +1,132 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { FileText, Layers, MessageSquare, Clock, Zap, ThumbsUp, ThumbsDown } from "lucide-react";
+
+interface Analytics {
+  totalDocuments: number;
+  indexedDocs: number;
+  failedDocs: number;
+  totalChunks: number;
+  totalQueries: number;
+  avgLatencyMs: number;
+  avgTokensUsed: number;
+  feedbackStats: { feedback: string; _count: number }[];
+  recentQueries: {
+    id: string;
+    query: string;
+    chunksUsed: number;
+    latencyMs: number;
+    tokensUsed: number;
+    feedback: string | null;
+    createdAt: string;
+  }[];
+}
+
+export default function RAGAnalyticsPage() {
+  const [data, setData] = useState<Analytics | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [days, setDays] = useState(30);
+
+  useEffect(() => { fetchAnalytics(); }, [days]);
+
+  async function fetchAnalytics() {
+    setLoading(true);
+    const res = await fetch(`/api/admin/rag/analytics?days=${days}`);
+    const json = await res.json();
+    setData(json);
+    setLoading(false);
+  }
+
+  if (loading) return <div className="text-center py-12 text-white/40 text-base">Loading analytics...</div>;
+  if (!data) return <div className="text-center py-12 text-red-400 text-base">Failed to load analytics</div>;
+
+  const thumbsUp = data.feedbackStats.find((f) => f.feedback === "thumbs_up")?._count ?? 0;
+  const thumbsDown = data.feedbackStats.find((f) => f.feedback === "thumbs_down")?._count ?? 0;
+
+  const stats = [
+    { icon: FileText, label: "Documents", value: data.totalDocuments, sub: `${data.indexedDocs} indexed · ${data.failedDocs} failed` },
+    { icon: Layers, label: "Chunks", value: data.totalChunks, sub: "Total indexed chunks" },
+    { icon: MessageSquare, label: "Queries", value: data.totalQueries, sub: `Last ${days} days` },
+    { icon: Clock, label: "Avg Latency", value: `${data.avgLatencyMs}ms`, sub: "Per query" },
+    { icon: Zap, label: "Avg Tokens", value: data.avgTokensUsed, sub: "Per query" },
+    { icon: ThumbsUp, label: "Feedback", value: `${thumbsUp} / ${thumbsDown}`, sub: "Positive / Negative" },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">RAG Analytics</h1>
+          <p className="text-base text-white/50 mt-1">Monitor knowledge base performance</p>
+        </div>
+        <select
+          value={days}
+          onChange={(e) => setDays(parseInt(e.target.value))}
+          className="px-4 py-2 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base focus:border-[#FDB02F]/50 focus:outline-none"
+        >
+          <option value={7}>Last 7 days</option>
+          <option value={30}>Last 30 days</option>
+          <option value={90}>Last 90 days</option>
+        </select>
+      </div>
+
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {stats.map((stat) => (
+          <div key={stat.label} className="rounded-xl border border-white/10 bg-[#0D1B4B]/50 p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <stat.icon size={18} className="text-[#FDB02F]" />
+              <span className="text-base text-white/50">{stat.label}</span>
+            </div>
+            <p className="text-2xl font-bold text-white font-mono">{stat.value}</p>
+            <p className="text-base text-white/30 mt-1">{stat.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Recent queries */}
+      <div>
+        <h2 className="text-lg font-bold text-white mb-4">Recent Queries</h2>
+        <div className="rounded-xl border border-white/10 overflow-hidden">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/10 bg-[#0D1B4B]/50">
+                <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Query</th>
+                <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Chunks</th>
+                <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Latency</th>
+                <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Tokens</th>
+                <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Feedback</th>
+                <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.recentQueries.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-white/40 text-base">No queries yet</td>
+                </tr>
+              ) : (
+                data.recentQueries.map((q) => (
+                  <tr key={q.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                    <td className="px-4 py-3 text-base text-white/70 max-w-xs truncate">{q.query}</td>
+                    <td className="px-4 py-3 text-base text-white/50">{q.chunksUsed}</td>
+                    <td className="px-4 py-3 text-base text-white/50">{q.latencyMs}ms</td>
+                    <td className="px-4 py-3 text-base text-white/50">{q.tokensUsed}</td>
+                    <td className="px-4 py-3">
+                      {q.feedback === "thumbs_up" && <ThumbsUp size={16} className="text-green-400" />}
+                      {q.feedback === "thumbs_down" && <ThumbsDown size={16} className="text-red-400" />}
+                      {!q.feedback && <span className="text-base text-white/20">—</span>}
+                    </td>
+                    <td className="px-4 py-3 text-base text-white/40">
+                      {new Date(q.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}

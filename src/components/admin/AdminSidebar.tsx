@@ -21,6 +21,12 @@ import {
   Activity,
   Plug,
   FileCheck,
+  BrainCircuit,
+  Upload,
+  Layers,
+  MessageSquare,
+  SlidersHorizontal,
+  BarChart3,
 } from "lucide-react";
 
 const navGroups = [
@@ -49,6 +55,17 @@ const navGroups = [
       { href: "/admin/blog", label: "Blog Posts", icon: PenSquare },
       { href: "/admin/content-library", label: "Content Library", icon: FolderOpen },
       { href: "/admin/email-templates", label: "Email Templates", icon: Mail },
+    ],
+  },
+  {
+    label: "RAG",
+    items: [
+      { href: "/admin/rag", label: "Knowledge Base", icon: BrainCircuit },
+      { href: "/admin/rag/upload", label: "Upload Documents", icon: Upload },
+      { href: "/admin/rag/chunks", label: "Chunk Manager", icon: Layers },
+      { href: "/admin/rag/prompts", label: "Prompt Manager", icon: MessageSquare },
+      { href: "/admin/rag/settings", label: "Retrieval Settings", icon: SlidersHorizontal },
+      { href: "/admin/rag/analytics", label: "RAG Analytics", icon: BarChart3 },
     ],
   },
   {

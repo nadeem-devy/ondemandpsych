@@ -320,6 +320,82 @@ model ContentItem {
   @@index([category])
 }
 
+// ─── RAG Management ───
+
+model RagDocument {
+  id        String   @id @default(cuid())
+  title     String
+  fileType  String   // pdf, docx, txt, csv, etc.
+  fileUrl   String
+  fileSize  Int      @default(0)
+  category  String?
+  tags      String?  // comma-separated
+  status    String   @default("pending") // pending | processing | indexed | failed
+  pageCount Int?
+  error     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chunks RagChunk[]
+
+  @@index([status])
+  @@index([category])
+}
+
+model RagChunk {
+  id         String   @id @default(cuid())
+  documentId String
+  document   RagDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  content    String
+  chunkIndex Int
+  tokenCount Int      @default(0)
+  metadata   String?  // JSON blob (page number, section title, etc.)
+  embedding  String?  // JSON array of floats (vector stored as text for compatibility)
+  createdAt  DateTime @default(now())
+
+  @@index([documentId])
+}
+
+model RagPrompt {
+  id           String   @id @default(cuid())
+  name         String
+  systemPrompt String
+  temperature  Float    @default(0.7)
+  model        String   @default("gpt-4")
+  isActive     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model RagSettings {
+  id                  String   @id @default(cuid())
+  retrievalLimit      Int      @default(5)    // Top K chunks
+  chunkSize           Int      @default(500)  // tokens per chunk
+  chunkOverlap        Int      @default(50)   // overlap tokens
+  similarityThreshold Float    @default(0.7)
+  embeddingModel      String   @default("text-embedding-3-small")
+  chatModel           String   @default("gpt-4")
+  temperature         Float    @default(0.7)
+  maxTokens           Int      @default(2000)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model RagQueryLog {
+  id            String   @id @default(cuid())
+  query         String
+  response      String?
+  chunksUsed    Int      @default(0)
+  latencyMs     Int      @default(0)
+  tokensUsed    Int      @default(0)
+  userId        String?
+  feedback      String?  // thumbs_up | thumbs_down
+  createdAt     DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
 // ─── Email Templates ───
 
 model EmailTemplate {
