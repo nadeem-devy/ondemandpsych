@@ -1,7 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Save, Shield } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Save, Shield, Globe } from "lucide-react";
+
+interface SocialLinks {
+  facebook: string;
+  linkedin: string;
+  youtube: string;
+  x: string;
+  instagram: string;
+}
 
 export default function SettingsPage() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -9,6 +17,27 @@ export default function SettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>({
+    facebook: "",
+    linkedin: "",
+    youtube: "",
+    x: "",
+    instagram: "",
+  });
+  const [savingSocial, setSavingSocial] = useState(false);
+  const [socialMessage, setSocialMessage] = useState("");
+
+  useEffect(() => {
+    fetch("/api/admin/site-settings?key=social_links")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.value) {
+          setSocialLinks(data.value);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   async function handlePasswordChange(e: React.FormEvent) {
     e.preventDefault();
@@ -43,6 +72,34 @@ export default function SettingsPage() {
     setSaving(false);
   }
 
+  async function handleSaveSocial() {
+    setSavingSocial(true);
+    try {
+      const res = await fetch("/api/admin/site-settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: "social_links", value: socialLinks }),
+      });
+      if (res.ok) {
+        setSocialMessage("Social links saved successfully");
+        setTimeout(() => setSocialMessage(""), 3000);
+      } else {
+        setSocialMessage("Failed to save social links");
+      }
+    } catch {
+      setSocialMessage("Failed to save social links");
+    }
+    setSavingSocial(false);
+  }
+
+  const socialFields: { key: keyof SocialLinks; label: string; placeholder: string }[] = [
+    { key: "facebook", label: "Facebook", placeholder: "https://facebook.com/..." },
+    { key: "instagram", label: "Instagram", placeholder: "https://instagram.com/..." },
+    { key: "x", label: "X (Twitter)", placeholder: "https://x.com/..." },
+    { key: "linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/in/..." },
+    { key: "youtube", label: "YouTube", placeholder: "https://youtube.com/@..." },
+  ];
+
   return (
     <div className="p-8">
       <div className="mb-8">
@@ -52,7 +109,55 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <div className="max-w-lg">
+      <div className="max-w-lg space-y-8">
+        {/* Social Links */}
+        <div className="bg-[#0D1B4B]/60 border border-white/10 rounded-2xl p-6">
+          <h2 className="text-white font-semibold text-lg flex items-center gap-2 mb-4">
+            <Globe size={16} className="text-[#FDB02F]" />
+            Social Media Links
+          </h2>
+
+          {socialMessage && (
+            <div
+              className={`text-lg px-4 py-2.5 rounded-lg mb-4 ${
+                socialMessage.includes("success")
+                  ? "bg-green-500/10 border border-green-500/30 text-green-400"
+                  : "bg-red-500/10 border border-red-500/30 text-red-400"
+              }`}
+            >
+              {socialMessage}
+            </div>
+          )}
+
+          <div className="space-y-3">
+            {socialFields.map((field) => (
+              <div key={field.key}>
+                <label className="block text-white/40 text-base mb-1">
+                  {field.label}
+                </label>
+                <input
+                  type="url"
+                  value={socialLinks[field.key]}
+                  onChange={(e) =>
+                    setSocialLinks((prev) => ({ ...prev, [field.key]: e.target.value }))
+                  }
+                  className="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-lg focus:outline-none focus:border-[#FDB02F]/50 transition-colors"
+                  placeholder={field.placeholder}
+                />
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={handleSaveSocial}
+            disabled={savingSocial}
+            className="mt-4 flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#FDB02F] text-[#07123A] font-bold text-lg hover:bg-[#FDAA40] transition-colors disabled:opacity-50"
+          >
+            <Save size={16} />
+            {savingSocial ? "Saving..." : "Save Social Links"}
+          </button>
+        </div>
+
         {/* Change Password */}
         <div className="bg-[#0D1B4B]/60 border border-white/10 rounded-2xl p-6">
           <h2 className="text-white font-semibold text-lg flex items-center gap-2 mb-4">

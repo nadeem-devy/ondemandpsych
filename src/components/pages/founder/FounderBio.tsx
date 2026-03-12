@@ -30,7 +30,7 @@ const credentials: Credential[] = [
   { icon: Sparkles, label: "Visionary", highlight: "World's First AI-Powered Psychiatry Co-Pilot" },
 ];
 
-export function FounderBio() {
+export function FounderBio({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A]">
       <div className="mx-auto max-w-7xl px-6">
@@ -39,9 +39,9 @@ export function FounderBio() {
           <div className="relative">
             <div className="h-full rounded-2xl bg-gradient-to-b from-[#0D1B4B] to-[#07123A] border border-[#FDB02F]/20 overflow-hidden flex flex-col items-center justify-center p-8">
               <img src="/Dr Padder (1).webp" alt="Dr. Tanveer A. Padder, MD" className="w-full h-auto rounded-xl object-cover" />
-              <p className="text-white/60 text-lg mt-4">Dr. Tanveer A. Padder, MD</p>
+              <p className="text-white/60 text-lg mt-4">{content?.name || "Dr. Tanveer A. Padder, MD"}</p>
               <p className="text-[#FDB02F] text-lg font-medium">
-                Triple Board-Certified Psychiatrist
+                {content?.title || "Triple Board-Certified Psychiatrist"}
               </p>
             </div>
           </div>
@@ -53,7 +53,7 @@ export function FounderBio() {
                 Founder & Clinical Architect
               </p>
               <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
-                Dr. Tanveer A. Padder, MD
+                {content?.name || "Dr. Tanveer A. Padder, MD"}
               </h2>
             </div>
 
@@ -90,16 +90,27 @@ export function FounderBio() {
                 <path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z" />
               </svg>
               <blockquote className="pl-8">
-                <p className="text-base text-white/65 italic leading-relaxed">
-                  Decades of frontline psychiatric decision-making &mdash; where
-                  high-risk judgments, complicated medications, and time
-                  constraints collide &mdash; formed the foundation of On-Demand
-                  Psychiatry.
-                </p>
+                {content?.quote ? (
+                  <p className="text-base text-white/65 italic leading-relaxed" dangerouslySetInnerHTML={{ __html: content.quote }} />
+                ) : (
+                  <p className="text-base text-white/65 italic leading-relaxed">
+                    Decades of frontline psychiatric decision-making &mdash; where
+                    high-risk judgments, complicated medications, and time
+                    constraints collide &mdash; formed the foundation of On-Demand
+                    Psychiatry.
+                  </p>
+                )}
               </blockquote>
             </div>
           </div>
         </div>
+
+        {content?.content && (
+          <div
+            className="mt-12 prose prose-invert prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: content.content }}
+          />
+        )}
       </div>
     </SectionWrapper>
   );

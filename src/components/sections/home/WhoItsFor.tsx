@@ -36,13 +36,13 @@ const clinicians = [
   },
 ];
 
-export function WhoItsFor() {
+export function WhoItsFor({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#0D1B4B]">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-            Built for Every Type of Clinician
+            {content?.heading || "Built for Every Type of Clinician"}
           </h2>
           <p className="mt-4 text-white/50 text-lg">
             On-Demand Psychiatry adapts to real-world workflows without adding

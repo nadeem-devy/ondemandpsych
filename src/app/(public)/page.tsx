@@ -8,20 +8,23 @@ import { WhoItsFor } from "@/components/sections/home/WhoItsFor";
 import { ThreePillars } from "@/components/sections/home/ThreePillars";
 import { TrustSection } from "@/components/sections/home/TrustSection";
 import { ClosingCTA } from "@/components/sections/home/ClosingCTA";
+import { getAllPageContent } from "@/lib/content";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const content = await getAllPageContent("home");
+
   return (
     <>
-      <HeroSection />
-      <StatsBar />
-      <DeliversSection />
-      <FeatureGrid />
-      <SettingsTicker />
-      <FounderSpotlight />
-      <WhoItsFor />
-      <ThreePillars />
-      <TrustSection />
-      <ClosingCTA />
+      <HeroSection content={content["hero"]} />
+      <StatsBar content={content["stats"]} />
+      <DeliversSection content={content["delivers"]} />
+      <FeatureGrid content={content["features"]} />
+      <SettingsTicker content={content["settings-ticker"]} />
+      <FounderSpotlight content={content["founder-spotlight"]} />
+      <WhoItsFor content={content["who-its-for"]} />
+      <ThreePillars content={content["three-pillars"]} />
+      <TrustSection content={content["trust"]} />
+      <ClosingCTA content={content["closing-cta"]} />
     </>
   );
 }

@@ -8,7 +8,7 @@ const specItems = [
   "Thousands of clinical lectures & training modules",
 ];
 
-export function SolutionSection() {
+export function SolutionSection({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#0D1B4B]">
       <div className="mx-auto max-w-7xl px-6">
@@ -16,30 +16,39 @@ export function SolutionSection() {
           {/* Left */}
           <div className="space-y-6">
             <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
-              The Solution: On Demand Psych
+              {content?.heading || "The Solution: On Demand Psych"}
             </h2>
-            <p className="text-white/60 leading-relaxed">
-              On-Demand Psychiatry was designed to bridge the gap between
-              clinical need and available support. It delivers real-time
-              psychiatric reasoning, medication safety, risk assessment, and
-              documentation at the point of care.
-            </p>
-            <p className="text-white/60 leading-relaxed">
-              <strong className="text-white">Built on:</strong>
-            </p>
-            <ul className="space-y-2">
-              {[
-                "25+ years of frontline psychiatric experience",
-                "100,000+ real-world patient encounters",
-                "Evidence-based protocols & guidelines",
-                "Clinician-in-the-loop design principles",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-lg text-white/60">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+            {content?.content ? (
+              <div
+                className="prose prose-invert prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: content.content }}
+              />
+            ) : (
+              <>
+                <p className="text-white/60 leading-relaxed">
+                  On-Demand Psychiatry was designed to bridge the gap between
+                  clinical need and available support. It delivers real-time
+                  psychiatric reasoning, medication safety, risk assessment, and
+                  documentation at the point of care.
+                </p>
+                <p className="text-white/60 leading-relaxed">
+                  <strong className="text-white">Built on:</strong>
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    "25+ years of frontline psychiatric experience",
+                    "100,000+ real-world patient encounters",
+                    "Evidence-based protocols & guidelines",
+                    "Clinician-in-the-loop design principles",
+                  ].map((item) => (
+                    <li key={item} className="flex items-center gap-3 text-lg text-white/60">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
             <Button href="/copilot/login">
               Try the Co-Pilot &rarr;
             </Button>

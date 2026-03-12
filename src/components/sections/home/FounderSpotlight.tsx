@@ -3,7 +3,7 @@ import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
-export function FounderSpotlight() {
+export function FounderSpotlight({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A] relative overflow-hidden">
       {/* Faint silhouette bg */}
@@ -33,8 +33,7 @@ export function FounderSpotlight() {
               A Clinician&apos;s Vision for Safer Psychiatry
             </h2>
             <p className="text-white/50 text-lg">
-              Triple board-certified psychiatrist &middot; 25+ years &middot; 100,000+ patient
-              encounters
+              {content?.title || "Triple board-certified psychiatrist \u00B7 25+ years \u00B7 100,000+ patient encounters"}
             </p>
 
             {/* Credential blocks */}
@@ -67,14 +66,10 @@ export function FounderSpotlight() {
             {/* Pull quote */}
             <blockquote className="border-l-4 border-[#FDB02F] pl-6 py-2">
               <p className="italic text-white/70 text-lg leading-relaxed">
-                &ldquo;One thing became clear after years in emergency rooms,
-                inpatient units, and outpatient clinics: physicians are forced to
-                make important psychiatric choices under duress, often without
-                the necessary support. On-Demand Psychiatry was created to
-                change that.&rdquo;
+                {content?.quote || "\u201COne thing became clear after years in emergency rooms, inpatient units, and outpatient clinics: physicians are forced to make important psychiatric choices under duress, often without the necessary support. On-Demand Psychiatry was created to change that.\u201D"}
               </p>
               <cite className="text-base text-[#FDB02F] mt-2 block not-italic">
-                — Dr. Tanveer A. Padder, MD
+                — {content?.name || "Dr. Tanveer A. Padder, MD"}
               </cite>
             </blockquote>
 

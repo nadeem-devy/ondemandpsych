@@ -19,7 +19,7 @@ const pillars = [
   },
 ];
 
-export function ThreePillars() {
+export function ThreePillars({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A] relative">
       {/* Subtle grid lines */}
@@ -34,7 +34,7 @@ export function ThreePillars() {
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-            Three Tools Transforming Psychiatric Care
+            {content?.heading || "Three Tools Transforming Psychiatric Care"}
           </h2>
         </div>
 

@@ -79,7 +79,11 @@ const plans = [
   },
 ];
 
-export function PricingSection() {
+interface PricingSectionProps {
+  content?: Record<string, string>;
+}
+
+export function PricingSection({ content }: PricingSectionProps) {
   const [yearly, setYearly] = useState(false);
 
   return (
@@ -89,12 +93,19 @@ export function PricingSection() {
         <div className="grid md:grid-cols-2 gap-6 mb-16">
           <div className="glass-card p-8">
             <h3 className="text-xl font-bold text-white mb-3">
-              Membership Access to the Psychiatric Clinical Co-Pilot
+              {content?.heading || "Membership Access to the Psychiatric Clinical Co-Pilot"}
             </h3>
-            <p className="text-lg text-white/50 leading-relaxed">
-              Full access to real-time decision support, diagnostic reasoning,
-              psychopharmacology, risk assessment, and documentation tools.
-            </p>
+            {content?.content ? (
+              <div
+                className="text-lg text-white/50 leading-relaxed prose prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: content.content }}
+              />
+            ) : (
+              <p className="text-lg text-white/50 leading-relaxed">
+                Full access to real-time decision support, diagnostic reasoning,
+                psychopharmacology, risk assessment, and documentation tools.
+              </p>
+            )}
           </div>
           <div className="glass-card p-8 border-[#FDB02F]/30">
             <h3 className="text-xl font-bold text-[#FDB02F] mb-3">

@@ -14,7 +14,7 @@ const subspecialties = [
   "Sleep Psychiatry",
 ];
 
-export function FeatureGrid() {
+export function FeatureGrid({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#0D1B4B]">
       <div className="mx-auto max-w-7xl px-6">
@@ -22,10 +22,10 @@ export function FeatureGrid() {
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <SectionLabel>CAPABILITIES</SectionLabel>
           <h2 className="mt-4 font-[var(--font-syne)] text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-            Think Like 30+ Psychiatric Specialists
+            {content?.heading || "Think Like 30+ Psychiatric Specialists"}
           </h2>
           <p className="mt-4 text-white/50 text-lg">
-            Evidence-based psychiatric reasoning in real time
+            {content?.subtitle || "Evidence-based psychiatric reasoning in real time"}
           </p>
         </div>
 

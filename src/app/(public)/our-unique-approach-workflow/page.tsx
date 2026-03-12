@@ -4,20 +4,23 @@ import { WorkflowIntro } from "@/components/pages/workflow/WorkflowIntro";
 import { CareSettings } from "@/components/pages/workflow/CareSettings";
 import { HowItWorks } from "@/components/pages/workflow/HowItWorks";
 import { ClosingCTA } from "@/components/sections/home/ClosingCTA";
+import { getAllPageContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Approach & Workflow — How the Co-Pilot Works",
 };
 
-export default function WorkflowPage() {
+export default async function WorkflowPage() {
+  const content = await getAllPageContent("our-unique-approach-workflow");
+
   return (
     <>
       <PageHero
-        title="Approach & Workflow"
-        subtitle="How the Psychiatric Clinical Co-Pilot Fits Into Every Clinical Visit"
+        title={content["hero"]?.title || "Approach & Workflow"}
+        subtitle={content["hero"]?.subtitle || "How the Psychiatric Clinical Co-Pilot Fits Into Every Clinical Visit"}
         breadcrumb="Approach & Workflow"
       />
-      <WorkflowIntro />
+      <WorkflowIntro content={content["content"]} />
       <CareSettings />
       <HowItWorks />
       <ClosingCTA />

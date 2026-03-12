@@ -19,7 +19,7 @@ const trustBadges: { icon: LucideIcon; label: string }[] = [
   { icon: BrainCircuit, label: "Clinical judgment supported" },
 ];
 
-export function DeliversSection() {
+export function DeliversSection({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-20 bg-[#07123A]">
       <div className="mx-auto max-w-7xl px-6">
@@ -28,7 +28,7 @@ export function DeliversSection() {
           <div className="space-y-5">
           <div className="relative rounded-2xl overflow-hidden border border-white/5 bg-[#0D1B4B]/50 aspect-video">
             <iframe
-              src="https://www.youtube.com/embed/1AThWUS4ZK0"
+              src={content?.videoUrl || "https://www.youtube.com/embed/1AThWUS4ZK0"}
               title="Psychiatric Clinical Co-Pilot Demo"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -52,17 +52,21 @@ export function DeliversSection() {
 
           {/* Right — Content */}
           <div className="space-y-6">
-            <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white leading-tight">
-              Psychiatric Clinical Co-Pilot for{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDB02F] to-[#FDAA40]">
-                Real-World Psychiatry
-              </span>
-            </h2>
+            {content?.heading ? (
+              <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white leading-tight">
+                {content.heading}
+              </h2>
+            ) : (
+              <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white leading-tight">
+                Psychiatric Clinical Co-Pilot for{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDB02F] to-[#FDAA40]">
+                  Real-World Psychiatry
+                </span>
+              </h2>
+            )}
 
             <p className="text-white/55 text-base leading-relaxed">
-              On-Demand Psychiatry is a psychiatry-specific psychiatric clinical co-pilot,
-              built with a clinician-in-the-loop design to support clinical reasoning in
-              real-world settings rather than to automate care or replace judgment.
+              {content?.description || "On-Demand Psychiatry is a psychiatry-specific psychiatric clinical co-pilot, built with a clinician-in-the-loop design to support clinical reasoning in real-world settings rather than to automate care or replace judgment."}
             </p>
 
             <div className="space-y-4 pt-2">

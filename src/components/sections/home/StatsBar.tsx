@@ -10,7 +10,7 @@ const stats = [
   { value: "30+", label: "Subspecialties covered" },
 ];
 
-export function StatsBar() {
+export function StatsBar({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="relative border-y border-[#FDB02F]/10 bg-gradient-to-r from-[#07123A] via-[#0D1B4B] to-[#07123A]">
       <div className="mx-auto max-w-7xl px-6 py-8">

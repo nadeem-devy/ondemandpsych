@@ -10,13 +10,17 @@ const benefits = [
   { value: "100%", label: "More Effective, Personalized Treatment Strategies" },
 ];
 
-export function Benefits() {
+interface BenefitsProps {
+  content?: Record<string, string>;
+}
+
+export function Benefits({ content }: BenefitsProps) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A]">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
-            6 Key Benefits
+            {content?.heading || "6 Key Benefits"}
           </h2>
         </div>
 

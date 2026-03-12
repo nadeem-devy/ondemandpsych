@@ -9,7 +9,7 @@ import {
   Eye,
 } from "lucide-react";
 
-export function TrustSection() {
+export function TrustSection({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#0D1B4B]">
       <div className="mx-auto max-w-7xl px-6">
@@ -17,7 +17,7 @@ export function TrustSection() {
           {/* Left — Clinical Impact */}
           <div className="bg-[#07123A] rounded-2xl border border-white/5 p-8 space-y-6">
             <h3 className="font-[var(--font-syne)] text-2xl font-bold text-white">
-              Clinical Impact & Efficiency
+              {content?.heading || "Clinical Impact & Efficiency"}
             </h3>
             <div className="space-y-4">
               {[

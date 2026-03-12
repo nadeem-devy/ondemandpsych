@@ -35,27 +35,34 @@ const urgencies = [
   },
 ];
 
-export function ClinicalUrgency() {
+export function ClinicalUrgency({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A]">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
-            Why Psychiatry Needs This Now
+            {content?.heading || "Why Psychiatry Needs This Now"}
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {urgencies.map((u) => (
-            <GlassCard key={u.title} className="p-6">
-              <div className="w-12 h-12 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center mb-4">
-                <u.icon className="text-[#FDB02F]" size={24} />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">{u.title}</h3>
-              <p className="text-lg text-white/50 leading-relaxed">{u.body}</p>
-            </GlassCard>
-          ))}
-        </div>
+        {content?.content ? (
+          <div
+            className="prose prose-invert prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: content.content }}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {urgencies.map((u) => (
+              <GlassCard key={u.title} className="p-6">
+                <div className="w-12 h-12 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center mb-4">
+                  <u.icon className="text-[#FDB02F]" size={24} />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">{u.title}</h3>
+                <p className="text-lg text-white/50 leading-relaxed">{u.body}</p>
+              </GlassCard>
+            ))}
+          </div>
+        )}
       </div>
     </SectionWrapper>
   );

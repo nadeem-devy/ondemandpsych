@@ -57,13 +57,13 @@ const settingsCards = [
   },
 ];
 
-export function SettingsTicker() {
+export function SettingsTicker({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A]">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center mb-12">
           <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-            Workflow Support Across Every Psychiatric Setting
+            {content?.heading || "Workflow Support Across Every Psychiatric Setting"}
           </h2>
           <p className="mt-4 text-white/50 text-lg">
             Fits your existing workflow. No integration required.

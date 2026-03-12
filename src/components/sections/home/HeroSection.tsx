@@ -9,7 +9,7 @@ const trustItems = [
   "Clinical judgment supported",
 ];
 
-export function HeroSection() {
+export function HeroSection({ content }: { content?: Record<string, string> }) {
   return (
     <section className="relative flex items-center overflow-hidden">
       <div className="absolute inset-0">
@@ -24,26 +24,32 @@ export function HeroSection() {
           <div className="hero-animate">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#FDB02F]/30 bg-[#FDB02F]/5 mb-6">
               <span className="text-base text-[#FDB02F] font-medium">
-                Built by Psychiatrists. Trusted in Real Clinical Settings.
+                {content?.badge || "Built by Psychiatrists. Trusted in Real Clinical Settings."}
               </span>
             </div>
 
-            <h1 className="font-[var(--font-syne)] text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1] tracking-tight">
-              <span className="text-white">Psychiatric Clinical</span>
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDB02F] to-[#FDAA40]">
-                Co-Pilot
-              </span>
-            </h1>
+            {content?.title ? (
+              <h1
+                className="font-[var(--font-syne)] text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1] tracking-tight text-white [&_span]:text-transparent [&_span]:bg-clip-text [&_span]:bg-gradient-to-r [&_span]:from-[#FDB02F] [&_span]:to-[#FDAA40]"
+                dangerouslySetInnerHTML={{ __html: content.title }}
+              />
+            ) : (
+              <h1 className="font-[var(--font-syne)] text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1] tracking-tight">
+                <span className="text-white">Psychiatric Clinical</span>
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDB02F] to-[#FDAA40]">
+                  Co-Pilot
+                </span>
+              </h1>
+            )}
 
             <p className="mt-5 text-base md:text-lg text-white/60 leading-relaxed max-w-lg">
-              Real-time clinical decision support delivering diagnostic reasoning,
-              safer prescribing, and chart-ready documentation in under 90 seconds.
+              {content?.subtitle || "Real-time clinical decision support delivering diagnostic reasoning, safer prescribing, and chart-ready documentation in under 90 seconds."}
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
-              <Button href="/copilot/login" variant="primary" className="text-lg px-7 py-3.5">
-                Try the Clinical Co-Pilot &rarr;
+              <Button href={content?.ctaLink || "/copilot/login"} variant="primary" className="text-lg px-7 py-3.5">
+                {content?.ctaText || "Try the Clinical Co-Pilot →"}
               </Button>
               <Button variant="ghost" className="text-lg">
                 <Play size={16} />

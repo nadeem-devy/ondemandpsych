@@ -1,7 +1,11 @@
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 
-export function FeaturesIntro() {
+interface FeaturesIntroProps {
+  content?: Record<string, string>;
+}
+
+export function FeaturesIntro({ content }: FeaturesIntroProps) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A]">
       <div className="mx-auto max-w-7xl px-6">
@@ -10,16 +14,25 @@ export function FeaturesIntro() {
             <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
               On-Demand Psychiatry: A Psychiatric Clinical Co-Pilot
             </h2>
-            <p className="text-white/60 leading-relaxed">
-              Designed for real-world psychiatric practice, the Co-Pilot supports
-              clinicians in actual clinical situations — from diagnostic
-              reasoning and medication decisions to risk assessment and
-              documentation.
-            </p>
-            <p className="text-white/60 leading-relaxed">
-              Every feature is built to reduce cognitive burden, improve clinical
-              safety, and give you more time for your patients.
-            </p>
+            {content?.content ? (
+              <div
+                className="text-white/60 leading-relaxed prose prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: content.content }}
+              />
+            ) : (
+              <>
+                <p className="text-white/60 leading-relaxed">
+                  Designed for real-world psychiatric practice, the Co-Pilot supports
+                  clinicians in actual clinical situations — from diagnostic
+                  reasoning and medication decisions to risk assessment and
+                  documentation.
+                </p>
+                <p className="text-white/60 leading-relaxed">
+                  Every feature is built to reduce cognitive burden, improve clinical
+                  safety, and give you more time for your patients.
+                </p>
+              </>
+            )}
             <Button href="/copilot/login">
               Try the Co-Pilot &rarr;
             </Button>

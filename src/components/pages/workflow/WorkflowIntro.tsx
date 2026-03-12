@@ -1,6 +1,10 @@
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 
-export function WorkflowIntro() {
+interface WorkflowIntroProps {
+  content?: Record<string, string>;
+}
+
+export function WorkflowIntro({ content }: WorkflowIntroProps) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A]">
       <div className="mx-auto max-w-7xl px-6">
@@ -10,16 +14,25 @@ export function WorkflowIntro() {
               The Psychiatric Clinical Co-Pilot&apos;s Place in Actual Clinical
               Practice
             </h2>
-            <p className="text-white/60 leading-relaxed">
-              There is no one workflow for psychiatric care. Emergency psychiatry
-              makes different decisions than telepsychiatry, inpatient units,
-              outpatient clinics, and collaborative behavioral health settings.
-            </p>
-            <p className="text-white/60 leading-relaxed">
-              On-Demand Psychiatry supports diagnostic reasoning, medication
-              decisions, risk assessment, and documentation at the point of care
-              rather than imposing strict pathways on clinicians.
-            </p>
+            {content?.content ? (
+              <div
+                className="text-white/60 leading-relaxed prose prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: content.content }}
+              />
+            ) : (
+              <>
+                <p className="text-white/60 leading-relaxed">
+                  There is no one workflow for psychiatric care. Emergency psychiatry
+                  makes different decisions than telepsychiatry, inpatient units,
+                  outpatient clinics, and collaborative behavioral health settings.
+                </p>
+                <p className="text-white/60 leading-relaxed">
+                  On-Demand Psychiatry supports diagnostic reasoning, medication
+                  decisions, risk assessment, and documentation at the point of care
+                  rather than imposing strict pathways on clinicians.
+                </p>
+              </>
+            )}
           </div>
 
           {/* Abstract illustration */}

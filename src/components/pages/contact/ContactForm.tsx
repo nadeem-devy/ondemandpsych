@@ -4,7 +4,11 @@ import { useState } from "react";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 
-export function ContactForm() {
+interface ContactFormProps {
+  content?: Record<string, string>;
+}
+
+export function ContactForm({ content }: ContactFormProps) {
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -14,12 +18,17 @@ export function ContactForm() {
           {/* Left */}
           <div className="space-y-6">
             <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold">
-              <span className="text-white">Contact</span>{" "}
-              <span className="text-[#FDB02F]">Us</span>
+              {content?.heading ? (
+                <span className="text-white">{content.heading}</span>
+              ) : (
+                <>
+                  <span className="text-white">Contact</span>{" "}
+                  <span className="text-[#FDB02F]">Us</span>
+                </>
+              )}
             </h2>
             <p className="text-white/60 leading-relaxed">
-              Have questions? We&apos;d love to hear from you. Fill out the form
-              and our team will get back to you promptly.
+              {content?.description || "Have questions? We'd love to hear from you. Fill out the form and our team will get back to you promptly."}
             </p>
 
             <div className="space-y-4 pt-4">

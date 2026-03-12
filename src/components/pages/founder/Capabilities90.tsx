@@ -13,7 +13,7 @@ const capabilities = [
   "HIPAA-aligned compliance",
 ];
 
-export function Capabilities90() {
+export function Capabilities90({ content }: { content?: Record<string, string> }) {
   return (
     <SectionWrapper className="py-24 bg-[#07123A]">
       <div className="mx-auto max-w-5xl px-6 text-center">
@@ -21,22 +21,31 @@ export function Capabilities90() {
           <Clock className="text-[#FDB02F]" size={32} />
         </div>
         <h2 className="font-[var(--font-syne)] text-3xl md:text-4xl font-bold text-white">
-          Fast, Safe, and Smart Psychiatric Guidance
+          {content?.heading || "Fast, Safe, and Smart Psychiatric Guidance"}
         </h2>
-        <p className="mt-4 text-white/50 text-lg">
-          In under 90 seconds, it provides:
-        </p>
+        {content?.content ? (
+          <div
+            className="prose prose-invert prose-lg max-w-none mt-8"
+            dangerouslySetInnerHTML={{ __html: content.content }}
+          />
+        ) : (
+          <>
+            <p className="mt-4 text-white/50 text-lg">
+              In under 90 seconds, it provides:
+            </p>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {capabilities.map((cap) => (
-            <div
-              key={cap}
-              className="glass-card glass-card-hover px-5 py-4 text-lg text-white/70 text-center transition-all"
-            >
-              {cap}
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {capabilities.map((cap) => (
+                <div
+                  key={cap}
+                  className="glass-card glass-card-hover px-5 py-4 text-lg text-white/70 text-center transition-all"
+                >
+                  {cap}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </div>
     </SectionWrapper>
   );
