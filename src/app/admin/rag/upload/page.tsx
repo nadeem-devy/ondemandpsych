@@ -1,121 +1,170 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Upload, FileText, CheckCircle2, AlertCircle, ArrowLeft } from "lucide-react";
+import { useState, useRef, useCallback } from "react";
+import { Upload, FileText, CheckCircle2, AlertCircle, ArrowLeft, X, Film, Loader2 } from "lucide-react";
+
+interface UploadResult {
+  name: string;
+  status: string;
+  chunks?: number;
+  error?: string;
+}
 
 export default function UploadDocumentPage() {
-  const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [mode, setMode] = useState<"file" | "paste" | "video">("file");
+  const [pasteTitle, setPasteTitle] = useState("");
   const [pasteText, setPasteText] = useState("");
-  const [mode, setMode] = useState<"file" | "paste">("file");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [videoTitle, setVideoTitle] = useState("");
+  const [videoTranscript, setVideoTranscript] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [result, setResult] = useState<{ success?: boolean; error?: string; message?: string } | null>(null);
+  const [progress, setProgress] = useState({ current: 0, total: 0 });
+  const [results, setResults] = useState<UploadResult[]>([]);
+  const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    setFiles((prev) => [...prev, ...droppedFiles]);
+  }, []);
+
+  const removeFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
   async function handleUpload() {
     setUploading(true);
-    setResult(null);
+    setResults([]);
 
-    try {
-      if (mode === "file" && file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("title", title || file.name);
-        if (category) formData.append("category", category);
-        if (tags) formData.append("tags", tags);
+    if (mode === "video") {
+      const formData = new FormData();
+      formData.append("videoUrl", videoUrl);
+      formData.append("videoTitle", videoTitle);
+      formData.append("videoTranscript", videoTranscript);
+      if (category) formData.append("category", category);
+      if (tags) formData.append("tags", tags);
 
-        const res = await fetch("/api/admin/rag/upload", { method: "POST", body: formData });
-        const data = await res.json();
-        if (res.ok) {
-          setResult({ success: true, message: `Document uploaded and indexed. ${data.chunksCreated ?? 0} chunks created.` });
-          setFile(null);
-          setTitle("");
-          setCategory("");
-          setTags("");
-          if (fileRef.current) fileRef.current.value = "";
-        } else {
-          setResult({ error: data.error || data.message || "Upload failed" });
-        }
-      } else if (mode === "paste" && pasteText.trim()) {
-        // Create a text file from pasted content
-        const blob = new Blob([pasteText], { type: "text/plain" });
-        const textFile = new File([blob], `${title || "pasted-content"}.txt`, { type: "text/plain" });
-
-        const formData = new FormData();
-        formData.append("file", textFile);
-        formData.append("title", title || "Pasted Content");
-        if (category) formData.append("category", category);
-        if (tags) formData.append("tags", tags);
-
-        const res = await fetch("/api/admin/rag/upload", { method: "POST", body: formData });
-        const data = await res.json();
-        if (res.ok) {
-          setResult({ success: true, message: `Content indexed. ${data.chunksCreated ?? 0} chunks created.` });
-          setPasteText("");
-          setTitle("");
-          setCategory("");
-          setTags("");
-        } else {
-          setResult({ error: data.error || "Upload failed" });
-        }
-      }
-    } catch {
-      setResult({ error: "Network error. Please try again." });
+      const res = await fetch("/api/admin/rag/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      setResults([{ name: videoTitle || videoUrl, status: res.ok ? "indexed" : "failed", chunks: data.chunksCreated, error: data.error }]);
+      if (res.ok) { setVideoUrl(""); setVideoTitle(""); setVideoTranscript(""); }
+      setUploading(false);
+      return;
     }
+
+    if (mode === "paste") {
+      const blob = new Blob([pasteText], { type: "text/plain" });
+      const textFile = new File([blob], `${pasteTitle || "pasted-content"}.txt`, { type: "text/plain" });
+      const formData = new FormData();
+      formData.append("file", textFile);
+      formData.append("title", pasteTitle || "Pasted Content");
+      if (category) formData.append("category", category);
+      if (tags) formData.append("tags", tags);
+
+      const res = await fetch("/api/admin/rag/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      setResults(data.results || [{ name: pasteTitle, status: res.ok ? "indexed" : "failed", error: data.error }]);
+      if (res.ok) { setPasteText(""); setPasteTitle(""); }
+      setUploading(false);
+      return;
+    }
+
+    // Bulk file upload — batch in groups of 5 to avoid timeout
+    const batchSize = 5;
+    const allResults: UploadResult[] = [];
+    setProgress({ current: 0, total: files.length });
+
+    for (let i = 0; i < files.length; i += batchSize) {
+      const batch = files.slice(i, i + batchSize);
+      const formData = new FormData();
+      batch.forEach((f) => formData.append("file", f));
+      if (category) formData.append("category", category);
+      if (tags) formData.append("tags", tags);
+
+      try {
+        const res = await fetch("/api/admin/rag/upload", { method: "POST", body: formData });
+        const data = await res.json();
+        if (data.results) {
+          allResults.push(...data.results);
+        }
+      } catch {
+        batch.forEach((f) => allResults.push({ name: f.name, status: "failed", error: "Network error" }));
+      }
+      setProgress({ current: Math.min(i + batchSize, files.length), total: files.length });
+      setResults([...allResults]);
+    }
+
+    setFiles([]);
+    if (fileRef.current) fileRef.current.value = "";
     setUploading(false);
   }
 
+  const indexed = results.filter((r) => r.status === "indexed").length;
+  const failed = results.filter((r) => r.status === "failed").length;
+  const totalChunks = results.reduce((sum, r) => sum + (r.chunks || 0), 0);
+
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6 max-w-3xl">
       <div className="flex items-center gap-4">
         <a href="/admin/rag" className="p-2 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors">
           <ArrowLeft size={20} />
         </a>
         <div>
-          <h1 className="text-2xl font-bold text-white">Upload Document</h1>
-          <p className="text-base text-white/50 mt-1">Add documents to the knowledge base for RAG retrieval</p>
+          <h1 className="text-2xl font-bold text-white">Upload Documents</h1>
+          <p className="text-base text-white/50 mt-1">Upload PDFs, PPTs, DOCX, TXT, or video transcripts to the knowledge base</p>
         </div>
       </div>
 
-      {/* Result banner */}
-      {result && (
-        <div className={`flex items-start gap-3 p-4 rounded-xl border ${result.success ? "border-green-500/20 bg-green-500/10" : "border-red-500/20 bg-red-500/10"}`}>
-          {result.success ? <CheckCircle2 size={20} className="text-green-400 shrink-0 mt-0.5" /> : <AlertCircle size={20} className="text-red-400 shrink-0 mt-0.5" />}
-          <p className={`text-base ${result.success ? "text-green-400" : "text-red-400"}`}>{result.message || result.error}</p>
+      {/* Results summary */}
+      {results.length > 0 && (
+        <div className={`p-4 rounded-xl border ${failed > 0 && indexed === 0 ? "border-red-500/20 bg-red-500/10" : "border-green-500/20 bg-green-500/10"}`}>
+          <div className="flex items-center gap-3 mb-2">
+            {indexed > 0 ? <CheckCircle2 size={20} className="text-green-400" /> : <AlertCircle size={20} className="text-red-400" />}
+            <p className="text-base font-bold text-white">
+              {indexed} indexed, {failed} failed — {totalChunks} chunks created
+            </p>
+          </div>
+          <div className="max-h-40 overflow-y-auto space-y-1">
+            {results.map((r, i) => (
+              <div key={i} className="flex items-center gap-2 text-base">
+                <span className={r.status === "indexed" ? "text-green-400" : "text-red-400"}>
+                  {r.status === "indexed" ? "✓" : "✗"}
+                </span>
+                <span className="text-white/70 truncate">{r.name}</span>
+                {r.chunks && <span className="text-white/30">({r.chunks} chunks)</span>}
+                {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {/* Mode toggle */}
       <div className="flex gap-2">
-        <button
-          onClick={() => setMode("file")}
-          className={`px-4 py-2 rounded-lg text-base font-medium transition-colors ${mode === "file" ? "bg-[#FDB02F]/20 text-[#FDB02F] border border-[#FDB02F]/30" : "bg-[#0D1B4B] text-white/50 border border-white/10 hover:text-white"}`}
-        >
-          Upload File
-        </button>
-        <button
-          onClick={() => setMode("paste")}
-          className={`px-4 py-2 rounded-lg text-base font-medium transition-colors ${mode === "paste" ? "bg-[#FDB02F]/20 text-[#FDB02F] border border-[#FDB02F]/30" : "bg-[#0D1B4B] text-white/50 border border-white/10 hover:text-white"}`}
-        >
-          Paste Text
-        </button>
+        {(["file", "paste", "video"] as const).map((m) => (
+          <button
+            key={m}
+            onClick={() => setMode(m)}
+            className={`px-4 py-2 rounded-lg text-base font-medium transition-colors flex items-center gap-2 ${
+              mode === m
+                ? "bg-[#FDB02F]/20 text-[#FDB02F] border border-[#FDB02F]/30"
+                : "bg-[#0D1B4B] text-white/50 border border-white/10 hover:text-white"
+            }`}
+          >
+            {m === "file" && <><Upload size={16} /> Upload Files</>}
+            {m === "paste" && <><FileText size={16} /> Paste Text</>}
+            {m === "video" && <><Film size={16} /> Video Transcript</>}
+          </button>
+        ))}
       </div>
 
       {/* Form */}
       <div className="space-y-4 p-6 rounded-xl border border-white/10 bg-[#0D1B4B]/50">
-        <div>
-          <label className="block text-base font-medium text-white/70 mb-1">Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Document title"
-            className="w-full px-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
-          />
-        </div>
-
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-base font-medium text-white/70 mb-1">Category</label>
@@ -123,7 +172,7 @@ export default function UploadDocumentPage() {
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              placeholder="e.g. Pharmacology, Diagnostics"
+              placeholder="e.g. Pharmacology, Diagnostics, Lectures"
               className="w-full px-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
             />
           </div>
@@ -139,55 +188,156 @@ export default function UploadDocumentPage() {
           </div>
         </div>
 
-        {mode === "file" ? (
-          <div>
-            <label className="block text-base font-medium text-white/70 mb-1">File</label>
+        {mode === "file" && (
+          <>
+            {/* Drop zone */}
             <div
+              onDrop={handleDrop}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
               onClick={() => fileRef.current?.click()}
-              className="flex flex-col items-center gap-3 p-8 rounded-xl border-2 border-dashed border-white/10 hover:border-[#FDB02F]/30 cursor-pointer transition-colors"
+              className={`flex flex-col items-center gap-3 p-8 rounded-xl border-2 border-dashed cursor-pointer transition-colors ${
+                dragOver ? "border-[#FDB02F] bg-[#FDB02F]/5" : "border-white/10 hover:border-[#FDB02F]/30"
+              }`}
             >
-              {file ? (
-                <>
-                  <FileText size={32} className="text-[#FDB02F]" />
-                  <p className="text-base text-white">{file.name}</p>
-                  <p className="text-base text-white/40">{(file.size / 1024).toFixed(1)} KB</p>
-                </>
-              ) : (
-                <>
-                  <Upload size={32} className="text-white/30" />
-                  <p className="text-base text-white/50">Click to select a file</p>
-                  <p className="text-base text-white/30">Supported: .txt, .md, .csv, .pdf, .docx</p>
-                </>
-              )}
+              <Upload size={32} className={dragOver ? "text-[#FDB02F]" : "text-white/30"} />
+              <p className="text-base text-white/50">Drag & drop files here, or click to select</p>
+              <p className="text-base text-white/30">Supported: PDF, PPTX, PPT, DOCX, DOC, XLSX, TXT, MD, CSV</p>
+              <p className="text-base text-[#FDB02F]/60">Select multiple files for bulk upload</p>
             </div>
             <input
               ref={fileRef}
               type="file"
-              accept=".txt,.md,.csv,.pdf,.docx"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              accept=".txt,.md,.csv,.pdf,.docx,.doc,.pptx,.ppt,.xlsx"
+              multiple
+              onChange={(e) => {
+                const selected = Array.from(e.target.files || []);
+                setFiles((prev) => [...prev, ...selected]);
+              }}
               className="hidden"
             />
-          </div>
-        ) : (
-          <div>
-            <label className="block text-base font-medium text-white/70 mb-1">Paste Content</label>
-            <textarea
-              value={pasteText}
-              onChange={(e) => setPasteText(e.target.value)}
-              placeholder="Paste your text content here..."
-              rows={12}
-              className="w-full px-4 py-3 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none resize-y"
-            />
-            <p className="text-base text-white/30 mt-1">{pasteText.split(/\s+/).filter(Boolean).length} words</p>
+
+            {/* File list */}
+            {files.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-base font-medium text-white/70">{files.length} file(s) selected</p>
+                  <button onClick={() => { setFiles([]); if (fileRef.current) fileRef.current.value = ""; }} className="text-base text-red-400 hover:text-red-300">
+                    Clear all
+                  </button>
+                </div>
+                <div className="max-h-60 overflow-y-auto space-y-1 rounded-lg border border-white/5 p-2">
+                  {files.map((f, i) => (
+                    <div key={i} className="flex items-center gap-3 px-3 py-1.5 rounded-lg hover:bg-white/[0.03]">
+                      <FileText size={14} className="text-[#FDB02F] shrink-0" />
+                      <span className="text-base text-white/70 flex-1 truncate">{f.name}</span>
+                      <span className="text-base text-white/30">{(f.size / 1024).toFixed(0)} KB</span>
+                      <button onClick={() => removeFile(i)} className="text-white/30 hover:text-red-400">
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {mode === "paste" && (
+          <>
+            <div>
+              <label className="block text-base font-medium text-white/70 mb-1">Title</label>
+              <input
+                type="text"
+                value={pasteTitle}
+                onChange={(e) => setPasteTitle(e.target.value)}
+                placeholder="Document title"
+                className="w-full px-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-base font-medium text-white/70 mb-1">Paste Content</label>
+              <textarea
+                value={pasteText}
+                onChange={(e) => setPasteText(e.target.value)}
+                placeholder="Paste your text content here..."
+                rows={12}
+                className="w-full px-4 py-3 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none resize-y"
+              />
+              <p className="text-base text-white/30 mt-1">{pasteText.split(/\s+/).filter(Boolean).length} words</p>
+            </div>
+          </>
+        )}
+
+        {mode === "video" && (
+          <>
+            <div>
+              <label className="block text-base font-medium text-white/70 mb-1">Video Title</label>
+              <input
+                type="text"
+                value={videoTitle}
+                onChange={(e) => setVideoTitle(e.target.value)}
+                placeholder="e.g. Lecture 01 - Introduction to Psychopharmacology"
+                className="w-full px-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-base font-medium text-white/70 mb-1">Video URL</label>
+              <input
+                type="text"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=..."
+                className="w-full px-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-base font-medium text-white/70 mb-1">Video Transcript</label>
+              <textarea
+                value={videoTranscript}
+                onChange={(e) => setVideoTranscript(e.target.value)}
+                placeholder="Paste the video transcript here. You can get transcripts from YouTube (click ... → Show Transcript) or use a transcription service."
+                rows={12}
+                className="w-full px-4 py-3 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none resize-y"
+              />
+              <p className="text-base text-white/30 mt-1">{videoTranscript.split(/\s+/).filter(Boolean).length} words</p>
+            </div>
+          </>
+        )}
+
+        {/* Upload progress */}
+        {uploading && progress.total > 0 && (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-base text-white/50">
+              <span className="flex items-center gap-2"><Loader2 size={16} className="animate-spin" /> Processing...</span>
+              <span>{progress.current} / {progress.total}</span>
+            </div>
+            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full bg-[#FDB02F] rounded-full transition-all duration-300"
+                style={{ width: `${(progress.current / progress.total) * 100}%` }}
+              />
+            </div>
           </div>
         )}
 
         <button
           onClick={handleUpload}
-          disabled={uploading || (mode === "file" ? !file : !pasteText.trim())}
-          className="w-full px-4 py-3 rounded-lg bg-[#FDB02F] text-[#07123A] font-bold text-base hover:bg-[#FDB02F]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={
+            uploading ||
+            (mode === "file" ? files.length === 0 : mode === "paste" ? !pasteText.trim() : !videoTranscript.trim())
+          }
+          className="w-full px-4 py-3 rounded-lg bg-[#FDB02F] text-[#07123A] font-bold text-base hover:bg-[#FDB02F]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {uploading ? "Processing..." : "Upload & Index"}
+          {uploading ? (
+            <><Loader2 size={18} className="animate-spin" /> Processing {progress.current}/{progress.total || "..."}...</>
+          ) : mode === "file" ? (
+            `Upload & Index ${files.length} File${files.length !== 1 ? "s" : ""}`
+          ) : mode === "video" ? (
+            "Index Video Transcript"
+          ) : (
+            "Upload & Index"
+          )}
         </button>
       </div>
     </div>
