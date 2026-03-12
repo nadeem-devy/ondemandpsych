@@ -24,9 +24,13 @@ export function FeatureGrid({ content }: { content?: Record<string, string> }) {
           <h2 className="mt-4 font-[var(--font-syne)] text-3xl md:text-4xl lg:text-5xl font-bold text-white">
             {content?.heading || "Think Like 30+ Psychiatric Specialists"}
           </h2>
-          <p className="mt-4 text-white/50 text-lg">
-            {content?.subtitle || "Evidence-based psychiatric reasoning in real time"}
-          </p>
+          {content?.subtitle ? (
+            <div className="mt-4 text-white/50 text-lg [&_p]:mb-0" dangerouslySetInnerHTML={{ __html: content.subtitle }} />
+          ) : (
+            <p className="mt-4 text-white/50 text-lg">
+              Evidence-based psychiatric reasoning in real time
+            </p>
+          )}
         </div>
 
         {/* Bento Grid */}

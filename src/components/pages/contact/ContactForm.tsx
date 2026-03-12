@@ -27,9 +27,13 @@ export function ContactForm({ content }: ContactFormProps) {
                 </>
               )}
             </h2>
-            <p className="text-white/60 leading-relaxed">
-              {content?.description || "Have questions? We'd love to hear from you. Fill out the form and our team will get back to you promptly."}
-            </p>
+            {content?.description ? (
+              <div className="text-white/60 leading-relaxed [&_p]:mb-2" dangerouslySetInnerHTML={{ __html: content.description }} />
+            ) : (
+              <p className="text-white/60 leading-relaxed">
+                Have questions? We&apos;d love to hear from you. Fill out the form and our team will get back to you promptly.
+              </p>
+            )}
 
             <div className="space-y-4 pt-4">
               <div className="flex items-center gap-3 text-lg text-white/50">

@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { unstable_noStore as noStore } from "next/cache";
 
 export type ContentMap = Record<string, Record<string, string>>;
 
@@ -28,6 +29,7 @@ export async function getPageContent<T>(
  * Returns a map: { sectionId: { field: value } }
  */
 export async function getAllPageContent(pageSlug: string): Promise<ContentMap> {
+  noStore();
   try {
     const sections = await prisma.pageContent.findMany({
       where: { pageSlug },
@@ -46,6 +48,7 @@ export async function getAllPageContent(pageSlug: string): Promise<ContentMap> {
  * Get a site setting by key.
  */
 export async function getSiteSetting<T>(key: string, defaultValue: T): Promise<T> {
+  noStore();
   try {
     const record = await prisma.siteSettings.findUnique({ where: { key } });
     if (record) {

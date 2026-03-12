@@ -15,9 +15,13 @@ export function ClosingCTA({ content }: { content?: Record<string, string> }) {
         <h2 className="font-[var(--font-syne)] text-2xl md:text-3xl lg:text-4xl font-bold text-[#07123A] leading-tight">
           {content?.heading || "Psychiatry Clinical Co-Pilot for High-Risk Clinical Decisions"}
         </h2>
-        <p className="mt-4 text-base text-[#07123A]/70 max-w-2xl mx-auto leading-relaxed">
-          {content?.subtitle || "High-risk decisions shouldn\u2019t be made alone. On-Demand Psychiatry is here to support clinicians with real-time reasoning, safer decisions, and documentation that keeps pace."}
-        </p>
+        {content?.subtitle ? (
+          <div className="mt-4 text-base text-[#07123A]/70 max-w-2xl mx-auto leading-relaxed [&_p]:mb-0" dangerouslySetInnerHTML={{ __html: content.subtitle }} />
+        ) : (
+          <p className="mt-4 text-base text-[#07123A]/70 max-w-2xl mx-auto leading-relaxed">
+            High-risk decisions shouldn&apos;t be made alone. On-Demand Psychiatry is here to support clinicians with real-time reasoning, safer decisions, and documentation that keeps pace.
+          </p>
+        )}
 
         {/* Stats row */}
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-6">

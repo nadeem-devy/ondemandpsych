@@ -43,9 +43,13 @@ export function HeroSection({ content }: { content?: Record<string, string> }) {
               </h1>
             )}
 
-            <p className="mt-5 text-base md:text-lg text-white/60 leading-relaxed max-w-lg">
-              {content?.subtitle || "Real-time clinical decision support delivering diagnostic reasoning, safer prescribing, and chart-ready documentation in under 90 seconds."}
-            </p>
+            {content?.subtitle ? (
+              <div className="mt-5 text-base md:text-lg text-white/60 leading-relaxed max-w-lg [&_p]:mb-2" dangerouslySetInnerHTML={{ __html: content.subtitle }} />
+            ) : (
+              <p className="mt-5 text-base md:text-lg text-white/60 leading-relaxed max-w-lg">
+                Real-time clinical decision support delivering diagnostic reasoning, safer prescribing, and chart-ready documentation in under 90 seconds.
+              </p>
+            )}
 
             <div className="mt-8 flex flex-col sm:flex-row items-start gap-4">
               <Button href={content?.ctaLink || "/copilot/login"} variant="primary" className="text-lg px-7 py-3.5">

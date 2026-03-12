@@ -65,9 +65,13 @@ export function DeliversSection({ content }: { content?: Record<string, string> 
               </h2>
             )}
 
-            <p className="text-white/55 text-base leading-relaxed">
-              {content?.description || "On-Demand Psychiatry is a psychiatry-specific psychiatric clinical co-pilot, built with a clinician-in-the-loop design to support clinical reasoning in real-world settings rather than to automate care or replace judgment."}
-            </p>
+            {content?.description ? (
+              <div className="text-white/55 text-base leading-relaxed [&_p]:mb-2" dangerouslySetInnerHTML={{ __html: content.description }} />
+            ) : (
+              <p className="text-white/55 text-base leading-relaxed">
+                On-Demand Psychiatry is a psychiatry-specific psychiatric clinical co-pilot, built with a clinician-in-the-loop design to support clinical reasoning in real-world settings rather than to automate care or replace judgment.
+              </p>
+            )}
 
             <div className="space-y-4 pt-2">
               {capabilities.map((item) => (

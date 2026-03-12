@@ -65,9 +65,13 @@ export function FounderSpotlight({ content }: { content?: Record<string, string>
 
             {/* Pull quote */}
             <blockquote className="border-l-4 border-[#FDB02F] pl-6 py-2">
-              <p className="italic text-white/70 text-lg leading-relaxed">
-                {content?.quote || "\u201COne thing became clear after years in emergency rooms, inpatient units, and outpatient clinics: physicians are forced to make important psychiatric choices under duress, often without the necessary support. On-Demand Psychiatry was created to change that.\u201D"}
-              </p>
+              {content?.quote ? (
+                <div className="italic text-white/70 text-lg leading-relaxed [&_p]:mb-0" dangerouslySetInnerHTML={{ __html: content.quote }} />
+              ) : (
+                <p className="italic text-white/70 text-lg leading-relaxed">
+                  &ldquo;One thing became clear after years in emergency rooms, inpatient units, and outpatient clinics: physicians are forced to make important psychiatric choices under duress, often without the necessary support. On-Demand Psychiatry was created to change that.&rdquo;
+                </p>
+              )}
               <cite className="text-base text-[#FDB02F] mt-2 block not-italic">
                 — {content?.name || "Dr. Tanveer A. Padder, MD"}
               </cite>
