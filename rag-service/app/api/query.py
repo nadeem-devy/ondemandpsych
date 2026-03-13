@@ -2,6 +2,8 @@
 RAG query and retrieval API endpoints.
 """
 
+import logging
+import traceback
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -10,6 +12,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.services.retriever import rag_query, retrieve_chunks
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/query", tags=["Query"])
 
@@ -57,16 +61,20 @@ async def search_chunks(request: SearchRequest, db: AsyncSession = Depends(get_d
     if not request.query.strip():
         raise HTTPException(400, "Query cannot be empty")
 
-    chunks = await retrieve_chunks(
-        db,
-        query=request.query,
-        top_k=request.top_k,
-        similarity_threshold=request.similarity_threshold,
-        category=request.category,
-    )
+    try:
+        chunks = await retrieve_chunks(
+            db,
+            query=request.query,
+            top_k=request.top_k,
+            similarity_threshold=request.similarity_threshold,
+            category=request.category,
+        )
 
-    return {
-        "query": request.query,
-        "results": len(chunks),
-        "chunks": chunks,
-    }
+        return {
+            "query": request.query,
+            "results": len(chunks),
+            "chunks": chunks,
+        }
+    except Exception as e:
+        logger.error(f"Search error: {traceback.format_exc()}")
+        raise HTTPException(500, detail=str(e))
