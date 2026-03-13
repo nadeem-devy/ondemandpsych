@@ -156,13 +156,32 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // RAG: retrieve relevant knowledge chunks
+  // RAG: retrieve relevant knowledge chunks (try live service first, fallback to direct DB)
   let ragContext = "";
   try {
+    const ragServiceUrl = process.env.RAG_SERVICE_URL || "https://ondemandpsych-production.up.railway.app";
     const settings = await prisma.ragSettings.findFirst();
     const topK = settings?.retrievalLimit ?? 5;
-    const threshold = settings?.similarityThreshold ?? 0.7;
-    const chunks = await retrieveChunks(content, topK, threshold);
+    const threshold = settings?.similarityThreshold ?? 0.5;
+
+    let chunks: { content: string; document: { title: string } }[] = [];
+
+    try {
+      // Try live RAG service first
+      const ragResp = await fetch(`${ragServiceUrl}/api/query/search`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: content, top_k: topK, similarity_threshold: threshold }),
+      });
+      if (ragResp.ok) {
+        const ragData = await ragResp.json();
+        chunks = ragData.chunks || [];
+      }
+    } catch {
+      // Fallback to direct DB query
+      chunks = await retrieveChunks(content, topK, threshold);
+    }
+
     if (chunks.length > 0) {
       ragContext = "\n\n[KNOWLEDGE BASE CONTEXT — Use this evidence-based information when relevant to the query:\n\n" +
         chunks.map((c, i) => `[Source ${i + 1}: ${c.document.title}]\n${c.content}`).join("\n\n---\n\n") +

@@ -404,12 +404,50 @@ const ChatInput = forwardRef<
   );
 });
 
-// Markdown to HTML converter with tables, headers, blockquotes
+// Markdown to HTML converter with tables, headers, blockquotes, and clinical report sections
 function markdownToHtml(text: string): string {
   let html = text;
 
-  // Blockquotes (> text)
+  // Disclaimer block — detect the disclaimer pattern and wrap in styled div
+  html = html.replace(
+    /^> \*\*Disclaimer:\*\*(.+)$/gm,
+    '<div class="copilot-disclaimer"><strong>Disclaimer:</strong>$1</div>'
+  );
+
+  // Remaining blockquotes
   html = html.replace(/^> (.+)$/gm, '<blockquote class="copilot-blockquote">$1</blockquote>');
+
+  // Time-saving note — detect the ⏱ pattern
+  html = html.replace(
+    /⏱\s*\*\*Time-Saving Note\*\*\n?"?([^"]*)"?/gm,
+    '<div class="copilot-time-note">⏱ <strong>Time-Saving Note</strong><br/>$1</div>'
+  );
+
+  // Educational resources section — detect 📚 pattern
+  html = html.replace(
+    /📚\s*\*\*Educational Resources:?\*\*\n((?:[-•]\s*.+\n?)*)/gm,
+    (_match: string, items: string) => {
+      const listItems = items.trim().split('\n')
+        .map((item: string) => item.replace(/^[-•]\s*/, '').trim())
+        .filter(Boolean)
+        .map((item: string) => `<li class="copilot-uli">${inlineFormat(item)}</li>`)
+        .join('');
+      return `<div class="copilot-resources">📚 <strong>Educational Resources</strong><ul class="copilot-ul">${listItems}</ul></div>`;
+    }
+  );
+
+  // Optional prompts section
+  html = html.replace(
+    /\*\*OPTIONAL PROMPTS\*\*\n((?:[-•]\s*.+\n?)*)/gm,
+    (_match: string, items: string) => {
+      const listItems = items.trim().split('\n')
+        .map((item: string) => item.replace(/^[-•]\s*/, '').trim())
+        .filter(Boolean)
+        .map((item: string) => `<li class="copilot-uli">${inlineFormat(item)}</li>`)
+        .join('');
+      return `<div class="copilot-prompts"><strong>Optional Prompts</strong><ul class="copilot-ul">${listItems}</ul></div>`;
+    }
+  );
 
   // Headers
   html = html.replace(/^### (.+)$/gm, '<h3 class="copilot-h3">$1</h3>');
