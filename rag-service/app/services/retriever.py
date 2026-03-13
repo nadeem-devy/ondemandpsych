@@ -23,7 +23,7 @@ async def retrieve_chunks(
     db: AsyncSession,
     query: str,
     top_k: int = 5,
-    similarity_threshold: float = 0.7,
+    similarity_threshold: float = 0.5,
     category: str | None = None,
 ) -> list[dict]:
     """

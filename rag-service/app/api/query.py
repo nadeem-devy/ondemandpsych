@@ -29,7 +29,7 @@ class QueryRequest(BaseModel):
 class SearchRequest(BaseModel):
     query: str
     top_k: int = 5
-    similarity_threshold: float = 0.7
+    similarity_threshold: float = 0.5
     category: Optional[str] = None
 
 
