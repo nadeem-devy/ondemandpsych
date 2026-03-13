@@ -18,13 +18,13 @@ pdfplumber==0.11.4
 python-pptx==1.0.2
 python-docx==1.1.2
 
-# Video/Audio transcription
-openai-whisper==20240930
-yt-dlp==2024.12.13
+# Video/Audio transcription (install locally only - too heavy for cloud)
+# openai-whisper==20240930
+# yt-dlp==2024.12.13
 
-# Async & Background tasks
-celery[redis]==5.4.0
-redis==5.2.1
+# Async & Background tasks (optional)
+# celery[redis]==5.4.0
+# redis==5.2.1
 
 # Utilities
 python-dotenv==1.0.1
