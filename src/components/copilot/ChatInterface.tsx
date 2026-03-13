@@ -255,21 +255,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
             </div>
           ))}
 
-          {loading && (
-            <div className="flex gap-4">
-              <div className="shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mt-1">
-                <Sparkles size={14} className="text-[#FDB02F]" />
-              </div>
-              <div className={`rounded-2xl px-5 py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-white border border-gray-200 shadow-sm"}`}>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-[#FDB02F]/40 animate-pulse" />
-                  <div className="w-2 h-2 rounded-full bg-[#FDB02F]/40 animate-pulse" style={{ animationDelay: "150ms" }} />
-                  <div className="w-2 h-2 rounded-full bg-[#FDB02F]/40 animate-pulse" style={{ animationDelay: "300ms" }} />
-                  <span className={`text-base ml-2 ${isDark ? "text-white/20" : "text-gray-400"}`}>Generating clinical response...</span>
-                </div>
-              </div>
-            </div>
-          )}
+          {loading && <ClinicalLoadingIndicator isDark={isDark} />}
 
           <div ref={messagesEndRef} />
         </div>
@@ -284,6 +270,63 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
         loading={loading}
         placeholder="Ask a follow-up question..."
       />
+    </div>
+  );
+}
+
+// Clinical loading indicator with rotating medical status words
+const clinicalLoadingSteps = [
+  { text: "Receiving query...", icon: "🔍" },
+  { text: "Searching knowledge base...", icon: "📚" },
+  { text: "Retrieving clinical evidence...", icon: "🧬" },
+  { text: "Analyzing differential diagnosis...", icon: "🧠" },
+  { text: "Reviewing pharmacotherapy...", icon: "💊" },
+  { text: "Assessing risk factors...", icon: "🛡️" },
+  { text: "Cross-referencing DSM-5-TR...", icon: "📋" },
+  { text: "Formulating treatment plan...", icon: "📝" },
+  { text: "Compiling clinical report...", icon: "📊" },
+  { text: "Finalizing recommendations...", icon: "✅" },
+];
+
+function ClinicalLoadingIndicator({ isDark }: { isDark: boolean }) {
+  const [stepIndex, setStepIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStepIndex((prev) => (prev + 1) % clinicalLoadingSteps.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const step = clinicalLoadingSteps[stepIndex];
+
+  return (
+    <div className="flex gap-3 sm:gap-4">
+      <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mt-1">
+        <Sparkles size={14} className="text-[#FDB02F] animate-spin" style={{ animationDuration: "3s" }} />
+      </div>
+      <div className={`flex-1 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-white border border-gray-200 shadow-sm"}`}>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] animate-bounce" style={{ animationDelay: "0ms" }} />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] animate-bounce" style={{ animationDelay: "150ms" }} />
+            <div className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] animate-bounce" style={{ animationDelay: "300ms" }} />
+          </div>
+          <span
+            key={stepIndex}
+            className={`text-sm font-medium transition-opacity duration-300 ${isDark ? "text-white/50" : "text-gray-500"}`}
+            style={{ animation: "fadeInUp 0.4s ease-out" }}
+          >
+            {step.icon} {step.text}
+          </span>
+        </div>
+        <div className={`mt-2 h-1 rounded-full overflow-hidden ${isDark ? "bg-white/5" : "bg-gray-100"}`}>
+          <div
+            className="h-full bg-gradient-to-r from-[#FDB02F]/60 to-[#FDB02F] rounded-full transition-all duration-1000 ease-out"
+            style={{ width: `${((stepIndex + 1) / clinicalLoadingSteps.length) * 100}%` }}
+          />
+        </div>
+      </div>
     </div>
   );
 }

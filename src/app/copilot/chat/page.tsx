@@ -221,6 +221,8 @@ function CopilotChatInner() {
       });
       const data = await res.json();
 
+      // Stop loading first, then swap messages in one batch to prevent blink
+      setLoading(false);
       setMessages((prev) => [
         ...prev.filter((m) => m.id !== tempUserMsg.id),
         data.userMessage,
@@ -228,9 +230,9 @@ function CopilotChatInner() {
       ]);
       loadChats();
     } catch {
+      setLoading(false);
       setMessages((prev) => prev.filter((m) => m.id !== tempUserMsg.id));
     }
-    setLoading(false);
   }
 
   const isDark = theme === "dark";
