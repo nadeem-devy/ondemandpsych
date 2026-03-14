@@ -40,6 +40,7 @@ export default function LegalPage() {
     );
   }
 
+  // Sanitize content with DOMPurify to prevent XSS attacks
   const sanitizedContent = DOMPurify.sanitize(page.content, {
     ALLOWED_TAGS: [
       "h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "hr",
@@ -52,27 +53,30 @@ export default function LegalPage() {
 
   return (
     <div className="min-h-screen bg-[#07123A]">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link href="/" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-8 text-sm">
+      <div className="max-w-4xl mx-auto px-6 py-16">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-10 text-sm">
           <ArrowLeft size={16} /> Back to Home
         </Link>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">{page.title}</h1>
-          <p className="text-white/30 text-sm">
+        <div className="mb-10 border-b border-[#FDB02F]/20 pb-6">
+          <h1 className="text-4xl font-bold text-[#FDB02F] mb-3">{page.title}</h1>
+          <p className="text-white/40 text-sm">
             Last updated: {new Date(page.updatedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
           </p>
         </div>
 
         <div
-          className="prose prose-invert max-w-none text-white/70 leading-relaxed
-            prose-headings:text-white prose-headings:font-bold
-            prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3 prose-h2:border-b prose-h2:border-white/10 prose-h2:pb-2
-            prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-2
+          className="prose prose-invert max-w-none text-white/70 leading-relaxed text-[15px]
+            prose-headings:text-[#FDB02F] prose-headings:font-bold
+            prose-h2:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b prose-h2:border-white/10 prose-h2:pb-3
+            prose-h3:text-lg prose-h3:mt-8 prose-h3:mb-3 prose-h3:text-[#FDB02F]/80
+            prose-h4:text-base prose-h4:mt-6 prose-h4:mb-2
             prose-strong:text-white/90
             prose-a:text-[#FDB02F] prose-a:no-underline hover:prose-a:underline
-            prose-li:text-white/60
-            prose-p:mb-4"
+            prose-li:text-white/60 prose-li:my-1
+            prose-ul:my-4 prose-ol:my-4
+            prose-p:mb-5 prose-p:leading-7
+            prose-hr:border-white/10 prose-hr:my-8"
           dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
       </div>

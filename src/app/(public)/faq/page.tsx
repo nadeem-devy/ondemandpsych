@@ -35,39 +35,39 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen bg-[#07123A]">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link href="/" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-8 text-sm">
+      <div className="max-w-4xl mx-auto px-6 py-16">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-10 text-sm">
           <ArrowLeft size={16} /> Back to Home
         </Link>
 
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold text-white mb-2">Frequently Asked Questions</h1>
+        <div className="mb-12 border-b border-[#FDB02F]/20 pb-6">
+          <h1 className="text-4xl font-bold text-[#FDB02F] mb-3">Frequently Asked Questions</h1>
           <p className="text-white/40">Find answers about the OnDemandPsych Clinical Co-Pilot</p>
         </div>
 
         {categories.map((category) => (
-          <div key={category} className="mb-10">
-            <h2 className="text-lg font-bold text-[#FDB02F] mb-4 border-b border-white/10 pb-2">{category}</h2>
-            <div className="space-y-2">
+          <div key={category} className="mb-12">
+            <h2 className="text-xl font-bold text-[#FDB02F] mb-5 border-b border-white/10 pb-3">{category}</h2>
+            <div className="space-y-3">
               {faqs
                 .filter((f) => f.category === category)
                 .map((faq) => (
                   <div
                     key={faq.id}
-                    className="rounded-xl border border-white/10 overflow-hidden transition-colors hover:border-white/20"
+                    className="rounded-xl border border-white/10 overflow-hidden transition-colors hover:border-[#FDB02F]/30"
                   >
                     <button
                       onClick={() => setOpenId(openId === faq.id ? null : faq.id)}
-                      className="w-full flex items-center justify-between px-5 py-4 text-left"
+                      className="w-full flex items-center justify-between px-6 py-5 text-left"
                     >
                       <span className="text-white font-medium pr-4">{faq.question}</span>
                       <ChevronDown
                         size={18}
-                        className={`text-white/30 shrink-0 transition-transform ${openId === faq.id ? "rotate-180" : ""}`}
+                        className={`text-[#FDB02F]/50 shrink-0 transition-transform ${openId === faq.id ? "rotate-180" : ""}`}
                       />
                     </button>
                     {openId === faq.id && (
-                      <div className="px-5 pb-5 text-white/60 leading-relaxed whitespace-pre-line">
+                      <div className="px-6 pb-6 text-white/60 leading-7 whitespace-pre-line border-t border-white/5 pt-4">
                         {faq.answer}
                       </div>
                     )}
