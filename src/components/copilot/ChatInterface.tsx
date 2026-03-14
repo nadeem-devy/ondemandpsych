@@ -59,10 +59,23 @@ const promptSuggestions = [
 export function ChatInterface({ chatId, messages, onSendMessage, loading }: ChatInterfaceProps) {
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
+  const prevMessageCountRef = useRef(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { theme } = useTheme();
   const isDark = theme === "dark";
+
+  // Track newly arrived assistant messages (not loaded from history)
+  useEffect(() => {
+    if (messages.length > prevMessageCountRef.current && prevMessageCountRef.current > 0) {
+      const latest = messages[messages.length - 1];
+      if (latest?.role === "assistant") {
+        setNewMessageIds((prev) => new Set(prev).add(latest.id));
+      }
+    }
+    prevMessageCountRef.current = messages.length;
+  }, [messages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -275,7 +288,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                     <TypingMessage
                       content={msg.content}
                       renderHtml={renderSafeHtml}
-                      isLatest={msg.id === messages[messages.length - 1]?.id}
+                      isNew={newMessageIds.has(msg.id)}
                     />
                   ) : (
                     <p className="whitespace-pre-wrap">{msg.content}</p>
@@ -364,44 +377,41 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
 function TypingMessage({
   content,
   renderHtml,
-  isLatest,
+  isNew,
 }: {
   content: string;
   renderHtml: (text: string) => { __html: string };
-  isLatest: boolean;
+  isNew: boolean;
 }) {
-  const [displayedContent, setDisplayedContent] = useState(content);
-  const [isTyping, setIsTyping] = useState(false);
-  const prevContentRef = useRef(content);
+  const [displayedContent, setDisplayedContent] = useState(isNew ? "" : content);
+  const [isTyping, setIsTyping] = useState(isNew);
+  const hasAnimated = useRef(!isNew);
 
   useEffect(() => {
-    // Only animate if this is the latest message AND content just changed (new message arrived)
-    if (isLatest && content !== prevContentRef.current && prevContentRef.current === "") {
-      setIsTyping(true);
-      let charIndex = 0;
-      const totalChars = content.length;
-      // Speed: reveal ~30 chars per frame for long content, minimum 5
-      const charsPerTick = Math.max(5, Math.floor(totalChars / 120));
-
-      const interval = setInterval(() => {
-        charIndex += charsPerTick;
-        if (charIndex >= totalChars) {
-          setDisplayedContent(content);
-          setIsTyping(false);
-          clearInterval(interval);
-        } else {
-          setDisplayedContent(content.slice(0, charIndex));
-        }
-      }, 16); // ~60fps
-
-      prevContentRef.current = content;
-      return () => clearInterval(interval);
-    } else {
-      // Not the latest or already shown — display immediately
+    if (hasAnimated.current) {
       setDisplayedContent(content);
-      prevContentRef.current = content;
+      return;
     }
-  }, [content, isLatest]);
+
+    hasAnimated.current = true;
+    let charIndex = 0;
+    const totalChars = content.length;
+    // Reveal speed: ~2 seconds for the whole message
+    const charsPerTick = Math.max(8, Math.floor(totalChars / 100));
+
+    const interval = setInterval(() => {
+      charIndex += charsPerTick;
+      if (charIndex >= totalChars) {
+        setDisplayedContent(content);
+        setIsTyping(false);
+        clearInterval(interval);
+      } else {
+        setDisplayedContent(content.slice(0, charIndex));
+      }
+    }, 16);
+
+    return () => clearInterval(interval);
+  }, [content]);
 
   return (
     <div
