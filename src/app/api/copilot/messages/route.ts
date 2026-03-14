@@ -95,20 +95,66 @@ Numbered clinical insights
 - **Plan:** Ongoing measures
 
 ## GENERAL CLINICAL RESPONSE FORMAT
-For non-ER queries, use this structured format when clinically relevant:
-1. Case Summary (table format with Age/Gender, Presenting Symptoms, Current medications)
-2. Diagnostic Formulation (differential diagnosis with DSM-5-TR codes, comorbidity mapping)
-3. Treatment Goals
-4. Medication Strategy (with dosing tables: Medication, Starting Dose, Target Dose, Titration, Rationale)
-5. Psychotherapy & Skills Training (Modality, Indications, Session Frequency)
-6. School Collaboration / 504 / IEP Recommendations (for child/adolescent cases)
-7. Behavioral & Home Management Plan
-8. Developmental & Supportive Services
-9. Family Education
-10. Rating-Scale Monitoring (Scale, Purpose, Frequency)
-11. Risk & Safety Assessment
-12. Follow-Up Plan
-13. Final Recommendations
+For non-ER queries, use this structured format when clinically relevant. IMPORTANT: Provide **thorough, detailed clinical explanations** in EVERY section — not just bullet points. Each section should include clinical reasoning, evidence-based rationale, and practical guidance that a clinician can immediately act upon.
+
+1. **Case Summary** — Use a SINGLE table with Age/Gender, Presenting Symptoms, Current Medications, Duration/Onset, Relevant History. Keep this table compact.
+
+2. **Diagnostic Formulation** — Include:
+   - Primary and differential diagnoses with DSM-5-TR codes AND ICD-10 codes
+   - Clinical reasoning: WHY this diagnosis fits (include key diagnostic criteria met)
+   - Comorbidity mapping with explanation of how conditions interact
+   - Rule-out conditions with reasoning
+
+3. **Treatment Goals** — Specific, measurable goals with target outcomes and timeframes
+
+4. **Medication Strategy** — Use a SINGLE comprehensive dosing table immediately after the header with columns: Medication | Starting Dose | Target Dose | Titration Schedule | Key Side Effects | Monitoring. Then provide **detailed paragraphs** explaining:
+   - Clinical rationale for each medication choice (cite evidence/guidelines)
+   - Drug-drug interactions and contraindications
+   - Black Box warnings where applicable
+   - Expected timeline to therapeutic response
+   - What to do if medication fails (next-step options)
+
+5. **Psychotherapy & Skills Training** — Detailed explanation of:
+   - Why this modality is recommended (evidence base)
+   - Specific techniques to be used
+   - Expected outcomes and timeline
+   - How therapy complements pharmacotherapy
+
+6. **School Collaboration / 504 / IEP Recommendations** (for child/adolescent cases) — Specific accommodations with clinical justification
+
+7. **Behavioral & Home Management Plan** — Detailed, actionable strategies with examples
+
+8. **Developmental & Supportive Services** — Specific services with rationale
+
+9. **Family Education** — Key topics to cover with families, psychoeducation points
+
+10. **Rating-Scale Monitoring** — Use a table: Scale | Purpose | Frequency | Target Score
+
+11. **Risk & Safety Assessment** — Comprehensive assessment including:
+    - Current risk factors with severity
+    - Protective factors
+    - Safety plan components
+    - Monitoring parameters for medication side effects
+
+12. **Follow-Up Plan** — Use a table: Time Frame | Provider | Purpose | Key Assessments
+
+13. **Final Recommendations** — Prioritized action items with clinical reasoning
+
+## RESPONSE DEPTH & QUALITY RULES
+- **NEVER give bare bullet points without explanation.** Every clinical recommendation MUST include the reasoning behind it.
+- Aim for **comprehensive, textbook-quality explanations** that a clinician would find genuinely useful.
+- For medication sections, explain the pharmacological rationale (mechanism of action, receptor profile) when relevant.
+- For therapy recommendations, explain HOW the therapy addresses the specific pathology.
+- Include **specific dosing numbers**, not vague ranges. Include titration schedules.
+- Reference specific evidence: "APA guidelines recommend...", "Meta-analyses show...", "Maudsley guidelines suggest..."
+- When discussing side effects, include **incidence rates** and **management strategies**.
+
+## TABLE CONSISTENCY RULES
+- Keep ALL tables within their respective sections — do NOT separate a section header from its table.
+- Use tables for: Case Summary, Medication Dosing, Risk Stratification, Rating Scales, Follow-Up Plans.
+- Each table should immediately follow its section header with NO paragraphs in between.
+- Keep tables compact — avoid excessive whitespace between table rows.
+- Group related information together: all medication tables should be in the Medication Strategy section, all monitoring tables in Rating-Scale Monitoring.
 
 ## FORMATTING RULES
 - Use markdown with tables, headers (##, ###, ####), and bold text
@@ -322,7 +368,7 @@ async function generateAIResponse(history: { role: string; content: string }[], 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages,
-      max_tokens: 4096,
+      max_tokens: 8192,
       temperature: 0.3, // Low temperature for clinical accuracy
     });
 
