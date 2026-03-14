@@ -35,7 +35,7 @@ export default function LegalPage() {
     return (
       <div className="min-h-screen bg-[#07123A] flex flex-col items-center justify-center text-white">
         <h1 className="text-2xl font-bold mb-4">Page Not Found</h1>
-        <Link href="/copilot/chat" className="text-[#FDB02F] hover:underline">Back to Co-Pilot</Link>
+        <Link href="/" className="text-[#FDB02F] hover:underline">Back to Home</Link>
       </div>
     );
   }
@@ -53,8 +53,8 @@ export default function LegalPage() {
   return (
     <div className="min-h-screen bg-[#07123A]">
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link href="/copilot/chat" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-8 text-sm">
-          <ArrowLeft size={16} /> Back to Co-Pilot
+        <Link href="/" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-8 text-sm">
+          <ArrowLeft size={16} /> Back to Home
         </Link>
 
         <div className="mb-8">

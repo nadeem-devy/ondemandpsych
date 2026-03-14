@@ -36,8 +36,8 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen bg-[#07123A]">
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link href="/copilot/chat" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-8 text-sm">
-          <ArrowLeft size={16} /> Back to Co-Pilot
+        <Link href="/" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-8 text-sm">
+          <ArrowLeft size={16} /> Back to Home
         </Link>
 
         <div className="mb-10">

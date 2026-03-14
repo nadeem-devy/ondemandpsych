@@ -10,16 +10,16 @@ const quickLinks = [
 ];
 
 const resources = [
-  { href: "/copilot/legal/hipaa-compliance", label: "HIPAA Compliance" },
-  { href: "/copilot/legal/privacy-policy", label: "Privacy Policy" },
-  { href: "/copilot/legal/terms-conditions", label: "Terms & Conditions" },
-  { href: "/copilot/legal/data-protection-security", label: "Data Protection" },
-  { href: "/copilot/legal/cookie-policy", label: "Cookie Policy" },
+  { href: "/legal/hipaa-compliance", label: "HIPAA Compliance" },
+  { href: "/legal/privacy-policy", label: "Privacy Policy" },
+  { href: "/legal/terms-conditions", label: "Terms & Conditions" },
+  { href: "/legal/data-protection-security", label: "Data Protection" },
+  { href: "/legal/cookie-policy", label: "Cookie Policy" },
 ];
 
 const support = [
   { href: "/contact-us", label: "Contact Us" },
-  { href: "/copilot/faq", label: "FAQ" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 interface SocialLinks {
