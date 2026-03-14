@@ -42,22 +42,32 @@ const promptSuggestions = [
   {
     icon: Stethoscope,
     title: "Diagnostic Reasoning",
-    prompt: "Help me with differential diagnosis for a patient presenting with...",
+    prompt: "Help me with differential diagnosis for a patient presenting with auditory hallucinations, social withdrawal, and flat affect.",
   },
   {
     icon: Pill,
     title: "Medication Review",
-    prompt: "Review medication interactions for a patient currently taking...",
+    prompt: "Review medication interactions for a patient currently taking lithium 900mg, sertraline 100mg, and clonazepam 0.5mg BID.",
   },
   {
     icon: Shield,
     title: "Risk Assessment",
-    prompt: "Guide me through a structured psychiatric risk assessment for...",
+    prompt: "Guide me through a structured psychiatric risk assessment for a 17-year-old with suicidal ideation and recent self-harm.",
   },
   {
     icon: FileText,
-    title: "Documentation",
-    prompt: "Help me create chart-ready documentation for...",
+    title: "ER Disposition",
+    prompt: "Generate an ER disposition report for a 34-year-old male brought in by police with acute psychosis, agitation, and methamphetamine use.",
+  },
+  {
+    icon: BrainCircuit,
+    title: "Treatment Plan",
+    prompt: "Create a comprehensive treatment plan for a 12-year-old with treatment-resistant OCD (Y-BOCS 28) and comorbid ADHD.",
+  },
+  {
+    icon: Pill,
+    title: "Drug Interactions",
+    prompt: "Evaluate potential drug interactions and safety concerns for combining clozapine with valproate and metformin in a 45-year-old patient.",
   },
 ];
 
@@ -305,9 +315,8 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     return (
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mb-4 sm:mb-6">
-            <BrainCircuit size={24} className="text-[#FDB02F] sm:hidden" />
-            <BrainCircuit size={28} className="text-[#FDB02F] hidden sm:block" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden mb-4 sm:mb-6">
+            <img src="/logo.webp" alt="OnDemandPsych" className="w-full h-full object-cover" />
           </div>
           <h2 className={`text-xl sm:text-2xl font-bold font-[var(--font-syne)] mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>
             Clinical Co-Pilot
@@ -317,7 +326,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
             medication management, risk assessment, or documentation.
           </p>
 
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-lg">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 w-full max-w-3xl">
             {promptSuggestions.map((s) => (
               <button
                 key={s.title}
