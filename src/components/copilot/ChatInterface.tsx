@@ -156,7 +156,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     URL.revokeObjectURL(url);
   }, []);
 
-  const handleExportPdf = useCallback((content: string) => {
+  const handleExportPdf = useCallback(async (content: string) => {
     // Sanitize content first with DOMPurify (same as renderSafeHtml)
     const rawHtml = markdownToHtml(content);
     const sanitizedHtml = DOMPurify.sanitize(rawHtml, {
@@ -167,6 +167,18 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
       ],
       ALLOWED_ATTR: ["class"],
     });
+
+    // Convert logo to base64 data URI so it works in Blob URL context
+    let logoDataUri = "";
+    try {
+      const logoRes = await fetch("/logo.webp");
+      const logoBlob = await logoRes.blob();
+      logoDataUri = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(logoBlob);
+      });
+    } catch { /* fallback: no logo */ }
 
     // Build PDF-ready HTML string (all content is DOMPurify-sanitized)
     const dateStr = new Date().toISOString().slice(0, 10);
@@ -210,7 +222,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
       "</div>",
       '<div class="pdf-header">',
       '<div style="display:flex;align-items:center;gap:16px;">',
-      '<img src="/logo.webp" alt="OnDemandPsych" style="width:50px;height:50px;border-radius:10px;" />',
+      `<img src="${logoDataUri}" alt="OnDemandPsych" style="width:50px;height:50px;border-radius:10px;" />`,
       '<div>',
       '<h1 class="pdf-header-title">OnDemand<span class="gold">Psych</span> Clinical Co-Pilot</h1>',
       '<p class="pdf-header-sub">Clinical Decision Support Report</p>',
