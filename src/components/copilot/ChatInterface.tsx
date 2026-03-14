@@ -203,6 +203,37 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     }
   }, []);
 
+  // Extract optional prompts from message content for rendering as clickable tiles
+  function extractPrompts(text: string): { content: string; prompts: string[] } {
+    const prompts: string[] = [];
+    // Match "OPTIONAL PROMPTS" section or "- Would you like..." lines at the end
+    const optionalSection = text.match(/\*\*OPTIONAL PROMPTS\*\*\n((?:[-•]\s*.+\n?)*)/);
+    if (optionalSection) {
+      const items = optionalSection[1].trim().split("\n")
+        .map((line) => line.replace(/^[-•]\s*/, "").trim())
+        .filter(Boolean);
+      prompts.push(...items);
+      return { content: text.replace(optionalSection[0], ""), prompts };
+    }
+    // Also catch standalone "Would you like..." lines at the end
+    const lines = text.split("\n");
+    const mainLines: string[] = [];
+    let foundPrompts = false;
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const trimmed = lines[i].replace(/^[-•]\s*/, "").trim();
+      if (trimmed.startsWith("Would you like")) {
+        prompts.unshift(trimmed);
+        foundPrompts = true;
+      } else if (foundPrompts && trimmed === "") {
+        continue; // skip blank lines between prompts
+      } else {
+        mainLines.unshift(...lines.slice(0, i + 1));
+        break;
+      }
+    }
+    return { content: mainLines.join("\n"), prompts };
+  }
+
   function renderSafeHtml(text: string) {
     const html = markdownToHtml(text);
     const clean = DOMPurify.sanitize(html, {
@@ -291,11 +322,36 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
                   }`}
                 >
                   {msg.role === "assistant" ? (
-                    <TypingMessage
-                      content={msg.content}
-                      renderHtml={renderSafeHtml}
-                      isNew={animateIds.has(msg.id)}
-                    />
+                    (() => {
+                      const { content: mainContent, prompts } = extractPrompts(msg.content);
+                      return (
+                        <>
+                          <TypingMessage
+                            content={mainContent}
+                            renderHtml={renderSafeHtml}
+                            isNew={animateIds.has(msg.id)}
+                          />
+                          {prompts.length > 0 && (
+                            <div className="mt-3 flex flex-col gap-2">
+                              {prompts.map((prompt, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => onSendMessage(prompt)}
+                                  className={`text-left px-4 py-3 rounded-xl border transition-all group flex items-center gap-3 ${
+                                    isDark
+                                      ? "border-[#FDB02F]/15 bg-[#FDB02F]/5 hover:bg-[#FDB02F]/10 hover:border-[#FDB02F]/30 text-white/70 hover:text-white"
+                                      : "border-[#FDB02F]/20 bg-[#FDB02F]/5 hover:bg-[#FDB02F]/10 hover:border-[#FDB02F]/40 text-gray-600 hover:text-gray-900"
+                                  }`}
+                                >
+                                  <Sparkles size={14} className="shrink-0 text-[#FDB02F]/60 group-hover:text-[#FDB02F] transition-colors" />
+                                  <span className="text-sm">{prompt}</span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()
                   ) : (
                     <p className="whitespace-pre-wrap">{msg.content}</p>
                   )}
