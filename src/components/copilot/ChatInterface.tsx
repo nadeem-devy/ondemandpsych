@@ -31,6 +31,8 @@ interface ChatInterfaceProps {
   messages: Message[];
   onSendMessage: (content: string) => Promise<void>;
   loading: boolean;
+  userName?: string;
+  userAvatar?: string | null;
 }
 
 const promptSuggestions = [
@@ -56,7 +58,7 @@ const promptSuggestions = [
   },
 ];
 
-export function ChatInterface({ chatId, messages, onSendMessage, loading }: ChatInterfaceProps) {
+export function ChatInterface({ chatId, messages, onSendMessage, loading, userName, userAvatar }: ChatInterfaceProps) {
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -274,8 +276,8 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
           {messages.map((msg) => (
             <div key={msg.id} className={`flex gap-2 sm:gap-4 ${msg.role === "user" ? "justify-end" : ""}`}>
               {msg.role === "assistant" && (
-                <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mt-1">
-                  <Sparkles size={14} className="text-[#FDB02F]" />
+                <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden mt-1">
+                  <img src="/logo.webp" alt="Co-Pilot" className="w-full h-full object-cover" />
                 </div>
               )}
               <div className={`flex-1 min-w-0 ${msg.role === "user" ? "max-w-[85%] sm:max-w-[75%]" : ""}`}>
@@ -351,8 +353,16 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                 )}
               </div>
               {msg.role === "user" && (
-                <div className={`shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center mt-1 ${isDark ? "bg-white/10" : "bg-gray-100"}`}>
-                  <User size={14} className={isDark ? "text-white/50" : "text-gray-500"} />
+                <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden mt-1">
+                  {userAvatar ? (
+                    <img src={userAvatar} alt={userName || "User"} className="w-full h-full object-cover rounded-xl" />
+                  ) : (
+                    <div className={`w-full h-full rounded-xl flex items-center justify-center text-xs font-bold ${
+                      isDark ? "bg-[#FDB02F]/20 text-[#FDB02F]" : "bg-[#07123A]/10 text-[#07123A]"
+                    }`}>
+                      {userName ? userName.charAt(0).toUpperCase() : "U"}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -453,8 +463,8 @@ function ClinicalLoadingIndicator({ isDark }: { isDark: boolean }) {
 
   return (
     <div className="flex gap-3 sm:gap-4">
-      <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center mt-1">
-        <Sparkles size={14} className="text-[#FDB02F] animate-spin" style={{ animationDuration: "3s" }} />
+      <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden mt-1 animate-pulse">
+        <img src="/logo.webp" alt="Co-Pilot" className="w-full h-full object-cover" />
       </div>
       <div className={`flex-1 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-white border border-gray-200 shadow-sm"}`}>
         <div className="flex items-center gap-3">

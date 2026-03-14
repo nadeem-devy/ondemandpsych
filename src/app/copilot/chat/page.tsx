@@ -44,6 +44,7 @@ function CopilotChatInner() {
   const [messages, setMessages] = useState<MessageItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userPlan, setUserPlan] = useState("free");
   const [authChecked, setAuthChecked] = useState(false);
   const [fontSize, setFontSize] = useState(15);
@@ -59,6 +60,7 @@ function CopilotChatInner() {
       })
       .then((data) => {
         setUserName(data.name);
+        setUserAvatar(data.avatar || null);
         setUserPlan(data.plan);
         setAuthChecked(true);
       })
@@ -312,6 +314,8 @@ function CopilotChatInner() {
           messages={messages}
           onSendMessage={handleSendMessage}
           loading={loading}
+          userName={userName}
+          userAvatar={userAvatar}
         />
       </div>
 
