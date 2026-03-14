@@ -287,6 +287,7 @@ export async function POST(req: NextRequest) {
 
   // RAG: retrieve relevant knowledge chunks (try live service first, fallback to direct DB)
   let ragContext = "";
+  let ragDocumentTitles: string[] = [];
   try {
     const ragServiceUrl = process.env.RAG_SERVICE_URL || "https://ondemandpsych-production.up.railway.app";
     const settings = await prisma.ragSettings.findFirst();
@@ -316,6 +317,9 @@ export async function POST(req: NextRequest) {
         chunks.map((c, i) => `[Source ${i + 1}: ${c.document.title}]\n${c.content}`).join("\n\n---\n\n") +
         "\n\nEnd of knowledge base context.]";
 
+      // Collect unique document titles for reference
+      ragDocumentTitles = [...new Set(chunks.map((c) => c.document.title))];
+
       // Log RAG query for analytics
       await prisma.ragQueryLog.create({
         data: {
@@ -332,7 +336,14 @@ export async function POST(req: NextRequest) {
   }
 
   // Generate AI response via OpenAI
-  const aiContent = await generateAIResponse(history, (folderContext || "") + ragContext);
+  let aiContent = await generateAIResponse(history, (folderContext || "") + ragContext);
+
+  // Append RAG document references to the response
+  if (ragDocumentTitles.length > 0) {
+    aiContent += "\n\n---\n📄 **Knowledge Base References:**\n" +
+      ragDocumentTitles.map((title, i) => `${i + 1}. ${title}`).join("\n");
+  }
+
   const assistantMessage = await prisma.message.create({
     data: { chatId, role: "assistant", content: aiContent },
   });
