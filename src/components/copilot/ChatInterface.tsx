@@ -263,7 +263,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
               )}
               <div className={`flex-1 min-w-0 ${msg.role === "user" ? "max-w-[85%] sm:max-w-[75%]" : ""}`}>
                 <div
-                  className={`rounded-2xl px-3 py-3 sm:px-5 sm:py-4 text-lg leading-relaxed ${
+                  className={`rounded-2xl px-3 py-3 sm:px-5 sm:py-4 text-[15px] sm:text-[17px] leading-relaxed ${
                     msg.role === "user"
                       ? "bg-[#FDB02F] text-[#07123A]"
                       : isDark
@@ -272,9 +272,10 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                   }`}
                 >
                   {msg.role === "assistant" ? (
-                    <div
-                      className="copilot-message"
-                      dangerouslySetInnerHTML={renderSafeHtml(msg.content)}
+                    <TypingMessage
+                      content={msg.content}
+                      renderHtml={renderSafeHtml}
+                      isLatest={msg.id === messages[messages.length - 1]?.id}
                     />
                   ) : (
                     <p className="whitespace-pre-wrap">{msg.content}</p>
@@ -356,6 +357,57 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
         placeholder="Ask a follow-up question..."
       />
     </div>
+  );
+}
+
+// Typing effect for assistant messages
+function TypingMessage({
+  content,
+  renderHtml,
+  isLatest,
+}: {
+  content: string;
+  renderHtml: (text: string) => { __html: string };
+  isLatest: boolean;
+}) {
+  const [displayedContent, setDisplayedContent] = useState(content);
+  const [isTyping, setIsTyping] = useState(false);
+  const prevContentRef = useRef(content);
+
+  useEffect(() => {
+    // Only animate if this is the latest message AND content just changed (new message arrived)
+    if (isLatest && content !== prevContentRef.current && prevContentRef.current === "") {
+      setIsTyping(true);
+      let charIndex = 0;
+      const totalChars = content.length;
+      // Speed: reveal ~30 chars per frame for long content, minimum 5
+      const charsPerTick = Math.max(5, Math.floor(totalChars / 120));
+
+      const interval = setInterval(() => {
+        charIndex += charsPerTick;
+        if (charIndex >= totalChars) {
+          setDisplayedContent(content);
+          setIsTyping(false);
+          clearInterval(interval);
+        } else {
+          setDisplayedContent(content.slice(0, charIndex));
+        }
+      }, 16); // ~60fps
+
+      prevContentRef.current = content;
+      return () => clearInterval(interval);
+    } else {
+      // Not the latest or already shown — display immediately
+      setDisplayedContent(content);
+      prevContentRef.current = content;
+    }
+  }, [content, isLatest]);
+
+  return (
+    <div
+      className={`copilot-message ${isTyping ? "typing-active" : ""}`}
+      dangerouslySetInnerHTML={renderHtml(displayedContent)}
+    />
   );
 }
 
