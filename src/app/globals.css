@@ -431,3 +431,66 @@ body::before {
 .copilot-light .copilot-message .copilot-checkbox {
   color: rgba(0,0,0,0.25);
 }
+
+/* ─── Legal Page Content Styling ─── */
+.legal-content h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #FDB02F;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.legal-content h2:first-child {
+  margin-top: 0;
+}
+.legal-content h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: rgba(253,176,47,0.85);
+  margin: 2rem 0 0.75rem;
+}
+.legal-content h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(253,176,47,0.7);
+  margin: 1.5rem 0 0.5rem;
+}
+.legal-content p {
+  color: rgba(255,255,255,0.65);
+  line-height: 1.8;
+  margin-bottom: 1.25rem;
+}
+.legal-content strong {
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+}
+.legal-content a {
+  color: #FDB02F;
+  text-decoration: none;
+}
+.legal-content a:hover {
+  text-decoration: underline;
+}
+.legal-content ul,
+.legal-content ol {
+  margin: 1rem 0 1.25rem;
+  padding-left: 1.5rem;
+}
+.legal-content ul {
+  list-style: disc;
+}
+.legal-content ol {
+  list-style: decimal;
+}
+.legal-content li {
+  color: rgba(255,255,255,0.6);
+  line-height: 1.8;
+  margin-bottom: 0.5rem;
+}
+.legal-content hr {
+  border: none;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 2rem 0;
+}
