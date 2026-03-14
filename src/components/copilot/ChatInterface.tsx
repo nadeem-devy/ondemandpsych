@@ -88,9 +88,16 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     hasMountedRef.current = true;
   }, [messages]);
 
-  useEffect(() => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+    // Also scroll after a short delay for long content that renders after layout
+    const t = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(t);
+  }, [messages, loading, scrollToBottom]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -380,6 +387,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
                             content={mainContent}
                             renderHtml={renderSafeHtml}
                             isNew={animateIds.has(msg.id)}
+                            onScroll={scrollToBottom}
                           />
                           {prompts.length > 0 && (
                             <div className="mt-3 flex flex-col gap-2">
@@ -502,10 +510,12 @@ function TypingMessage({
   content,
   renderHtml,
   isNew,
+  onScroll,
 }: {
   content: string;
   renderHtml: (text: string) => { __html: string };
   isNew: boolean;
+  onScroll?: () => void;
 }) {
   const [displayedContent, setDisplayedContent] = useState(isNew ? "" : content);
   const [isTyping, setIsTyping] = useState(isNew);
@@ -523,14 +533,18 @@ function TypingMessage({
     // Reveal speed: ~2 seconds for the whole message
     const charsPerTick = Math.max(8, Math.floor(totalChars / 100));
 
+    let scrollTick = 0;
     const interval = setInterval(() => {
       charIndex += charsPerTick;
       if (charIndex >= totalChars) {
         setDisplayedContent(content);
         setIsTyping(false);
         clearInterval(interval);
+        onScroll?.();
       } else {
         setDisplayedContent(content.slice(0, charIndex));
+        // Scroll every ~10 ticks to follow the typing
+        if (++scrollTick % 10 === 0) onScroll?.();
       }
     }, 16);
 
@@ -818,11 +832,13 @@ function markdownToHtml(text: string): string {
     }
   );
 
-  // Headers (order matters — match longer prefixes first)
-  html = html.replace(/^#### (.+)$/gm, '<h4 class="copilot-h4">$1</h4>');
-  html = html.replace(/^### (.+)$/gm, '<h3 class="copilot-h3">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="copilot-h2">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 class="copilot-h1">$1</h1>');
+  // Headers (order matters — match longer prefixes first, allow optional leading whitespace)
+  html = html.replace(/^\s*###### (.+)$/gm, '<h4 class="copilot-h4">$1</h4>');
+  html = html.replace(/^\s*##### (.+)$/gm, '<h4 class="copilot-h4">$1</h4>');
+  html = html.replace(/^\s*#### (.+)$/gm, '<h4 class="copilot-h4">$1</h4>');
+  html = html.replace(/^\s*### (.+)$/gm, '<h3 class="copilot-h3">$1</h3>');
+  html = html.replace(/^\s*## (.+)$/gm, '<h2 class="copilot-h2">$1</h2>');
+  html = html.replace(/^\s*# (.+)$/gm, '<h1 class="copilot-h1">$1</h1>');
 
   // Horizontal rules
   html = html.replace(/^---$/gm, '<hr class="copilot-hr"/>');
