@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import DOMPurify from "dompurify";
 
 export default function LegalPage() {
@@ -54,10 +53,6 @@ export default function LegalPage() {
   return (
     <div className="min-h-screen bg-[#07123A]">
       <div className="max-w-4xl mx-auto px-6 py-16">
-        <Link href="/" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-10 text-sm">
-          <ArrowLeft size={16} /> Back to Home
-        </Link>
-
         <div className="mb-10 border-b border-[#FDB02F]/20 pb-6">
           <h1 className="text-4xl font-bold text-[#FDB02F] mb-3">{page.title}</h1>
           <p className="text-white/40 text-sm">

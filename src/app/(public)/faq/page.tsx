@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 interface FAQ {
   id: string;
@@ -36,10 +35,6 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen bg-[#07123A]">
       <div className="max-w-4xl mx-auto px-6 py-16">
-        <Link href="/" className="inline-flex items-center gap-2 text-[#FDB02F] hover:underline mb-10 text-sm">
-          <ArrowLeft size={16} /> Back to Home
-        </Link>
-
         <div className="mb-12 border-b border-[#FDB02F]/20 pb-6">
           <h1 className="text-4xl font-bold text-[#FDB02F] mb-3">Frequently Asked Questions</h1>
           <p className="text-white/40">Find answers about the OnDemandPsych Clinical Co-Pilot</p>
