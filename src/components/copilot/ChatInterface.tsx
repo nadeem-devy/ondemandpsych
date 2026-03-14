@@ -59,22 +59,26 @@ const promptSuggestions = [
 export function ChatInterface({ chatId, messages, onSendMessage, loading }: ChatInterfaceProps) {
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
-  const prevMessageCountRef = useRef(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  // Track newly arrived assistant messages (not loaded from history)
-  useEffect(() => {
-    if (messages.length > prevMessageCountRef.current && prevMessageCountRef.current > 0) {
-      const latest = messages[messages.length - 1];
-      if (latest?.role === "assistant") {
-        setNewMessageIds((prev) => new Set(prev).add(latest.id));
-      }
+  // Track new assistant messages synchronously during render (not in useEffect)
+  const hasMountedRef = useRef(false);
+  const seenIdsRef = useRef<Set<string>>(new Set());
+  const animateIds = new Set<string>();
+
+  if (hasMountedRef.current) {
+    const last = messages[messages.length - 1];
+    if (last?.role === "assistant" && !seenIdsRef.current.has(last.id)) {
+      animateIds.add(last.id);
     }
-    prevMessageCountRef.current = messages.length;
+  }
+
+  useEffect(() => {
+    messages.forEach((m) => seenIdsRef.current.add(m.id));
+    hasMountedRef.current = true;
   }, [messages]);
 
   useEffect(() => {
@@ -288,7 +292,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading }: Chat
                     <TypingMessage
                       content={msg.content}
                       renderHtml={renderSafeHtml}
-                      isNew={newMessageIds.has(msg.id)}
+                      isNew={animateIds.has(msg.id)}
                     />
                   ) : (
                     <p className="whitespace-pre-wrap">{msg.content}</p>
