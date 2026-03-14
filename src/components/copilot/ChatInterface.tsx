@@ -132,7 +132,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     const rawHtml = markdownToHtml(content);
     const sanitizedHtml = DOMPurify.sanitize(rawHtml, {
       ALLOWED_TAGS: [
-        "strong", "em", "ul", "ol", "li", "p", "br", "h1", "h2", "h3",
+        "strong", "em", "ul", "ol", "li", "p", "br", "h1", "h2", "h3", "h4",
         "table", "thead", "tbody", "tr", "th", "td", "blockquote", "hr",
         "span", "div", "code",
       ],
@@ -155,10 +155,11 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
       ".pdf-header-sub { margin: 0; font-size: 12px; opacity: 0.8; }",
       ".gold { color: #FDB02F; }",
       ".pdf-content { padding: 0 8px; }",
-      "h1, h2, h3 { color: #07123A; margin-top: 20px; margin-bottom: 8px; }",
+      "h1, h2, h3, h4 { color: #07123A; margin-top: 20px; margin-bottom: 8px; }",
       "h1 { font-size: 20px; border-bottom: 2px solid #FDB02F; padding-bottom: 6px; }",
       "h2 { font-size: 17px; background: linear-gradient(90deg, #f0f4ff, transparent); padding: 8px 12px; border-left: 3px solid #FDB02F; border-radius: 4px; }",
       "h3 { font-size: 15px; color: #2d3a6e; }",
+      "h4 { font-size: 14px; color: #3d4a7e; font-weight: 600; }",
       "p, li { font-size: 13px; margin: 4px 0; }",
       "ul, ol { padding-left: 20px; margin: 6px 0; }",
       "table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; }",
@@ -179,8 +180,12 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
       '<button onclick="window.print()" style="background:#07123A;color:white;border:none;padding:12px 32px;border-radius:8px;font-size:15px;cursor:pointer;">Save as PDF</button>',
       "</div>",
       '<div class="pdf-header">',
+      '<div style="display:flex;align-items:center;gap:16px;">',
+      '<img src="/logo.webp" alt="OnDemandPsych" style="width:50px;height:50px;border-radius:10px;" />',
+      '<div>',
       '<h1 class="pdf-header-title">OnDemand<span class="gold">Psych</span> Clinical Co-Pilot</h1>',
       '<p class="pdf-header-sub">Clinical Decision Support Report</p>',
+      '</div></div>',
       "</div>",
       '<div class="pdf-content">',
       sanitizedHtml,
@@ -238,7 +243,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     const html = markdownToHtml(text);
     const clean = DOMPurify.sanitize(html, {
       ALLOWED_TAGS: [
-        "strong", "em", "ul", "ol", "li", "p", "br", "h1", "h2", "h3",
+        "strong", "em", "ul", "ol", "li", "p", "br", "h1", "h2", "h3", "h4",
         "table", "thead", "tbody", "tr", "th", "td", "blockquote", "hr",
         "span", "div", "code",
       ],
@@ -709,7 +714,8 @@ function markdownToHtml(text: string): string {
     }
   );
 
-  // Headers
+  // Headers (order matters — match longer prefixes first)
+  html = html.replace(/^#### (.+)$/gm, '<h4 class="copilot-h4">$1</h4>');
   html = html.replace(/^### (.+)$/gm, '<h3 class="copilot-h3">$1</h3>');
   html = html.replace(/^## (.+)$/gm, '<h2 class="copilot-h2">$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1 class="copilot-h1">$1</h1>');
