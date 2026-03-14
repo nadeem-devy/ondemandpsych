@@ -34,7 +34,7 @@ export default function FAQPage() {
 
   return (
     <div className="min-h-screen bg-[#07123A]">
-      <div className="max-w-4xl mx-auto px-6 py-16">
+      <div className="max-w-4xl mx-auto px-6 pt-32 pb-16">
         <div className="mb-12 border-b border-[#FDB02F]/20 pb-6">
           <h1 className="text-4xl font-bold text-[#FDB02F] mb-3">Frequently Asked Questions</h1>
           <p className="text-white/40">Find answers about the OnDemandPsych Clinical Co-Pilot</p>
