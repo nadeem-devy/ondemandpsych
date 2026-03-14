@@ -17,6 +17,9 @@ import {
   Download,
   Mic,
   MicOff,
+  Paperclip,
+  X,
+  Loader2,
 } from "lucide-react";
 
 interface Message {
@@ -61,6 +64,8 @@ const promptSuggestions = [
 export function ChatInterface({ chatId, messages, onSendMessage, loading, userName, userAvatar }: ChatInterfaceProps) {
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [attachedFile, setAttachedFile] = useState<{ name: string; text: string } | null>(null);
+  const [uploading, setUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { theme } = useTheme();
@@ -94,9 +99,33 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     }
   }, [input]);
 
+  async function handleAttachFile(file: File) {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/copilot/extract", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to extract text");
+        return;
+      }
+      setAttachedFile({ name: data.fileName, text: data.text });
+    } catch {
+      alert("Failed to upload document");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   async function handleSend() {
-    if (!input.trim() || loading) return;
-    const msg = input.trim();
+    if ((!input.trim() && !attachedFile) || loading) return;
+    let msg = input.trim();
+    if (attachedFile) {
+      const docContext = `[UPLOADED DOCUMENT: "${attachedFile.name}"]\n\n${attachedFile.text}\n\n[END OF DOCUMENT]\n\n`;
+      msg = msg ? docContext + msg : docContext + "Please analyze and summarize this document.";
+      setAttachedFile(null);
+    }
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
     await onSendMessage(msg);
@@ -299,6 +328,10 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
           onSend={handleSend}
           loading={loading}
           placeholder="Describe your clinical question..."
+          attachedFile={attachedFile}
+          onAttachFile={handleAttachFile}
+          onRemoveFile={() => setAttachedFile(null)}
+          uploading={uploading}
         />
       </div>
     );
@@ -443,6 +476,10 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
         onSend={handleSend}
         loading={loading}
         placeholder="Ask a follow-up question..."
+        attachedFile={attachedFile}
+        onAttachFile={handleAttachFile}
+        onRemoveFile={() => setAttachedFile(null)}
+        uploading={uploading}
       />
     </div>
   );
@@ -565,8 +602,12 @@ const ChatInput = forwardRef<
     onSend: () => void;
     loading: boolean;
     placeholder: string;
+    attachedFile: { name: string; text: string } | null;
+    onAttachFile: (file: File) => void;
+    onRemoveFile: () => void;
+    uploading: boolean;
   }
->(function ChatInput({ input, setInput, onKeyDown, onSend, loading, placeholder }, ref) {
+>(function ChatInput({ input, setInput, onKeyDown, onSend, loading, placeholder, attachedFile, onAttachFile, onRemoveFile, uploading }, ref) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [isRecording, setIsRecording] = useState(false);
@@ -619,9 +660,41 @@ const ChatInput = forwardRef<
     setIsRecording(true);
   }
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) onAttachFile(file);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
   return (
     <div className={`shrink-0 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-4 border-t ${isDark ? "border-white/5" : "border-gray-200"}`}>
       <div className="max-w-4xl mx-auto">
+        {/* Attached file indicator */}
+        {(attachedFile || uploading) && (
+          <div className={`flex items-center gap-2 mb-2 px-3 py-2 rounded-xl text-sm ${
+            isDark ? "bg-white/[0.06] text-white/70" : "bg-gray-100 text-gray-600"
+          }`}>
+            {uploading ? (
+              <>
+                <Loader2 size={14} className="animate-spin text-[#FDB02F]" />
+                <span>Extracting text from document...</span>
+              </>
+            ) : attachedFile ? (
+              <>
+                <FileText size={14} className="text-[#FDB02F]" />
+                <span className="flex-1 truncate">{attachedFile.name}</span>
+                <span className={`text-xs ${isDark ? "text-white/30" : "text-gray-400"}`}>
+                  {(attachedFile.text.length / 1000).toFixed(1)}k chars
+                </span>
+                <button onClick={onRemoveFile} className="p-0.5 rounded hover:bg-white/10">
+                  <X size={14} />
+                </button>
+              </>
+            ) : null}
+          </div>
+        )}
         <div className={`relative flex items-end rounded-2xl focus-within:border-[#FDB02F]/30 transition-colors ${
           isDark
             ? "bg-white/[0.04] border border-white/10"
@@ -632,13 +705,32 @@ const ChatInput = forwardRef<
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={onKeyDown}
-            placeholder={isRecording ? "Listening..." : placeholder}
+            placeholder={isRecording ? "Listening..." : (attachedFile ? "Ask a question about the document..." : placeholder)}
             rows={1}
             className={`flex-1 bg-transparent px-3 py-3 sm:px-5 sm:py-4 text-lg focus:outline-none resize-none max-h-40 ${
               isDark ? "text-white placeholder:text-white/20" : "text-gray-800 placeholder:text-gray-400"
             }`}
           />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.docx,.pptx,.ppt,.txt"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
           <div className="flex items-center gap-1 m-1.5 sm:m-2">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className={`p-2 sm:p-2.5 rounded-xl transition-all ${
+                isDark
+                  ? "text-white/30 hover:text-white/60 hover:bg-white/5"
+                  : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+              } ${uploading ? "opacity-30 cursor-not-allowed" : ""}`}
+              title="Attach document (PDF, DOCX, PPTX, TXT)"
+            >
+              <Paperclip size={16} />
+            </button>
             <button
               onClick={toggleTranscribe}
               className={`p-2 sm:p-2.5 rounded-xl transition-all ${
@@ -654,7 +746,7 @@ const ChatInput = forwardRef<
             </button>
             <button
               onClick={onSend}
-              disabled={!input.trim() || loading}
+              disabled={(!input.trim() && !attachedFile) || loading}
               className="p-2 sm:p-2.5 rounded-xl bg-[#FDB02F] text-[#07123A] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FDAA40] transition-colors"
             >
               <Send size={16} />
