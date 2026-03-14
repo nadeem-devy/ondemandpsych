@@ -410,6 +410,38 @@ model EmailTemplate {
   updatedAt DateTime @updatedAt
 }
 
+// ─── Legal Pages ───
+
+model LegalPage {
+  id        String    @id @default(cuid())
+  title     String
+  slug      String    @unique
+  content   String
+  isActive  Boolean   @default(true)
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+// ─── FAQs ───
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  category  String   @default("General")
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([isActive])
+}
+
 // ─── IP Allowlist ───
 
 model IpAllowlist {

@@ -27,6 +27,8 @@ import {
   MessageSquare,
   SlidersHorizontal,
   BarChart3,
+  Scale,
+  HelpCircle,
 } from "lucide-react";
 
 const navGroups = [
@@ -53,6 +55,8 @@ const navGroups = [
     items: [
       { href: "/admin/pages", label: "Pages", icon: FileText },
       { href: "/admin/blog", label: "Blog Posts", icon: PenSquare },
+      { href: "/admin/legal", label: "Legal Pages", icon: Scale },
+      { href: "/admin/faqs", label: "FAQs", icon: HelpCircle },
       { href: "/admin/content-library", label: "Content Library", icon: FolderOpen },
       { href: "/admin/email-templates", label: "Email Templates", icon: Mail },
     ],
