@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CopilotSidebar } from "@/components/copilot/CopilotSidebar";
 import { ChatInterface } from "@/components/copilot/ChatInterface";
@@ -50,6 +50,7 @@ function CopilotChatInner() {
   const [fontSize, setFontSize] = useState(15);
   const [supportOpen, setSupportOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const sendingRef = useRef(false);
 
   // Check auth
   useEffect(() => {
@@ -98,12 +99,13 @@ function CopilotChatInner() {
     }
   }, [authChecked, loadChats, loadFolders]);
 
-  // Load messages when chat changes
+  // Load messages when chat changes (skip if mid-send to prevent blink)
   useEffect(() => {
     if (!chatId) {
       setMessages([]);
       return;
     }
+    if (sendingRef.current) return;
     fetch(`/api/copilot/messages?chatId=${chatId}`)
       .then((r) => r.json())
       .then((data) => { if (Array.isArray(data)) setMessages(data); })
@@ -192,6 +194,7 @@ function CopilotChatInner() {
 
   async function handleSendMessage(content: string) {
     let currentChatId = chatId;
+    sendingRef.current = true;
 
     // Auto-create chat if none selected
     if (!currentChatId) {
@@ -223,7 +226,6 @@ function CopilotChatInner() {
       });
       const data = await res.json();
 
-      // Stop loading first, then swap messages in one batch to prevent blink
       setLoading(false);
       setMessages((prev) => [
         ...prev.filter((m) => m.id !== tempUserMsg.id),
@@ -234,6 +236,8 @@ function CopilotChatInner() {
     } catch {
       setLoading(false);
       setMessages((prev) => prev.filter((m) => m.id !== tempUserMsg.id));
+    } finally {
+      sendingRef.current = false;
     }
   }
 
