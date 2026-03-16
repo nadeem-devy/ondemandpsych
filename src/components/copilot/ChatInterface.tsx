@@ -180,9 +180,9 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
       ALLOWED_TAGS: [
         "strong", "em", "ul", "ol", "li", "p", "br", "h1", "h2", "h3", "h4",
         "table", "thead", "tbody", "tr", "th", "td", "blockquote", "hr",
-        "span", "div", "code",
+        "span", "div", "code", "a",
       ],
-      ALLOWED_ATTR: ["class"],
+      ALLOWED_ATTR: ["class", "href", "target", "rel"],
     });
 
     // Convert logo to base64 data URI so it works in Blob URL context
@@ -266,35 +266,50 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     }
   }, []);
 
-  // Extract optional prompts from message content for rendering as clickable tiles
-  function extractPrompts(text: string): { content: string; prompts: string[] } {
+  // Extract optional prompts/follow-up questions from message content
+  function extractPrompts(text: string): { content: string; prompts: string[]; references: string[] } {
     const prompts: string[] = [];
-    // Match "OPTIONAL PROMPTS" section or "- Would you like..." lines at the end
-    const optionalSection = text.match(/\*\*OPTIONAL PROMPTS\*\*\n((?:[-•]\s*.+\n?)*)/);
+    const references: string[] = [];
+
+    // Extract Knowledge Base References section
+    let cleanText = text.replace(
+      /---\n📄\s*\*\*Knowledge Base References:\*\*\n((?:\d+\.\s*.+\n?)*)/g,
+      (_match, items: string) => {
+        items.trim().split("\n").forEach((line: string) => {
+          const ref = line.replace(/^\d+\.\s*/, "").trim();
+          if (ref) references.push(ref);
+        });
+        return "";
+      }
+    );
+
+    // Match "OPTIONAL PROMPTS" section
+    const optionalSection = cleanText.match(/\*\*OPTIONAL PROMPTS\*\*\n((?:[-•]\s*.+\n?)*)/);
     if (optionalSection) {
       const items = optionalSection[1].trim().split("\n")
         .map((line) => line.replace(/^[-•]\s*/, "").trim())
         .filter(Boolean);
       prompts.push(...items);
-      return { content: text.replace(optionalSection[0], ""), prompts };
+      cleanText = cleanText.replace(optionalSection[0], "");
     }
-    // Also catch standalone "Would you like..." lines at the end
-    const lines = text.split("\n");
+
+    // Catch standalone follow-up question lines at the end
+    const lines = cleanText.split("\n");
     const mainLines: string[] = [];
     let foundPrompts = false;
     for (let i = lines.length - 1; i >= 0; i--) {
       const trimmed = lines[i].replace(/^[-•]\s*/, "").trim();
-      if (trimmed.startsWith("Would you like")) {
+      if (trimmed.startsWith("Would you like") || trimmed.startsWith("Do you want") || trimmed.startsWith("What additional")) {
         prompts.unshift(trimmed);
         foundPrompts = true;
       } else if (foundPrompts && trimmed === "") {
-        continue; // skip blank lines between prompts
+        continue;
       } else {
         mainLines.unshift(...lines.slice(0, i + 1));
         break;
       }
     }
-    return { content: mainLines.join("\n"), prompts };
+    return { content: mainLines.join("\n"), prompts, references };
   }
 
   function renderSafeHtml(text: string) {
@@ -303,9 +318,9 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
       ALLOWED_TAGS: [
         "strong", "em", "ul", "ol", "li", "p", "br", "h1", "h2", "h3", "h4",
         "table", "thead", "tbody", "tr", "th", "td", "blockquote", "hr",
-        "span", "div", "code",
+        "span", "div", "code", "a",
       ],
-      ALLOWED_ATTR: ["class"],
+      ALLOWED_ATTR: ["class", "href", "target", "rel"],
     });
     return { __html: clean };
   }
@@ -390,7 +405,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
                 >
                   {msg.role === "assistant" ? (
                     (() => {
-                      const { content: mainContent, prompts } = extractPrompts(msg.content);
+                      const { content: mainContent, prompts, references } = extractPrompts(msg.content);
                       return (
                         <>
                           <TypingMessage
@@ -399,13 +414,30 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
                             isNew={animateIds.has(msg.id)}
                             onScroll={scrollToBottom}
                           />
+
+                          {/* Knowledge Base References */}
+                          {references.length > 0 && (
+                            <div className={`mt-4 p-3 rounded-xl ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-gray-50 border border-gray-200"}`}>
+                              <p className={`text-xs font-semibold mb-2 ${isDark ? "text-[#FDB02F]/70" : "text-[#FDB02F]"}`}>📄 Knowledge Base References</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {references.map((ref, i) => (
+                                  <span key={i} className={`inline-block px-2 py-1 rounded-lg text-xs ${isDark ? "bg-white/5 text-white/50" : "bg-gray-100 text-gray-500"}`}>
+                                    {ref.replace(/\.docx$/i, "").replace(/_/g, " ")}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Follow-up Questions */}
                           {prompts.length > 0 && (
-                            <div className="mt-3 flex flex-col gap-2">
+                            <div className="mt-4 flex flex-col gap-2">
+                              <p className={`text-xs font-semibold ${isDark ? "text-white/30" : "text-gray-400"}`}>Follow-up Questions</p>
                               {prompts.map((prompt, i) => (
                                 <button
                                   key={i}
-                                  onClick={() => onSendMessage(prompt)}
-                                  className={`text-left px-4 py-3 rounded-xl border transition-all group flex items-center gap-3 ${
+                                  onClick={() => { setInput(prompt); textareaRef.current?.focus(); }}
+                                  className={`text-left px-4 py-2.5 rounded-xl border transition-all group flex items-center gap-3 ${
                                     isDark
                                       ? "border-[#FDB02F]/15 bg-[#FDB02F]/5 hover:bg-[#FDB02F]/10 hover:border-[#FDB02F]/30 text-white/70 hover:text-white"
                                       : "border-[#FDB02F]/20 bg-[#FDB02F]/5 hover:bg-[#FDB02F]/10 hover:border-[#FDB02F]/40 text-gray-600 hover:text-gray-900"
@@ -903,6 +935,8 @@ function inlineFormat(text: string): string {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/`(.+?)`/g, '<code class="copilot-code">$1</code>')
+    // Markdown links: [text](url) → clickable <a>
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="copilot-link">$1</a>')
     .replace(/⏱/g, '<span class="copilot-emoji">⏱</span>')
     .replace(/📚/g, '<span class="copilot-emoji">📚</span>')
     .replace(/☐/g, '<span class="copilot-checkbox">☐</span>');
