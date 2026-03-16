@@ -1,30 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { generateEmbedding } from "@/lib/rag";
+
+const DO_RAG_URL = process.env.DO_RAG_URL || "http://167.99.229.148:8585";
+const DO_API_TOKEN = process.env.DO_API_TOKEN || "sk-test-12345-abcdef-67890-ghijkl-mnopqr-stuvwx-yz1234";
 
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const documentId = req.nextUrl.searchParams.get("documentId");
-  const page = parseInt(req.nextUrl.searchParams.get("page") || "1");
-  const limit = parseInt(req.nextUrl.searchParams.get("limit") || "50");
+  const params = req.nextUrl.searchParams;
+  const qs = new URLSearchParams();
+  if (params.get("file_name")) qs.set("file_name", params.get("file_name")!);
+  if (params.get("documentId")) qs.set("file_name", params.get("documentId")!);
+  if (params.get("category")) qs.set("category", params.get("category")!);
+  qs.set("offset", String((parseInt(params.get("page") || "1") - 1) * parseInt(params.get("limit") || "20")));
+  qs.set("limit", params.get("limit") || "20");
 
-  const where = documentId ? { documentId } : {};
+  const resp = await fetch(`${DO_RAG_URL}/api/admin/chunks?${qs}`, {
+    headers: { Authorization: `Bearer ${DO_API_TOKEN}` },
+  });
 
-  const [chunks, total] = await Promise.all([
-    prisma.ragChunk.findMany({
-      where,
-      orderBy: [{ documentId: "asc" }, { chunkIndex: "asc" }],
-      skip: (page - 1) * limit,
-      take: limit,
-      include: { document: { select: { title: true } } },
-    }),
-    prisma.ragChunk.count({ where }),
-  ]);
+  if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
+  const data = await resp.json();
 
-  return NextResponse.json({ chunks, total, page, totalPages: Math.ceil(total / limit) });
+  return NextResponse.json({
+    chunks: data.chunks,
+    total: data.total,
+    page: parseInt(params.get("page") || "1"),
+    totalPages: Math.ceil(data.total / parseInt(params.get("limit") || "20")),
+  });
 }
 
 export async function PUT(req: NextRequest) {
@@ -34,29 +38,14 @@ export async function PUT(req: NextRequest) {
   const { id, content } = await req.json();
   if (!id || !content) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
-  // Update content and regenerate embedding
-  const settings = await prisma.ragSettings.findFirst();
-  const embeddingModel = settings?.embeddingModel ?? "text-embedding-3-small";
-  const embedding = await generateEmbedding(content, embeddingModel);
-
-  const chunk = await prisma.ragChunk.update({
-    where: { id },
-    data: {
-      content,
-      tokenCount: Math.round(content.split(/\s+/).length / 0.75),
-      embedding: JSON.stringify(embedding),
-    },
+  const resp = await fetch(`${DO_RAG_URL}/api/admin/chunks/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${DO_API_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ content }),
   });
 
-  // Update pgvector column
-  const vectorStr = `[${embedding.join(",")}]`;
-  await prisma.$executeRawUnsafe(
-    `UPDATE "RagChunk" SET embedding_vec = $1::vector WHERE id = $2`,
-    vectorStr,
-    id
-  );
-
-  return NextResponse.json(chunk);
+  if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
+  return NextResponse.json(await resp.json());
 }
 
 export async function DELETE(req: NextRequest) {
@@ -66,6 +55,11 @@ export async function DELETE(req: NextRequest) {
   const { id } = await req.json();
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  await prisma.ragChunk.delete({ where: { id } });
-  return NextResponse.json({ success: true });
+  const resp = await fetch(`${DO_RAG_URL}/api/admin/chunks/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${DO_API_TOKEN}` },
+  });
+
+  if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
+  return NextResponse.json(await resp.json());
 }

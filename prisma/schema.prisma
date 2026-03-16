@@ -87,6 +87,9 @@ model ClientUser {
   subscriptionStatus String    @default("trialing") // trialing | active | past_due | cancelled
   stripeCustomerId   String?
   stripeSubId        String?
+  lastPaymentDate    DateTime?
+  nextBillingDate    DateTime?
+  tempCancel         Boolean   @default(false)
   // Trial tracking
   trialMessageCount  Int       @default(0)
   trialMessageLimit  Int       @default(10)
@@ -97,6 +100,7 @@ model ClientUser {
   licenseVerified    Boolean   @default(false)
   consentVersion     String?
   // Metadata
+  mysqlId            Int?      // original MySQL ID for reference
   tags               String?   // comma-separated
   notes              String?
   lastLoginAt        DateTime?
@@ -111,6 +115,7 @@ model ClientUser {
 
   @@index([status])
   @@index([plan])
+  @@index([mysqlId])
 }
 
 model ChatFolder {
@@ -138,6 +143,8 @@ model Chat {
   user      ClientUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
   folderId  String?
   folder    ChatFolder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  chatType  String?     // premium | free etc. from MySQL
+  mysqlId   Int?        // original MySQL chat ID
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 
@@ -145,6 +152,7 @@ model Chat {
 
   @@index([userId])
   @@index([folderId])
+  @@index([mysqlId])
 }
 
 model Message {
@@ -206,18 +214,22 @@ model AuditLog {
 }
 
 model Plan {
-  id            String   @id @default(cuid())
-  name          String   @unique // free, basic, professional, enterprise
-  displayName   String
-  description   String?
-  priceMonthly  Float    @default(0)
-  priceYearly   Float    @default(0)
-  messageLimit  Int      @default(-1) // -1 = unlimited
-  features      String?  // JSON array of feature strings
-  isActive      Boolean  @default(true)
-  sortOrder     Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String   @id @default(cuid())
+  name            String   @unique // free, basic, professional, enterprise
+  displayName     String
+  description     String?
+  priceMonthly    Float    @default(0)
+  priceYearly     Float    @default(0)
+  messageLimit    Int      @default(-1) // -1 = unlimited
+  features        String?  // JSON array of feature strings
+  billingPeriod   String   @default("monthly") // monthly | yearly
+  stripeProductId String?  // Stripe price ID
+  popular         Boolean  @default(false)
+  mysqlId         Int?     // original MySQL subscription ID
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Transaction {

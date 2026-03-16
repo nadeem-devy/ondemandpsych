@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCopilotUser } from "@/lib/copilot-auth";
 import { checkTrialLimit, incrementTrialCount } from "@/lib/trial-guard";
-import { retrieveChunks } from "@/lib/rag";
-import OpenAI from "openai";
+
+const DO_RAG_URL = process.env.DO_RAG_URL || "http://167.99.229.148:8585";
+const DO_API_TOKEN = process.env.DO_API_TOKEN || "sk-test-12345-abcdef-67890-ghijkl-mnopqr-stuvwx-yz1234";
 
 const SYSTEM_PROMPT = `You are the OnDemandPsych Clinical Co-Pilot — the world's first psychiatric clinical decision-support tool built by a triple board-certified psychiatrist.
 
@@ -285,63 +286,92 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // RAG: retrieve relevant knowledge chunks (try live service first, fallback to direct DB)
-  let ragContext = "";
-  let ragDocumentTitles: string[] = [];
-  try {
-    const ragServiceUrl = process.env.RAG_SERVICE_URL || "https://ondemandpsych-production.up.railway.app";
-    const settings = await prisma.ragSettings.findFirst();
-    const topK = settings?.retrievalLimit ?? 5;
-    const threshold = settings?.similarityThreshold ?? 0.5;
-
-    let chunks: { content: string; document: { title: string } }[] = [];
-
-    try {
-      // Try live RAG service first
-      const ragResp = await fetch(`${ragServiceUrl}/api/query/search`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: content, top_k: topK, similarity_threshold: threshold }),
-      });
-      if (ragResp.ok) {
-        const ragData = await ragResp.json();
-        chunks = ragData.chunks || [];
+  // Build chat history for DO RAG service
+  const chatHistory = history
+    .filter((m) => m.role === "user" || m.role === "assistant")
+    .slice(0, -1) // exclude the current message (already in 'content')
+    .reduce((acc: { user?: string; assistant?: string }[], m) => {
+      if (m.role === "user") {
+        acc.push({ user: m.content });
+      } else if (m.role === "assistant" && acc.length > 0) {
+        acc[acc.length - 1].assistant = m.content;
       }
-    } catch {
-      // Fallback to direct DB query
-      chunks = await retrieveChunks(content, topK, threshold);
+      return acc;
+    }, []);
+
+  // Call DO RAG streaming endpoint
+  let aiContent = "";
+  let ragSources: string[] = [];
+  let ragCategory = "";
+  const startTime = Date.now();
+
+  try {
+    const ragResp = await fetch(`${DO_RAG_URL}/api/chat/external/stream`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${DO_API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        message: (folderContext ? `[Context: ${folderContext}]\n\n` : "") + content,
+        message_type: "text",
+        chat_history: chatHistory,
+      }),
+    });
+
+    if (!ragResp.ok) {
+      throw new Error(`DO RAG returned ${ragResp.status}`);
     }
 
-    if (chunks.length > 0) {
-      ragContext = "\n\n[KNOWLEDGE BASE CONTEXT — Use this evidence-based information when relevant to the query:\n\n" +
-        chunks.map((c, i) => `[Source ${i + 1}: ${c.document.title}]\n${c.content}`).join("\n\n---\n\n") +
-        "\n\nEnd of knowledge base context.]";
+    // Parse SSE stream
+    const text = await ragResp.text();
+    const lines = text.split("\n");
 
-      // Collect unique document titles for reference
-      ragDocumentTitles = [...new Set(chunks.map((c) => c.document.title))];
+    for (const line of lines) {
+      if (!line.startsWith("data: ")) continue;
+      const data = line.substring(6).trim();
+      if (!data || data === "[DONE]") continue;
 
-      // Log RAG query for analytics
-      await prisma.ragQueryLog.create({
-        data: {
-          query: content,
-          chunksUsed: chunks.length,
-          latencyMs: 0,
-          tokensUsed: 0,
-          userId: user.id,
-        },
-      });
+      try {
+        const parsed = JSON.parse(data);
+
+        if (parsed.type === "content" && parsed.text) {
+          aiContent += parsed.text;
+        } else if (parsed.type === "completion_metadata") {
+          ragSources = parsed.sources || [];
+          ragCategory = parsed.category || "";
+        }
+      } catch {
+        // Skip malformed SSE chunks
+      }
     }
-  } catch {
-    // RAG retrieval failed — continue without it
+  } catch (error) {
+    console.error("DO RAG service error:", error);
+    aiContent = "> **Disclaimer:** For licensed healthcare providers only. Educational use only. Not medical advice.\n\n⚠️ **AI service temporarily unavailable.** Please try again in a moment. If the issue persists, contact support.";
   }
 
-  // Generate AI response via OpenAI
-  let aiContent = await generateAIResponse(history, (folderContext || "") + ragContext);
+  const latencyMs = Date.now() - startTime;
 
-  // Append RAG document references to the response
-  if (ragDocumentTitles.length > 0) {
+  // Append references if available
+  if (ragSources.length > 0) {
     aiContent += "\n\n---\n📄 **Knowledge Base References:**\n" +
-      ragDocumentTitles.map((title, i) => `${i + 1}. ${title}`).join("\n");
+      ragSources.map((s, i) => `${i + 1}. ${s}`).join("\n");
+  }
+
+  // Log RAG query for analytics
+  try {
+    await prisma.ragQueryLog.create({
+      data: {
+        query: content,
+        response: ragCategory || undefined,
+        chunksUsed: ragSources.length,
+        latencyMs,
+        tokensUsed: 0,
+        userId: user.id,
+      },
+    });
+  } catch {
+    // Analytics logging failed — non-critical
   }
 
   const assistantMessage = await prisma.message.create({
@@ -354,38 +384,4 @@ export async function POST(req: NextRequest) {
   await incrementTrialCount(user.id);
 
   return NextResponse.json({ userMessage, assistantMessage, trial: { remaining: trial.remaining > 0 ? trial.remaining - 1 : -1, limit: trial.limit } });
-}
-
-async function generateAIResponse(history: { role: string; content: string }[], folderContext?: string): Promise<string> {
-  const apiKey = process.env.OPENAI_API_KEY;
-
-  if (!apiKey) {
-    return "> **Disclaimer:** For licensed healthcare providers only. Educational use only. Not medical advice.\n\n⚠️ **AI service is not configured.** Please contact support. The clinical co-pilot requires an OpenAI API key to function.";
-  }
-
-  try {
-    const openai = new OpenAI({ apiKey });
-
-    const systemContent = folderContext ? SYSTEM_PROMPT + folderContext : SYSTEM_PROMPT;
-
-    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-      { role: "system", content: systemContent },
-      ...history.map((m) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      })),
-    ];
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages,
-      max_tokens: 8192,
-      temperature: 0.3, // Low temperature for clinical accuracy
-    });
-
-    return completion.choices[0]?.message?.content || "I apologize, but I was unable to generate a response. Please try again.";
-  } catch (error) {
-    console.error("OpenAI API error:", error);
-    return "> **Disclaimer:** For licensed healthcare providers only. Educational use only. Not medical advice.\n\n⚠️ **AI service temporarily unavailable.** Please try again in a moment. If the issue persists, contact support.";
-  }
 }
