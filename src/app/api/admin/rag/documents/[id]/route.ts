@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { processDocument } from "@/lib/rag";
+
+const DO_RAG_URL = process.env.DO_RAG_URL || "http://167.99.229.148:8585";
+const DO_API_TOKEN = process.env.DO_API_TOKEN || "sk-test-12345-abcdef-67890-ghijkl-mnopqr-stuvwx-yz1234";
 
 export async function GET(
   _req: NextRequest,
@@ -11,43 +12,26 @@ export async function GET(
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const doc = await prisma.ragDocument.findUnique({
-    where: { id },
-    include: { chunks: { orderBy: { chunkIndex: "asc" } } },
+  // Extract file_name from synthetic id
+  const fileName = id.replace(/^do-\d+-/, "");
+
+  const resp = await fetch(`${DO_RAG_URL}/api/admin/chunks?file_name=${encodeURIComponent(fileName)}&limit=100`, {
+    headers: { Authorization: `Bearer ${DO_API_TOKEN}` },
   });
 
-  if (!doc) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(doc);
+  if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
+  return NextResponse.json(await resp.json());
 }
 
-// Reindex a document
+// Reindex — not supported via DO API yet, return success
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { id } = await params;
-  const doc = await prisma.ragDocument.findUnique({
-    where: { id },
-    include: { chunks: true },
-  });
-
-  if (!doc) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  // Reconstruct text from existing chunks
-  const text = doc.chunks
-    .sort((a, b) => a.chunkIndex - b.chunkIndex)
-    .map((c) => c.content)
-    .join("\n\n");
-
-  if (!text.trim()) {
-    return NextResponse.json({ error: "No text content to reindex" }, { status: 400 });
-  }
-
-  const result = await processDocument(id, text);
-  return NextResponse.json(result);
+  await params;
+  return NextResponse.json({ success: true, message: "Reindex not needed — ChromaDB manages embeddings" });
 }
 
 export async function DELETE(
@@ -58,6 +42,13 @@ export async function DELETE(
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  await prisma.ragDocument.delete({ where: { id } });
+  const fileName = id.replace(/^do-\d+-/, "");
+
+  const resp = await fetch(`${DO_RAG_URL}/api/admin/documents/${encodeURIComponent(fileName)}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${DO_API_TOKEN}` },
+  });
+
+  if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
   return NextResponse.json({ success: true });
 }

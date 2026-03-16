@@ -17,23 +17,41 @@ export async function GET(req: NextRequest) {
 
   if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
   const data = await resp.json();
-  return NextResponse.json(data);
+
+  // Transform DO format to match existing frontend expectations
+  const documents = (data.documents || []).map((doc: any, i: number) => ({
+    id: `do-${i}-${doc.file_name}`,
+    title: doc.file_name,
+    fileType: doc.file_name.split(".").pop() || "docx",
+    fileUrl: doc.source || "",
+    fileSize: 0,
+    category: doc.category,
+    tags: null,
+    status: "indexed",
+    pageCount: null,
+    error: null,
+    createdAt: new Date().toISOString(),
+    _count: { chunks: doc.chunk_count },
+  }));
+
+  return NextResponse.json(documents);
 }
 
 export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { fileName, category } = await req.json();
-  if (!fileName) return NextResponse.json({ error: "Missing fileName" }, { status: 400 });
+  const { id } = await req.json();
+  if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  const url = `${DO_RAG_URL}/api/admin/documents/${encodeURIComponent(fileName)}${category ? `?category=${category}` : ""}`;
+  // Extract file_name from our synthetic id: "do-{idx}-{file_name}"
+  const fileName = id.replace(/^do-\d+-/, "");
+  const url = `${DO_RAG_URL}/api/admin/documents/${encodeURIComponent(fileName)}`;
   const resp = await fetch(url, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${DO_API_TOKEN}` },
   });
 
   if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
-  const data = await resp.json();
-  return NextResponse.json(data);
+  return NextResponse.json({ success: true });
 }
