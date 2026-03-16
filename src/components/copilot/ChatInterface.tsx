@@ -369,7 +369,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="max-w-4xl mx-auto py-4 sm:py-6 px-3 sm:px-4 space-y-4 sm:space-y-6">
+        <div className="max-w-6xl mx-auto py-4 sm:py-6 px-3 sm:px-4 space-y-4 sm:space-y-6">
           {messages.map((msg) => (
             <div key={msg.id} className={`flex gap-2 sm:gap-4 ${msg.role === "user" ? "justify-end" : ""}`}>
               {msg.role === "assistant" && (
@@ -379,13 +379,14 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
               )}
               <div className={`flex-1 min-w-0 ${msg.role === "user" ? "max-w-[85%] sm:max-w-[75%]" : ""}`}>
                 <div
-                  className={`rounded-2xl px-3 py-3 sm:px-5 sm:py-4 text-[15px] sm:text-[17px] leading-relaxed ${
+                  className={`rounded-2xl px-3 py-3 sm:px-5 sm:py-4 leading-relaxed ${
                     msg.role === "user"
                       ? "bg-[#FDB02F] text-[#07123A]"
                       : isDark
                         ? "bg-white/[0.03] text-white/80 border border-white/5"
                         : "bg-white text-gray-700 border border-gray-200 shadow-sm"
                   }`}
+                  style={{ fontSize: "var(--copilot-font-size, 16px)" }}
                 >
                   {msg.role === "assistant" ? (
                     (() => {
