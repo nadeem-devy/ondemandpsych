@@ -92,7 +92,7 @@ export default function LegalPagesAdmin() {
 
   if (editing || creating) {
     return (
-      <div className="p-8">
+      <div className="">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-white">
             {creating ? "New Legal Page" : `Edit: ${editing?.title}`}
@@ -151,7 +151,7 @@ export default function LegalPagesAdmin() {
   }
 
   return (
-    <div className="p-8">
+    <div className="">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">Legal Pages</h1>

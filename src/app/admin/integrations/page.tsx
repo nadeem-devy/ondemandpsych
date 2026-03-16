@@ -56,7 +56,7 @@ export default function IntegrationsPage() {
   ];
 
   return (
-    <div className="p-8">
+    <div className="">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Integrations & Security</h1>
         <p className="text-white/40 text-lg mt-1">External service health and IP access control</p>

@@ -89,7 +89,7 @@ export default function FAQsAdmin() {
   const categories = [...new Set(faqs.map((f) => f.category))];
 
   return (
-    <div className="p-8">
+    <div className="">
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-white">FAQs</h1>

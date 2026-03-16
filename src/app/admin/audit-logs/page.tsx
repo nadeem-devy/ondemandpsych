@@ -65,7 +65,7 @@ export default function AuditLogsPage() {
   useEffect(() => { fetchLogs(1); }, [fetchLogs]);
 
   return (
-    <div className="p-8">
+    <div className="">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Audit Logs</h1>

@@ -57,7 +57,7 @@ export default function EmailTemplatesPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-white">Email Templates</h1>

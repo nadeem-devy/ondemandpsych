@@ -35,7 +35,7 @@ export default function SessionsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Session Management</h1>
         <p className="text-white/40 text-lg mt-1">Active admin sessions and device management</p>
@@ -43,7 +43,7 @@ export default function SessionsPage() {
 
       <div className="rounded-2xl bg-[#0D1B4B]/40 border border-white/10 overflow-hidden">
         {loading ? (
-          <div className="p-8"><div className="h-20 bg-white/5 rounded animate-pulse" /></div>
+          <div className=""><div className="h-20 bg-white/5 rounded animate-pulse" /></div>
         ) : sessions.length === 0 ? (
           <div className="p-12 text-center text-white/30 text-lg">No active sessions</div>
         ) : (
