@@ -58,6 +58,7 @@ export async function GET(req: NextRequest) {
     avgLatencyMs: Math.round(avgLatency._avg.latencyMs ?? 0),
     avgTokensUsed: Math.round(avgTokens._avg.tokensUsed ?? 0),
     feedbackStats,
+    categories: doStats.categories || [],
     recentQueries,
   });
 }

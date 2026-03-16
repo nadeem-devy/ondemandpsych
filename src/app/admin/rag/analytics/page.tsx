@@ -1,17 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText, Layers, MessageSquare, Clock, Zap, ThumbsUp, ThumbsDown } from "lucide-react";
+import { FileText, Layers, MessageSquare, Clock, Zap, ThumbsUp, ThumbsDown, FolderOpen } from "lucide-react";
+
+interface CategoryStat {
+  name: string;
+  chunk_count: number;
+}
 
 interface Analytics {
   totalDocuments: number;
   indexedDocs: number;
   failedDocs: number;
   totalChunks: number;
+  totalCategories: number;
   totalQueries: number;
   avgLatencyMs: number;
   avgTokensUsed: number;
   feedbackStats: { feedback: string; _count: number }[];
+  categories?: CategoryStat[];
   recentQueries: {
     id: string;
     query: string;
@@ -46,10 +53,10 @@ export default function RAGAnalyticsPage() {
 
   const stats = [
     { icon: FileText, label: "Documents", value: data.totalDocuments, sub: `${data.indexedDocs} indexed · ${data.failedDocs} failed` },
-    { icon: Layers, label: "Chunks", value: data.totalChunks, sub: "Total indexed chunks" },
+    { icon: Layers, label: "Chunks", value: data.totalChunks.toLocaleString(), sub: "Total indexed chunks" },
+    { icon: FolderOpen, label: "Categories", value: data.totalCategories || 0, sub: "Knowledge base categories" },
     { icon: MessageSquare, label: "Queries", value: data.totalQueries, sub: `Last ${days} days` },
     { icon: Clock, label: "Avg Latency", value: `${data.avgLatencyMs}ms`, sub: "Per query" },
-    { icon: Zap, label: "Avg Tokens", value: data.avgTokensUsed, sub: "Per query" },
     { icon: ThumbsUp, label: "Feedback", value: `${thumbsUp} / ${thumbsDown}`, sub: "Positive / Negative" },
   ];
 
@@ -84,6 +91,24 @@ export default function RAGAnalyticsPage() {
           </div>
         ))}
       </div>
+
+      {/* Categories breakdown */}
+      {data.categories && data.categories.length > 0 && (
+        <div>
+          <h2 className="text-lg font-bold text-white mb-4">Categories ({data.categories.length})</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {data.categories.map((cat) => (
+              <div key={cat.name} className="rounded-xl border border-white/10 bg-[#0D1B4B]/50 p-3">
+                <p className="text-base font-medium text-white capitalize">
+                  {cat.name.replace(/([A-Z])/g, " $1").replace(/and/gi, " & ").trim()}
+                </p>
+                <p className="text-lg font-bold text-[#FDB02F] font-mono mt-1">{cat.chunk_count.toLocaleString()}</p>
+                <p className="text-base text-white/30">chunks</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Recent queries */}
       <div>

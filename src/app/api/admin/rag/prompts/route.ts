@@ -14,21 +14,33 @@ export async function GET() {
 
   if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
   const data = await resp.json();
-  return NextResponse.json(data.prompts || []);
+
+  // Transform DO prompts to match frontend expectations
+  const prompts = (data.prompts || []).map((p: any) => ({
+    id: p.name, // use name as ID since DO prompts are file-based
+    name: p.name,
+    systemPrompt: p.preview || "",
+    temperature: 0.1,
+    model: "gpt-4.1",
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    size: p.size,
+  }));
+
+  return NextResponse.json(prompts);
 }
 
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { name, content } = await req.json();
-  if (!name || !content) return NextResponse.json({ error: "Name and content required" }, { status: 400 });
+  const { name, systemPrompt } = await req.json();
+  if (!name || !systemPrompt) return NextResponse.json({ error: "Name and system prompt required" }, { status: 400 });
 
-  // Create or update prompt file on DO
   const resp = await fetch(`${DO_RAG_URL}/api/admin/prompts/${encodeURIComponent(name)}`, {
     method: "PUT",
     headers: { Authorization: `Bearer ${DO_API_TOKEN}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ content }),
+    body: JSON.stringify({ content: systemPrompt }),
   });
 
   if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });

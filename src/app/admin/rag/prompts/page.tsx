@@ -64,15 +64,28 @@ export default function PromptManagerPage() {
     fetchPrompts();
   }
 
-  function startEdit(prompt: RagPrompt) {
+  async function startEdit(prompt: RagPrompt) {
     setEditId(prompt.id);
-    setForm({
-      name: prompt.name,
-      systemPrompt: prompt.systemPrompt,
-      temperature: prompt.temperature,
-      model: prompt.model,
-      isActive: prompt.isActive,
-    });
+    // Fetch full prompt content from DO (list only has preview)
+    try {
+      const res = await fetch(`/api/admin/rag/prompts/${encodeURIComponent(prompt.id)}`);
+      const full = await res.json();
+      setForm({
+        name: full.name || prompt.name,
+        systemPrompt: full.systemPrompt || prompt.systemPrompt,
+        temperature: full.temperature || prompt.temperature,
+        model: full.model || prompt.model,
+        isActive: full.isActive ?? prompt.isActive,
+      });
+    } catch {
+      setForm({
+        name: prompt.name,
+        systemPrompt: prompt.systemPrompt,
+        temperature: prompt.temperature,
+        model: prompt.model,
+        isActive: prompt.isActive,
+      });
+    }
     setShowForm(true);
   }
 
