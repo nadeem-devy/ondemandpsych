@@ -341,7 +341,10 @@ export async function POST(req: NextRequest) {
         if (parsed.type === "content" && parsed.text) {
           aiContent += parsed.text;
         } else if (parsed.type === "completion_metadata") {
-          ragSources = parsed.sources || [];
+          // Sources can be strings or objects — normalize to strings
+          ragSources = (parsed.sources || []).map((s: any) =>
+            typeof s === "string" ? s : (s.file_name || s.name || s.title || s.source || JSON.stringify(s))
+          );
           ragCategory = parsed.category || "";
         }
       } catch {
