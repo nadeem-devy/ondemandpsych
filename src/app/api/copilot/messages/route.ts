@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCopilotUser } from "@/lib/copilot-auth";
 import { checkTrialLimit, incrementTrialCount } from "@/lib/trial-guard";
+import OpenAI from "openai";
 
 const DO_RAG_URL = process.env.DO_RAG_URL || "http://167.99.229.148:8585";
 const DO_API_TOKEN = process.env.DO_API_TOKEN || "sk-test-12345-abcdef-67890-ghijkl-mnopqr-stuvwx-yz1234";
+
+export const maxDuration = 120; // Allow up to 120 seconds for DO RAG streaming
 
 const SYSTEM_PROMPT = `You are the OnDemandPsych Clinical Co-Pilot — the world's first psychiatric clinical decision-support tool built by a triple board-certified psychiatrist.
 
@@ -347,7 +350,30 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     console.error("DO RAG service error:", error);
-    aiContent = "> **Disclaimer:** For licensed healthcare providers only. Educational use only. Not medical advice.\n\n⚠️ **AI service temporarily unavailable.** Please try again in a moment. If the issue persists, contact support.";
+    // Fallback to direct OpenAI if DO service fails
+    try {
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (apiKey) {
+        const openai = new OpenAI({ apiKey });
+        const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+          { role: "system", content: SYSTEM_PROMPT },
+          ...history.map((m) => ({
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          })),
+        ];
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages,
+          max_tokens: 8192,
+          temperature: 0.3,
+        });
+        aiContent = completion.choices[0]?.message?.content || "Unable to generate response.";
+      }
+    } catch (fallbackError) {
+      console.error("OpenAI fallback error:", fallbackError);
+      aiContent = "> **Disclaimer:** For licensed healthcare providers only. Educational use only. Not medical advice.\n\n⚠️ **AI service temporarily unavailable.** Please try again in a moment. If the issue persists, contact support.";
+    }
   }
 
   const latencyMs = Date.now() - startTime;
