@@ -23,11 +23,23 @@ export async function GET(req: NextRequest) {
   if (!resp.ok) return NextResponse.json({ error: "RAG service error" }, { status: resp.status });
   const data = await resp.json();
 
+  // Transform DO chunks to match frontend expectations
+  const chunks = (data.chunks || []).map((chunk: any, i: number) => ({
+    id: chunk.id,
+    documentId: chunk.metadata?.file_name || "",
+    content: chunk.content || "",
+    chunkIndex: chunk.metadata?.chunk_id ? parseInt(String(chunk.metadata.chunk_id).replace(/\D/g, "")) || i : i,
+    tokenCount: Math.round((chunk.content || "").split(/\s+/).length / 0.75),
+    createdAt: new Date().toISOString(),
+    document: { title: chunk.metadata?.file_name || "Unknown" },
+  }));
+
+  const limit = parseInt(params.get("limit") || "20");
   return NextResponse.json({
-    chunks: data.chunks,
+    chunks,
     total: data.total,
     page: parseInt(params.get("page") || "1"),
-    totalPages: Math.ceil(data.total / parseInt(params.get("limit") || "20")),
+    totalPages: Math.ceil(data.total / limit),
   });
 }
 
