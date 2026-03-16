@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   since.setDate(since.getDate() - days);
 
   // Get DO stats for document/chunk counts
-  let doStats = { total_chunks: 0, total_documents: 0, total_categories: 0 };
+  let doStats: { total_chunks: number; total_documents: number; total_categories: number; categories?: { name: string; chunk_count: number }[] } = { total_chunks: 0, total_documents: 0, total_categories: 0 };
   try {
     const resp = await fetch(`${DO_RAG_URL}/api/admin/stats`, {
       headers: { Authorization: `Bearer ${DO_API_TOKEN}` },
