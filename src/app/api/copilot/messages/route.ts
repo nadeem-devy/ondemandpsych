@@ -338,12 +338,12 @@ export async function POST(req: NextRequest) {
       try {
         const parsed = JSON.parse(data);
 
-        if (parsed.type === "content" && parsed.text) {
-          aiContent += parsed.text;
+        if (parsed.type === "content" && parsed.content) {
+          aiContent += parsed.content;
         } else if (parsed.type === "completion_metadata") {
           // Sources can be strings or objects — normalize to strings
           ragSources = (parsed.sources || []).map((s: any) =>
-            typeof s === "string" ? s : (s.file_name || s.name || s.title || s.source || JSON.stringify(s))
+            typeof s === "string" ? s : (s.filename || s.file_name || s.name || s.title || s.source || JSON.stringify(s))
           );
           ragCategory = parsed.category || "";
         }
