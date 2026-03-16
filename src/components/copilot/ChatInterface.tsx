@@ -833,10 +833,10 @@ const ChatInput = forwardRef<
 function markdownToHtml(text: string): string {
   let html = text;
 
-  // Disclaimer block — detect the disclaimer pattern and wrap in styled div
+  // Disclaimer block — detect both "> **Disclaimer:**" and "**Disclaimer:**" formats
   html = html.replace(
-    /^> \*\*Disclaimer:\*\*(.+)$/gm,
-    '<div class="copilot-disclaimer"><strong>Disclaimer:</strong>$1</div>'
+    /^>?\s*\*\*Disclaimer:\*\*\s*(.+)$/gm,
+    '<div class="copilot-disclaimer"><strong>Disclaimer:</strong> $1</div>'
   );
 
   // Remaining blockquotes
