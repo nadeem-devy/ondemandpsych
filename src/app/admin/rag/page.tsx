@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText, Trash2, RefreshCw, Search, Eye } from "lucide-react";
+import { FileText, Trash2, RefreshCw, Search, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface RagDocument {
   id: string;
@@ -30,14 +30,29 @@ export default function KnowledgeBasePage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [reindexing, setReindexing] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [totalChunks, setTotalChunks] = useState(0);
+  const [categoryFilter, setCategoryFilter] = useState("");
 
-  useEffect(() => { fetchDocuments(); }, []);
+  useEffect(() => { fetchDocuments(); }, [page, categoryFilter]);
 
   async function fetchDocuments() {
     setLoading(true);
-    const res = await fetch("/api/admin/rag/documents");
+    const params = new URLSearchParams({ page: String(page), limit: "50" });
+    if (categoryFilter) params.set("category", categoryFilter);
+    const res = await fetch(`/api/admin/rag/documents?${params}`);
     const data = await res.json();
-    setDocuments(Array.isArray(data) ? data : []);
+    if (data.documents) {
+      setDocuments(data.documents);
+      setTotal(data.total || 0);
+      setTotalPages(data.totalPages || 1);
+      setTotalChunks(data.totalChunks || 0);
+    } else if (Array.isArray(data)) {
+      setDocuments(data);
+      setTotal(data.length);
+    }
     setLoading(false);
   }
 
@@ -54,11 +69,13 @@ export default function KnowledgeBasePage() {
     fetchDocuments();
   }
 
-  const filtered = documents.filter(
-    (d) =>
-      d.title.toLowerCase().includes(search.toLowerCase()) ||
-      (d.category || "").toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = search
+    ? documents.filter(
+        (d) =>
+          d.title.toLowerCase().includes(search.toLowerCase()) ||
+          (d.category || "").toLowerCase().includes(search.toLowerCase())
+      )
+    : documents;
 
   return (
     <div className="space-y-6">
@@ -66,7 +83,7 @@ export default function KnowledgeBasePage() {
         <div>
           <h1 className="text-2xl font-bold text-white">Knowledge Base</h1>
           <p className="text-base text-white/50 mt-1">
-            {documents.length} documents indexed
+            {total.toLocaleString()} documents · {totalChunks.toLocaleString()} chunks indexed
           </p>
         </div>
         <a
@@ -77,15 +94,24 @@ export default function KnowledgeBasePage() {
         </a>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+      {/* Search + Category Filter */}
+      <div className="flex gap-3">
+        <div className="relative flex-1">
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <input
+            type="text"
+            placeholder="Search documents..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
+          />
+        </div>
         <input
           type="text"
-          placeholder="Search documents..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
+          placeholder="Filter by category..."
+          value={categoryFilter}
+          onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
+          className="w-48 px-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
         />
       </div>
 
@@ -95,22 +121,21 @@ export default function KnowledgeBasePage() {
           <thead>
             <tr className="border-b border-white/10 bg-[#0D1B4B]/50">
               <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Document</th>
-              <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Type</th>
+              <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Category</th>
               <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Chunks</th>
               <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Status</th>
-              <th className="text-left px-4 py-3 text-base font-semibold text-white/50">Date</th>
               <th className="text-right px-4 py-3 text-base font-semibold text-white/50">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-white/40 text-base">Loading...</td>
+                <td colSpan={5} className="px-4 py-8 text-center text-white/40 text-base">Loading...</td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-white/40 text-base">
-                  No documents found. Upload your first document to get started.
+                <td colSpan={5} className="px-4 py-8 text-center text-white/40 text-base">
+                  No documents found.
                 </td>
               </tr>
             ) : (
@@ -119,31 +144,24 @@ export default function KnowledgeBasePage() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <FileText size={18} className="text-[#FDB02F] shrink-0" />
-                      <div>
-                        <p className="text-base font-medium text-white">{doc.title}</p>
-                        {doc.category && (
-                          <p className="text-base text-white/40">{doc.category}</p>
-                        )}
-                      </div>
+                      <p className="text-base font-medium text-white truncate max-w-xs" title={doc.title}>{doc.title}</p>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-base text-white/60 uppercase">{doc.fileType}</td>
-                  <td className="px-4 py-3 text-base text-white/60">{doc._count.chunks}</td>
+                  <td className="px-4 py-3">
+                    <span className="inline-block px-2 py-0.5 rounded-full bg-white/5 text-base text-white/60 capitalize">
+                      {doc.category}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-base text-white/60 font-mono">{doc._count.chunks.toLocaleString()}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-block px-2 py-0.5 rounded-full text-base font-medium ${statusColors[doc.status] || "bg-white/10 text-white/50"}`}>
                       {doc.status}
                     </span>
-                    {doc.error && (
-                      <p className="text-base text-red-400 mt-1 max-w-xs truncate" title={doc.error}>{doc.error}</p>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-base text-white/40">
-                    {new Date(doc.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
                       <a
-                        href={`/admin/rag/chunks?documentId=${doc.id}`}
+                        href={`/admin/rag/chunks?documentId=${encodeURIComponent(doc.title)}`}
                         className="p-1.5 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors"
                         title="View chunks"
                       >
@@ -172,6 +190,29 @@ export default function KnowledgeBasePage() {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+            className="p-2 rounded-lg hover:bg-white/10 text-white/40 disabled:opacity-30"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <span className="text-base text-white/50">
+            Page {page} of {totalPages} ({total.toLocaleString()} documents)
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page >= totalPages}
+            className="p-2 rounded-lg hover:bg-white/10 text-white/40 disabled:opacity-30"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
