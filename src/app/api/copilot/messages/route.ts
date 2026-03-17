@@ -333,11 +333,12 @@ export async function POST(req: NextRequest) {
 
     for (const line of lines) {
       if (!line.startsWith("data: ")) continue;
-      const data = line.substring(6).trim();
-      if (!data || data === "[DONE]") continue;
+      const data = line.substring(6);
+      const trimmed = data.trim();
+      if (!trimmed || trimmed === "[DONE]") continue;
 
       try {
-        const parsed = JSON.parse(data);
+        const parsed = JSON.parse(trimmed);
 
         if (parsed.type === "content" && parsed.content) {
           aiContent += parsed.content;
