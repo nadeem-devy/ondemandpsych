@@ -7,6 +7,7 @@ interface TrialCheckResult {
   used: number;
   reason?: string;
   plan?: string;
+  resetDate?: string;
 }
 
 /**
@@ -103,15 +104,47 @@ export async function checkTrialLimit(userId: string): Promise<TrialCheckResult>
     return { allowed: true, remaining: -1, limit: -1, used: user.trialMessageCount, plan: effectivePlan };
   }
 
+  // Free plan — check if monthly reset is due
+  const now = new Date();
+  if (user.trialExpiresAt && user.trialExpiresAt <= now) {
+    // Reset the counter — new 30-day cycle
+    const nextReset = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    await prisma.clientUser.update({
+      where: { id: userId },
+      data: { trialMessageCount: 0, trialExpiresAt: nextReset },
+    });
+    return {
+      allowed: true,
+      remaining: user.trialMessageLimit,
+      limit: user.trialMessageLimit,
+      used: 0,
+      plan: "free",
+      resetDate: nextReset.toISOString(),
+    };
+  }
+
+  // Set initial reset date if not set
+  if (!user.trialExpiresAt) {
+    const nextReset = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    await prisma.clientUser.update({
+      where: { id: userId },
+      data: { trialExpiresAt: nextReset },
+    });
+    user.trialExpiresAt = nextReset;
+  }
+
   // Free plan — enforce trial limit
   if (user.trialMessageCount >= user.trialMessageLimit) {
+    const resetDate = user.trialExpiresAt!.toISOString();
+    const resetFormatted = new Date(resetDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
     return {
       allowed: false,
       remaining: 0,
       limit: user.trialMessageLimit,
       used: user.trialMessageCount,
-      reason: `Trial limit reached (${user.trialMessageLimit} messages). Please upgrade your plan.`,
+      reason: `You've used all ${user.trialMessageLimit} free messages this month. Your messages will reset on ${resetFormatted}. Upgrade to a paid plan for unlimited access.`,
       plan: "free",
+      resetDate,
     };
   }
 
@@ -121,6 +154,7 @@ export async function checkTrialLimit(userId: string): Promise<TrialCheckResult>
     limit: user.trialMessageLimit,
     used: user.trialMessageCount,
     plan: "free",
+    resetDate: user.trialExpiresAt?.toISOString(),
   };
 }
 

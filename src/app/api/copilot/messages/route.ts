@@ -236,6 +236,7 @@ export async function POST(req: NextRequest) {
       trialLimitReached: true,
       used: trial.used,
       limit: trial.limit,
+      resetDate: trial.resetDate,
     }, { status: 403 });
   }
 

@@ -226,6 +226,22 @@ function CopilotChatInner() {
       });
       const data = await res.json();
 
+      if (res.status === 403 && data.trialLimitReached) {
+        setLoading(false);
+        const resetInfo = data.resetDate
+          ? `Your free messages will reset on **${new Date(data.resetDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}**.`
+          : "";
+        const limitMsg: MessageItem = {
+          id: "limit-" + Date.now(),
+          role: "assistant",
+          content: `⚠️ **Free Message Limit Reached**\n\nYou've used all **${data.limit}** free messages this month. ${resetInfo}\n\n**Upgrade to a paid plan** for unlimited messages and access to advanced clinical tools.\n\n[View Plans →](/copilot/subscription)`,
+          createdAt: new Date().toISOString(),
+        };
+        setMessages((prev) => [...prev.filter((m) => m.id !== tempUserMsg.id), tempUserMsg, limitMsg]);
+        sendingRef.current = false;
+        return;
+      }
+
       setLoading(false);
       setMessages((prev) => [
         ...prev.filter((m) => m.id !== tempUserMsg.id),
