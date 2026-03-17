@@ -397,9 +397,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
                   className={`rounded-2xl px-3 py-3 sm:px-5 sm:py-4 leading-relaxed ${
                     msg.role === "user"
                       ? "bg-[#FDB02F] text-[#07123A]"
-                      : isDark
-                        ? "bg-white/[0.03] text-white/80 border border-white/5"
-                        : "bg-white text-gray-700 border border-gray-200 shadow-sm"
+                      : "bg-[#fae5d0] text-[#1a1a2e] shadow-sm"
                   }`}
                   style={{ fontSize: "var(--copilot-font-size, 16px)" }}
                 >
@@ -417,15 +415,15 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
 
                           {/* Knowledge Base References */}
                           {references.length > 0 && (
-                            <div className={`mt-4 p-3 rounded-xl ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-gray-50 border border-gray-200"}`}>
-                              <p className={`text-xs font-semibold mb-2 ${isDark ? "text-[#FDB02F]/70" : "text-[#FDB02F]"}`}>📄 Knowledge Base References</p>
-                              <div className="flex flex-wrap gap-1.5">
+                            <div className="mt-5 pt-3 border-t border-gray-300">
+                              <p className="text-sm font-bold text-[#1a1a2e] mb-2">References:</p>
+                              <ul className="list-disc pl-5 space-y-1">
                                 {references.map((ref, i) => (
-                                  <span key={i} className={`inline-block px-2 py-1 rounded-lg text-xs ${isDark ? "bg-white/5 text-white/50" : "bg-gray-100 text-gray-500"}`}>
+                                  <li key={i} className="text-sm text-gray-600">
                                     {ref.replace(/\.docx$/i, "").replace(/_/g, " ")}
-                                  </span>
+                                  </li>
                                 ))}
-                              </div>
+                              </ul>
                             </div>
                           )}
 
