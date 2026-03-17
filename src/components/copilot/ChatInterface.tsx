@@ -413,19 +413,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
                             onScroll={scrollToBottom}
                           />
 
-                          {/* Knowledge Base References */}
-                          {references.length > 0 && (
-                            <div className="mt-5 pt-3 border-t border-gray-300">
-                              <p className="text-sm font-bold text-[#1a1a2e] mb-2">References:</p>
-                              <ul className="list-disc pl-5 space-y-1">
-                                {references.map((ref, i) => (
-                                  <li key={i} className="text-sm text-gray-600">
-                                    {ref.replace(/\.docx$/i, "").replace(/_/g, " ")}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                          {/* References hidden */}
 
                           {/* Follow-up Questions */}
                           {prompts.length > 0 && (
@@ -475,33 +463,6 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
                           Copy
                         </>
                       )}
-                    </button>
-                    <button
-                      onClick={() => handleExport(msg.content, "md")}
-                      className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-lg transition-colors ${
-                        isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                      }`}
-                    >
-                      <Download size={12} />
-                      Export .md
-                    </button>
-                    <button
-                      onClick={() => handleExport(msg.content, "txt")}
-                      className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-lg transition-colors ${
-                        isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                      }`}
-                    >
-                      <Download size={12} />
-                      Export .txt
-                    </button>
-                    <button
-                      onClick={() => handleExportPdf(msg.content)}
-                      className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-lg transition-colors ${
-                        isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                      }`}
-                    >
-                      <FileText size={12} />
-                      <span className="hidden sm:inline">Export</span> PDF
                     </button>
                   </div>
                 )}
