@@ -6,12 +6,82 @@ interface TrialCheckResult {
   limit: number;
   used: number;
   reason?: string;
+  plan?: string;
+}
+
+/**
+ * Plan-based category access mapping.
+ * Each plan includes all categories from lower tiers plus its own.
+ */
+const BASIC_CATEGORIES = [
+  "appsanddevices",
+  "treatmentprotocol",
+  "medication",
+  "sideeffects",
+  "labmonitoring",
+  "tapering",
+  "diagnosis",
+  "patienteducation",
+  "psychotherapy",
+  "mentalstatusexam",
+  "assessment",
+  "ratingscales",
+  "erdisposition",
+  "questions",
+  "teachingpoints",
+  "references",
+  "generalinformation",
+  "dietaryandherbals",
+  "links",
+];
+
+const ADVANCED_CATEGORIES = [
+  ...BASIC_CATEGORIES,
+  "billingandcoding",
+  "complexcases",
+  "documentation",
+  "druginteractions",
+  "guidelines",
+  "letters",
+  "nofdaapproved",
+  "preauthorization",
+  "riskassessment",
+  "somaticorinvasiveinterventions",
+  "functionalimpairmentanddisabilitysupport",
+  "ethicalandlegal",
+  "settings",
+];
+
+const PREMIUM_CATEGORIES = [
+  ...ADVANCED_CATEGORIES,
+  "drugseekingbehavior",
+  "miscellaneousquestions",
+  "summary",
+  "finalrecommendation",
+];
+
+/**
+ * Get allowed categories for a plan.
+ */
+export function getAllowedCategories(plan: string): string[] | null {
+  switch (plan) {
+    case "basic":
+      return BASIC_CATEGORIES;
+    case "advanced":
+      return ADVANCED_CATEGORIES;
+    case "premium":
+      return null; // null = all categories allowed
+    case "free":
+      return BASIC_CATEGORIES; // free users get basic categories during trial
+    default:
+      return BASIC_CATEGORIES;
+  }
 }
 
 /**
  * Check if a user can send a message based on their plan/trial status.
- * Free users get 10 messages (configurable per user).
- * Paid users have unlimited messages (or plan-based limits).
+ * Free users get limited messages.
+ * Paid users with cancelled/past_due subscriptions are treated as free.
  */
 export async function checkTrialLimit(userId: string): Promise<TrialCheckResult> {
   const user = await prisma.clientUser.findUnique({ where: { id: userId } });
@@ -22,9 +92,15 @@ export async function checkTrialLimit(userId: string): Promise<TrialCheckResult>
     return { allowed: false, remaining: 0, limit: user.trialMessageLimit, used: user.trialMessageCount, reason: "Account is " + user.status };
   }
 
-  // Paid plans — allow (could add plan-specific limits later)
-  if (user.plan !== "free") {
-    return { allowed: true, remaining: -1, limit: -1, used: user.trialMessageCount };
+  // Determine effective plan — cancelled subscriptions revert to free
+  let effectivePlan = user.plan;
+  if (user.plan !== "free" && (user.subscriptionStatus === "cancelled" || user.subscriptionStatus === "past_due")) {
+    effectivePlan = "free";
+  }
+
+  // Paid plans with active subscription — allow unlimited
+  if (effectivePlan !== "free") {
+    return { allowed: true, remaining: -1, limit: -1, used: user.trialMessageCount, plan: effectivePlan };
   }
 
   // Free plan — enforce trial limit
@@ -35,6 +111,7 @@ export async function checkTrialLimit(userId: string): Promise<TrialCheckResult>
       limit: user.trialMessageLimit,
       used: user.trialMessageCount,
       reason: `Trial limit reached (${user.trialMessageLimit} messages). Please upgrade your plan.`,
+      plan: "free",
     };
   }
 
@@ -43,6 +120,7 @@ export async function checkTrialLimit(userId: string): Promise<TrialCheckResult>
     remaining: user.trialMessageLimit - user.trialMessageCount,
     limit: user.trialMessageLimit,
     used: user.trialMessageCount,
+    plan: "free",
   };
 }
 

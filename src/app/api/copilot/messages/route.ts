@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCopilotUser } from "@/lib/copilot-auth";
-import { checkTrialLimit, incrementTrialCount } from "@/lib/trial-guard";
+import { checkTrialLimit, incrementTrialCount, getAllowedCategories } from "@/lib/trial-guard";
 import OpenAI from "openai";
 
 const DO_RAG_URL = process.env.DO_RAG_URL || "http://167.99.229.148:8585";
@@ -380,6 +380,18 @@ export async function POST(req: NextRequest) {
   }
 
   const latencyMs = Date.now() - startTime;
+
+  // Plan-based category access check
+  const userPlan = trial.plan || "free";
+  const allowedCategories = getAllowedCategories(userPlan);
+  if (allowedCategories && ragCategory && !allowedCategories.includes(ragCategory.toLowerCase())) {
+    const upgradePlan = userPlan === "free" || userPlan === "basic" ? "Advanced" : "Premium";
+    aiContent = `> **Disclaimer:** For licensed healthcare providers only. Educational use only. Not medical advice.\n\n` +
+      `⚠️ **This topic requires the ${upgradePlan} plan or higher.**\n\n` +
+      `The category **"${ragCategory}"** is not included in your current **${userPlan.charAt(0).toUpperCase() + userPlan.slice(1)}** plan.\n\n` +
+      `**Upgrade to ${upgradePlan}** to access this feature and many more advanced clinical tools.\n\n` +
+      `[Upgrade Now →](/copilot/subscription)`;
+  }
 
   // Append references if available
   if (ragSources.length > 0) {

@@ -91,7 +91,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
 
   await prisma.clientUser.update({
     where: { id },
-    data: { deletedAt: new Date(), status: "deactivated" },
+    data: { deletedAt: new Date(), status: "deactivated", subscriptionStatus: "cancelled" },
   });
 
   await logAudit({
@@ -184,7 +184,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
 
     case "suspend": {
-      await prisma.clientUser.update({ where: { id }, data: { status: "suspended" } });
+      await prisma.clientUser.update({ where: { id }, data: { status: "suspended", subscriptionStatus: "cancelled" } });
       await logAudit({
         actorId: session.user.id || "unknown",
         actorEmail: session.user.email || "unknown",
