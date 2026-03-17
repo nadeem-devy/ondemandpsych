@@ -76,15 +76,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
 
-  // Check if account is suspended/deactivated
-  if (user.status !== "active") {
-    await logAudit({ actorId: user.id, actorEmail: email, actorType: "client", action: "login.blocked", details: { reason: user.status } });
-    return NextResponse.json({ error: `Account is ${user.status}. Please contact support.` }, { status: 403 });
+  // Check if account is suspended
+  if (user.status === "suspended") {
+    await logAudit({ actorId: user.id, actorEmail: email, actorType: "client", action: "login.blocked", details: { reason: "suspended" } });
+    return NextResponse.json({ error: "Your account is suspended. Please contact support at support@mtppsychiatry.com for reactivation." }, { status: 403 });
   }
 
-  // Check soft-delete
-  if (user.deletedAt) {
-    return NextResponse.json({ error: "Account has been deactivated. Please contact support." }, { status: 403 });
+  // Check if account is deactivated or soft-deleted
+  if (user.status === "deactivated" || user.deletedAt) {
+    await logAudit({ actorId: user.id, actorEmail: email, actorType: "client", action: "login.blocked", details: { reason: "deactivated" } });
+    return NextResponse.json({ error: "Your account has been deactivated. Please contact support at support@mtppsychiatry.com for assistance." }, { status: 403 });
   }
 
   const valid = await compare(password, user.password);
