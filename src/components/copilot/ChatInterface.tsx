@@ -15,6 +15,7 @@ import {
   Copy,
   Check,
   Download,
+  HelpCircle,
   Mic,
   MicOff,
   Paperclip,
@@ -74,6 +75,7 @@ const promptSuggestions = [
 export function ChatInterface({ chatId, messages, onSendMessage, loading, userName, userAvatar }: ChatInterfaceProps) {
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [refsOpenId, setRefsOpenId] = useState<string | null>(null);
   const [attachedFile, setAttachedFile] = useState<{ name: string; text: string } | null>(null);
   const [uploading, setUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -443,27 +445,55 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
                   )}
                 </div>
 
-                {/* Action buttons for assistant messages */}
+                {/* Action buttons for assistant messages — right aligned */}
                 {msg.role === "assistant" && (
-                  <div className="flex items-center gap-1 mt-1.5 sm:mt-2 ml-1">
+                  <div className="flex items-center justify-end gap-1 mt-1.5 sm:mt-2 relative">
                     <button
                       onClick={() => handleCopy(msg.id, msg.content)}
-                      className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-lg transition-colors ${
-                        isDark ? "text-white/30 hover:text-white/60 hover:bg-white/5" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                      }`}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors text-gray-400 hover:text-gray-600 hover:bg-gray-200/50"
+                      title="Copy"
                     >
                       {copiedId === msg.id ? (
-                        <>
-                          <Check size={12} className="text-green-500" />
-                          <span className="text-green-500">Copied</span>
-                        </>
+                        <Check size={14} className="text-green-500" />
                       ) : (
-                        <>
-                          <Copy size={12} />
-                          Copy
-                        </>
+                        <Copy size={14} />
                       )}
                     </button>
+                    {(() => {
+                      const { references: msgRefs } = extractPrompts(msg.content);
+                      return msgRefs.length > 0 ? (
+                        <div className="relative">
+                          <button
+                            onClick={() => setRefsOpenId(refsOpenId === msg.id ? null : msg.id)}
+                            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors text-gray-400 hover:text-gray-600 hover:bg-gray-200/50"
+                            title="View References"
+                          >
+                            <HelpCircle size={14} />
+                          </button>
+                          {refsOpenId === msg.id && (
+                            <div className="absolute bottom-full right-0 mb-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                              <div className="flex items-center justify-between mb-3">
+                                <p className="text-sm font-bold text-[#1a1a2e]">Knowledge Base References</p>
+                                <button
+                                  onClick={() => setRefsOpenId(null)}
+                                  className="text-gray-400 hover:text-gray-600 p-0.5 rounded"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </div>
+                              <ul className="space-y-2">
+                                {msgRefs.map((ref, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                                    <FileText size={14} className="shrink-0 mt-0.5 text-[#FDB02F]" />
+                                    <span>{ref.replace(/\.docx$/i, "").replace(/_/g, " ")}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      ) : null;
+                    })()}
                   </div>
                 )}
               </div>
