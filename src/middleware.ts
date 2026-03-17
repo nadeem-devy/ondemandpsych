@@ -2,8 +2,57 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { verifyCopilotToken } from "@/lib/copilot-auth";
 
+function isCopilotSubdomain(req: NextRequest): boolean {
+  const host = req.headers.get("host") || "";
+  return host.startsWith("copilot.");
+}
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Subdomain routing: copilot.ondemandpsych.com → /copilot/*
+  if (isCopilotSubdomain(req)) {
+    // Skip if already an API route, _next, or static asset
+    if (pathname.startsWith("/api/") || pathname.startsWith("/_next") || pathname.startsWith("/favicon") || pathname.includes(".")) {
+      // Allow /api/copilot/* and /api/public/* through as-is
+      return NextResponse.next();
+    }
+
+    // Root of subdomain → /copilot/login (or /copilot/chat if authed)
+    if (pathname === "/" || pathname === "") {
+      const token = req.cookies.get("copilot-token")?.value;
+      if (token) {
+        const user = await verifyCopilotToken(token);
+        if (user) {
+          return NextResponse.rewrite(new URL("/copilot/chat", req.url));
+        }
+      }
+      return NextResponse.rewrite(new URL("/copilot/login", req.url));
+    }
+
+    // If path doesn't start with /copilot, rewrite to /copilot/...
+    if (!pathname.startsWith("/copilot")) {
+      const rewrittenUrl = new URL(`/copilot${pathname}`, req.url);
+      rewrittenUrl.search = req.nextUrl.search;
+
+      // Auth check for protected copilot routes
+      const copilotPath = `/copilot${pathname}`;
+      if (!copilotPath.startsWith("/copilot/login") && !copilotPath.startsWith("/copilot/register") && !copilotPath.startsWith("/copilot/forgot-password")) {
+        const token = req.cookies.get("copilot-token")?.value;
+        if (!token) {
+          return NextResponse.rewrite(new URL("/copilot/login", req.url));
+        }
+        const user = await verifyCopilotToken(token);
+        if (!user) {
+          return NextResponse.rewrite(new URL("/copilot/login", req.url));
+        }
+      }
+
+      return NextResponse.rewrite(rewrittenUrl);
+    }
+
+    // Path already starts with /copilot — fall through to normal copilot auth below
+  }
 
   // Admin routes — use NextAuth
   if (pathname.startsWith("/admin")) {
@@ -37,5 +86,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/copilot/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
