@@ -17,19 +17,18 @@ import { lifecycle } from "@/lib/email";
 
 // Map Stripe price IDs to internal plan names
 const PRICE_TO_PLAN: Record<string, string> = {
-  // Replace with actual Stripe price IDs
-  "price_basic_monthly": "basic",
-  "price_basic_yearly": "basic",
-  "price_professional_monthly": "professional",
-  "price_professional_yearly": "professional",
-  "price_enterprise_monthly": "enterprise",
-  "price_enterprise_yearly": "enterprise",
+  "price_1SUlcJCuglc1gqdzqw0rgRhC": "basic",
+  "price_1SUlcJCuglc1gqdzSfXMx0Yt": "basic",
+  "price_1SUlcFCuglc1gqdzvu0Ud3mD": "advanced",
+  "price_1SUlcFCuglc1gqdzTFcM6P7G": "advanced",
+  "price_1SUlc9Cuglc1gqdzZUk4vxnX": "premium",
+  "price_1SUlc9Cuglc1gqdzjBleSN7r": "premium",
 };
 
 const PLAN_TO_PRICE: Record<string, { monthly: string; yearly: string }> = {
-  basic: { monthly: "price_basic_monthly", yearly: "price_basic_yearly" },
-  professional: { monthly: "price_professional_monthly", yearly: "price_professional_yearly" },
-  enterprise: { monthly: "price_enterprise_monthly", yearly: "price_enterprise_yearly" },
+  basic: { monthly: "price_1SUlcJCuglc1gqdzqw0rgRhC", yearly: "price_1SUlcJCuglc1gqdzSfXMx0Yt" },
+  advanced: { monthly: "price_1SUlcFCuglc1gqdzvu0Ud3mD", yearly: "price_1SUlcFCuglc1gqdzTFcM6P7G" },
+  premium: { monthly: "price_1SUlc9Cuglc1gqdzZUk4vxnX", yearly: "price_1SUlc9Cuglc1gqdzjBleSN7r" },
 };
 
 function getStripe() {

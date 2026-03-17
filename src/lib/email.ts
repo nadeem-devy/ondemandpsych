@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
+import sgMail from "@sendgrid/mail";
 
-/**
- * Email sending utility.
- * In production, replace the sendEmail function body with your email provider
- * (SendGrid, Resend, AWS SES, etc.)
- */
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+if (SENDGRID_API_KEY) {
+  sgMail.setApiKey(SENDGRID_API_KEY);
+}
 
 interface EmailParams {
   to: string;
@@ -12,17 +12,24 @@ interface EmailParams {
   html: string;
 }
 
-/**
- * Send an email. Currently logs to console.
- * Replace with actual email service in production.
- */
 export async function sendEmail(params: EmailParams): Promise<boolean> {
   try {
-    // TODO: Replace with actual email service (SendGrid, Resend, AWS SES)
-    console.log("📧 EMAIL SENT (dev mode):");
-    console.log(`  To: ${params.to}`);
-    console.log(`  Subject: ${params.subject}`);
-    console.log(`  Body length: ${params.html.length} chars`);
+    if (!SENDGRID_API_KEY) {
+      console.warn("SENDGRID_API_KEY not set — email not sent");
+      return false;
+    }
+
+    await sgMail.send({
+      to: params.to,
+      from: {
+        email: process.env.MAIL_FROM_ADDRESS || "support@mtppsychiatry.com",
+        name: process.env.MAIL_FROM_NAME || "OnDemandPsych",
+      },
+      subject: params.subject,
+      html: params.html,
+    });
+
+    console.log(`Email sent to ${params.to}: ${params.subject}`);
     return true;
   } catch (err) {
     console.error("Email send error:", err);
