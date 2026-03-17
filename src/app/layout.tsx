@@ -46,12 +46,19 @@ export const metadata: Metadata = {
     "clinical decision support",
     "psychiatric documentation",
   ],
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     type: "website",
     url: "https://ondemandpsych.com",
     title: "OnDemandPsych — Psychiatric Clinical Co-Pilot",
     description:
       "Psychiatry-specific clinical decision support delivering real-time reasoning, safer care decisions, and chart-ready documentation.",
+    images: [{ url: "/logo.webp" }],
   },
 };
 
