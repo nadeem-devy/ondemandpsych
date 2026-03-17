@@ -178,24 +178,6 @@ function CopilotLogin() {
               {oauthLoading === "google" ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <GoogleIcon />}
               Google
             </button>
-            <button
-              type="button"
-              onClick={() => handleOAuth("linkedin")}
-              disabled={!!oauthLoading}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium hover:bg-white/10 transition-all disabled:opacity-50"
-            >
-              {oauthLoading === "linkedin" ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <LinkedInIcon />}
-              LinkedIn
-            </button>
-            <button
-              type="button"
-              onClick={() => handleOAuth("facebook")}
-              disabled={!!oauthLoading}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-medium hover:bg-white/10 transition-all disabled:opacity-50"
-            >
-              {oauthLoading === "facebook" ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <FacebookIcon />}
-              Facebook
-            </button>
           </div>
 
           <div className="mt-6 pt-6 border-t border-white/5 text-center">
