@@ -8,7 +8,7 @@ import { lifecycle } from "@/lib/email";
 // POST /api/copilot/auth — login, register, or password reset
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { action, email, password, name, role, newPassword, otp } = body;
+  const { action, email, password, name, role, newPassword } = body;
 
   // Password reset (admin or user-initiated)
   if (action === "reset_password") {
@@ -49,20 +49,13 @@ export async function POST(req: NextRequest) {
 
     const hashed = await hash(password, 12);
     const user = await prisma.clientUser.create({
-      data: { email, password: hashed, name, ...(role && { role }) },
+      data: { email, password: hashed, name, emailVerified: false, ...(role && { role }) },
     });
 
-    const token = await createCopilotToken({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      plan: user.plan,
-    });
-    await setCopilotCookie(token);
-
-    // Send welcome email
-    await lifecycle.welcome(user.email, user.name);
-    await lifecycle.trialStarted(user.email, user.name, String(user.trialMessageLimit));
+    // Send verification OTP
+    const { createOtp } = await import("@/lib/otp");
+    const otpRecord = await createOtp({ userId: user.id, email, type: "email_verify" });
+    await lifecycle.otpVerification(user.email, user.name, otpRecord.code);
 
     await logAudit({
       actorId: user.id,
@@ -73,7 +66,7 @@ export async function POST(req: NextRequest) {
       targetId: user.id,
     });
 
-    return NextResponse.json({ user: { id: user.id, email: user.email, name: user.name, plan: user.plan } });
+    return NextResponse.json({ user: { id: user.id, email: user.email, name: user.name, plan: user.plan }, requireVerification: true });
   }
 
   // Login

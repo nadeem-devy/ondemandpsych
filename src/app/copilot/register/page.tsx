@@ -68,6 +68,10 @@ function CopilotRegister() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
+  const [showVerify, setShowVerify] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     const err = searchParams.get("error");
@@ -107,10 +111,61 @@ function CopilotRegister() {
         setLoading(false);
         return;
       }
+      if (data.requireVerification) {
+        setShowVerify(true);
+        setLoading(false);
+        return;
+      }
       router.push("/copilot/chat");
     } catch {
       setError("Something went wrong");
       setLoading(false);
+    }
+  }
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setVerifying(true);
+    try {
+      const res = await fetch("/api/copilot/otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "verify", email, code: otpCode, type: "email_verify" }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Invalid code");
+        setVerifying(false);
+        return;
+      }
+      // Now log them in
+      const loginRes = await fetch("/api/copilot/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "login", email, password }),
+      });
+      if (loginRes.ok) {
+        router.push("/copilot/chat");
+      }
+    } catch {
+      setError("Something went wrong");
+      setVerifying(false);
+    }
+  }
+
+  async function handleResendOtp() {
+    setResending(true);
+    setError("");
+    try {
+      await fetch("/api/copilot/otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "send", email, type: "email_verify" }),
+      });
+      setResending(false);
+    } catch {
+      setResending(false);
     }
   }
 
@@ -128,6 +183,48 @@ function CopilotRegister() {
         </div>
 
         <div className="bg-[#0D1B4B]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+          {showVerify ? (
+            <form onSubmit={handleVerifyOtp} className="space-y-5">
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-lg">
+                  {error}
+                </div>
+              )}
+              <div className="text-center">
+                <div className="w-16 h-16 bg-[#FDB02F]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail size={28} className="text-[#FDB02F]" />
+                </div>
+                <h2 className="text-white text-xl font-semibold mb-2">Verify Your Email</h2>
+                <p className="text-white/40 text-sm">We sent a verification code to <span className="text-white/70">{email}</span></p>
+              </div>
+              <div>
+                <input
+                  type="text"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  className="w-full text-center text-2xl tracking-[0.5em] py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/20 focus:outline-none focus:border-[#FDB02F]/40 transition-all"
+                  placeholder="000000"
+                  maxLength={6}
+                  required
+                  autoFocus
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={verifying || otpCode.length < 6}
+                className="w-full py-3 rounded-xl bg-[#FDB02F] text-[#07123A] font-bold text-lg hover:bg-[#FDAA40] transition-all disabled:opacity-50"
+              >
+                {verifying ? "Verifying..." : "Verify Email"}
+              </button>
+              <p className="text-center text-white/30 text-sm">
+                Didn&apos;t receive the code?{" "}
+                <button type="button" onClick={handleResendOtp} disabled={resending} className="text-[#FDB02F] hover:text-[#FDAA40] font-medium disabled:opacity-50">
+                  {resending ? "Sending..." : "Resend"}
+                </button>
+              </p>
+            </form>
+          ) : (
+          <>
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-lg">
@@ -260,6 +357,8 @@ function CopilotRegister() {
               </Link>
             </p>
           </div>
+          </>
+          )}
         </div>
       </div>
     </div>
