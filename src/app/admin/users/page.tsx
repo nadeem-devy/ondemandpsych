@@ -48,8 +48,8 @@ const statusColors: Record<string, string> = {
 const planColors: Record<string, string> = {
   free: "bg-white/5 text-white/50 border-white/10",
   basic: "bg-blue-400/10 text-blue-400 border-blue-400/20",
-  professional: "bg-purple-400/10 text-purple-400 border-purple-400/20",
-  enterprise: "bg-[#FDB02F]/10 text-[#FDB02F] border-[#FDB02F]/20",
+  advanced: "bg-purple-400/10 text-purple-400 border-purple-400/20",
+  premium: "bg-[#FDB02F]/10 text-[#FDB02F] border-[#FDB02F]/20",
 };
 
 export default function UsersPage() {
@@ -131,8 +131,8 @@ export default function UsersPage() {
             <option value="">All Plans</option>
             <option value="free">Free</option>
             <option value="basic">Basic</option>
-            <option value="professional">Professional</option>
-            <option value="enterprise">Enterprise</option>
+            <option value="advanced">Advanced</option>
+            <option value="premium">Premium</option>
           </select>
           {(statusFilter || planFilter) && (
             <button onClick={() => { setStatusFilter(""); setPlanFilter(""); }} className="text-base text-white/30 hover:text-white/60 transition-colors">
