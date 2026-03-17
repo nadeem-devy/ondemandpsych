@@ -726,7 +726,7 @@ const ChatInput = forwardRef<
   }
 
   return (
-    <div className={`shrink-0 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-4 border-t ${isDark ? "border-white/5" : "border-gray-200"}`}>
+    <div className={`shrink-0 p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-4 border-t ${isDark ? "border-white/5 bg-[#0a1628]" : "bg-[#fdf6e3] border-[#d9c4a8]"}`}>
       <div className="max-w-4xl mx-auto">
         {/* Attached file indicator */}
         {(attachedFile || uploading) && (
@@ -764,8 +764,8 @@ const ChatInput = forwardRef<
             onKeyDown={onKeyDown}
             placeholder={isRecording ? "Listening..." : (attachedFile ? "Ask a question about the document..." : placeholder)}
             rows={1}
-            className={`flex-1 bg-transparent px-3 py-3 sm:px-5 sm:py-4 text-lg focus:outline-none resize-none max-h-40 ${
-              isDark ? "text-white placeholder:text-white/20" : "text-gray-800 placeholder:text-gray-400"
+            className={`flex-1 px-3 py-3 sm:px-5 sm:py-4 text-lg focus:outline-none resize-none max-h-40 rounded-2xl ${
+              isDark ? "bg-[#2a2520] text-white placeholder:text-white/20" : "bg-[#f5f0d0] text-gray-800 placeholder:text-gray-400"
             }`}
           />
           <input
