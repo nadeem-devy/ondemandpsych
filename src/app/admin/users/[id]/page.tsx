@@ -53,7 +53,7 @@ interface AuditEntry {
 }
 
 const statusOptions = ["active", "suspended", "deactivated"];
-const planOptions = ["free", "basic", "professional", "enterprise"];
+const planOptions = ["free", "basic", "advanced", "premium"];
 
 export default function UserDetailPage() {
   const { id } = useParams<{ id: string }>();
