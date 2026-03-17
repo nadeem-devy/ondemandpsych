@@ -151,7 +151,7 @@ export default function UsersPage() {
                 <th className="text-left px-4 py-3 text-white/30 font-medium">User</th>
                 <th className="text-left px-4 py-3 text-white/30 font-medium">Status</th>
                 <th className="text-left px-4 py-3 text-white/30 font-medium">Plan</th>
-                <th className="text-left px-4 py-3 text-white/30 font-medium">Trial</th>
+                <th className="text-left px-4 py-3 text-white/30 font-medium">Messages</th>
                 <th className="text-left px-4 py-3 text-white/30 font-medium">Chats</th>
                 <th className="text-left px-4 py-3 text-white/30 font-medium">Joined</th>
                 <th className="text-right px-4 py-3 text-white/30 font-medium">Actions</th>
@@ -187,12 +187,16 @@ export default function UsersPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-12 h-1.5 bg-white/5 rounded-full overflow-hidden">
-                          <div className="h-full bg-[#FDB02F]/50 rounded-full" style={{ width: `${Math.min(100, (u.trialMessageCount / u.trialMessageLimit) * 100)}%` }} />
+                      {u.plan === "free" ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-12 h-1.5 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-[#FDB02F]/50 rounded-full" style={{ width: `${Math.min(100, (u.trialMessageCount / u.trialMessageLimit) * 100)}%` }} />
+                          </div>
+                          <span className="text-white/30 text-base">{u.trialMessageCount}/{u.trialMessageLimit}</span>
                         </div>
-                        <span className="text-white/30 text-base">{u.trialMessageCount}/{u.trialMessageLimit}</span>
-                      </div>
+                      ) : (
+                        <span className="text-green-400 text-base font-medium">Unlimited</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-white/40">{u._count.chats}</td>
                     <td className="px-4 py-3 text-white/30 text-lg">{new Date(u.createdAt).toLocaleDateString()}</td>
