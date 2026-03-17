@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Mail, Lock, User, Stethoscope } from "lucide-react";
+import { PublicSupportChat } from "@/components/PublicSupportChat";
 
 function GoogleIcon() {
   return (
@@ -361,6 +362,7 @@ function CopilotRegister() {
           )}
         </div>
       </div>
+      <PublicSupportChat theme="dark" />
     </div>
   );
 }

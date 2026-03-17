@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { PublicSupportChat } from "@/components/PublicSupportChat";
 
 function GoogleIcon() {
   return (
@@ -202,6 +203,7 @@ function CopilotLogin() {
           By signing in, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>
+      <PublicSupportChat theme="dark" />
     </div>
   );
 }
