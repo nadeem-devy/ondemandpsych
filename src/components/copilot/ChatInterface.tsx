@@ -630,7 +630,7 @@ function ClinicalLoadingIndicator({ isDark }: { isDark: boolean }) {
       <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden mt-1 animate-pulse">
         <img src="/logo.webp" alt="Co-Pilot" className="w-full h-full object-cover" />
       </div>
-      <div className={`flex-1 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-white border border-gray-200 shadow-sm"}`}>
+      <div className={`flex-1 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-[#fae5d0] border border-[#d9c4a8] shadow-sm"}`}>
         <div className="flex items-center gap-3">
           <div className="flex gap-1">
             <div className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -764,7 +764,7 @@ const ChatInput = forwardRef<
         <div className={`relative flex items-end rounded-2xl focus-within:border-[#FDB02F]/30 transition-colors ${
           isDark
             ? "bg-white/[0.04] border border-white/10"
-            : "bg-white border border-gray-200 shadow-sm"
+            : "bg-[#fdf0e2] border border-[#d9c4a8] shadow-sm"
         }`}>
           <textarea
             ref={ref}
@@ -916,9 +916,31 @@ function markdownToHtml(text: string): string {
   // Inline formatting
   html = inlineFormat(html);
 
-  // Paragraphs
+  // Paragraphs — collapse multiple newlines, convert double to paragraph breaks
+  html = html.replace(/\n{3,}/g, '\n\n');
   html = html.replace(/\n\n/g, '</p><p class="copilot-p">');
   html = html.replace(/\n/g, "<br/>");
+
+  // Clean up: remove <br/> immediately after block elements (headers, tables, lists, hr, divs)
+  html = html.replace(/(<\/h[1-4]>)(<br\/>)+/g, '$1');
+  html = html.replace(/(<\/table>)(<br\/>)+/g, '$1');
+  html = html.replace(/(<\/div>)(<br\/>)+/g, '$1');
+  html = html.replace(/(<\/ul>)(<br\/>)+/g, '$1');
+  html = html.replace(/(<\/ol>)(<br\/>)+/g, '$1');
+  html = html.replace(/(class="copilot-hr"[^>]*>)(<br\/>)+/g, '$1');
+  // Remove <br/> immediately before block elements
+  html = html.replace(/(<br\/>)+(<h[1-4] )/g, '$2');
+  html = html.replace(/(<br\/>)+(<div )/g, '$2');
+  html = html.replace(/(<br\/>)+(<hr )/g, '$2');
+  html = html.replace(/(<br\/>)+(<ul )/g, '$2');
+  html = html.replace(/(<br\/>)+(<ol )/g, '$2');
+  // Collapse multiple consecutive <br/> to single
+  html = html.replace(/(<br\/>){2,}/g, '<br/>');
+  // Remove leading/trailing <br/> in paragraphs
+  html = html.replace(/<p class="copilot-p"><br\/>/g, '<p class="copilot-p">');
+  html = html.replace(/<br\/><\/p>/g, '</p>');
+  // Remove empty paragraphs
+  html = html.replace(/<p class="copilot-p">\s*<\/p>/g, '');
 
   // Wrap in paragraph if not starting with block element
   if (!html.startsWith("<")) {
