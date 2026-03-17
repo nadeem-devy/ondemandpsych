@@ -239,17 +239,26 @@ export default function UserDetailPage() {
             <SelectField label="Status" value={form.status} options={statusOptions} onChange={(v) => setForm({ ...form, status: v })} />
             <SelectField label="Plan" value={form.plan} options={planOptions} onChange={(v) => setForm({ ...form, plan: v })} />
             <SelectField label="Subscription" value={form.subscriptionStatus} options={["trialing", "active", "past_due", "cancelled"]} onChange={(v) => setForm({ ...form, subscriptionStatus: v })} />
-            <div>
-              <label className="text-lg text-white/40 mb-1 block">Trial Message Limit</label>
-              <input type="number" value={form.trialMessageLimit} onChange={(e) => setForm({ ...form, trialMessageLimit: parseInt(e.target.value) || 10 })} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:outline-none focus:border-[#FDB02F]/30" />
-            </div>
-            <div className="flex items-center gap-3 pt-2">
-              <div className="text-lg text-white/40">Trial Used:</div>
-              <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
-                <div className="h-full bg-[#FDB02F]/50 rounded-full" style={{ width: `${Math.min(100, (user.trialMessageCount / user.trialMessageLimit) * 100)}%` }} />
+            {form.plan === "free" ? (
+              <>
+                <div>
+                  <label className="text-lg text-white/40 mb-1 block">Trial Message Limit</label>
+                  <input type="number" value={form.trialMessageLimit} onChange={(e) => setForm({ ...form, trialMessageLimit: parseInt(e.target.value) || 10 })} className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-base focus:outline-none focus:border-[#FDB02F]/30" />
+                </div>
+                <div className="flex items-center gap-3 pt-2">
+                  <div className="text-lg text-white/40">Trial Used:</div>
+                  <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#FDB02F]/50 rounded-full" style={{ width: `${Math.min(100, (user.trialMessageCount / user.trialMessageLimit) * 100)}%` }} />
+                  </div>
+                  <div className="text-lg text-white/30">{user.trialMessageCount}/{user.trialMessageLimit}</div>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-3 pt-2">
+                <div className="text-lg text-white/40">Messages:</div>
+                <div className="text-lg text-green-400 font-semibold">Unlimited</div>
               </div>
-              <div className="text-lg text-white/30">{user.trialMessageCount}/{user.trialMessageLimit}</div>
-            </div>
+            )}
           </div>
 
           {/* Compliance */}

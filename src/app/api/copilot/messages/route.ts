@@ -421,8 +421,10 @@ export async function POST(req: NextRequest) {
 
   await prisma.chat.update({ where: { id: chatId }, data: { updatedAt: new Date() } });
 
-  // Increment trial count for free users
-  await incrementTrialCount(user.id);
+  // Increment trial count for free users only
+  if (userPlan === "free") {
+    await incrementTrialCount(user.id);
+  }
 
   return NextResponse.json({ userMessage, assistantMessage, trial: { remaining: trial.remaining > 0 ? trial.remaining - 1 : -1, limit: trial.limit } });
 }
