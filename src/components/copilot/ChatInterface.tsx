@@ -909,12 +909,20 @@ function markdownToHtml(text: string): string {
   html = html.replace(/^(\d+)\. (.+)$/gm, '<li class="copilot-oli">$2</li>');
   html = html.replace(/((?:<li class="copilot-oli">.*<\/li>\n?)+)/g, '<ol class="copilot-ol">$1</ol>');
 
-  // Unordered lists
-  html = html.replace(/^- (.+)$/gm, '<li class="copilot-uli">$1</li>');
+  // Unordered lists — match -, •, and * bullets
+  html = html.replace(/^[-•\*] (.+)$/gm, '<li class="copilot-uli">$1</li>');
   html = html.replace(/((?:<li class="copilot-uli">.*<\/li>\n?)+)/g, '<ul class="copilot-ul">$1</ul>');
 
   // Inline formatting
   html = inlineFormat(html);
+
+  // Strip ALL newlines inside list containers
+  html = html.replace(/(<ul class="copilot-ul">)([\s\S]*?)(<\/ul>)/g, (_m, open, inner, close) => {
+    return open + inner.replace(/\n/g, '') + close;
+  });
+  html = html.replace(/(<ol class="copilot-ol">)([\s\S]*?)(<\/ol>)/g, (_m, open, inner, close) => {
+    return open + inner.replace(/\n/g, '') + close;
+  });
 
   // Strip newlines around block elements BEFORE paragraph conversion
   html = html.replace(/\n+(<h[1-4] )/g, '$1');
@@ -930,6 +938,7 @@ function markdownToHtml(text: string): string {
   html = html.replace(/\n+(<blockquote )/g, '$1');
   html = html.replace(/(<\/blockquote>)\n+/g, '$1');
   html = html.replace(/\n+(<table )/g, '$1');
+  html = html.replace(/(<\/table><\/div>)\n+/g, '$1');
 
   // Collapse 3+ newlines to 2
   html = html.replace(/\n{3,}/g, '\n\n');
