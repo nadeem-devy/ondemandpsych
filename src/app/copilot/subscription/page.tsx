@@ -146,6 +146,7 @@ export default function SubscriptionPage() {
   const [currentPlan, setCurrentPlan] = useState("free");
   const [yearly, setYearly] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/copilot/profile")
@@ -159,6 +160,28 @@ export default function SubscriptionPage() {
       })
       .catch(() => router.push("/copilot/login"));
   }, [router]);
+
+  async function handleSubscribe(planId: string) {
+    if (planId === "free") return;
+    setCheckoutLoading(planId);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planName: planId, interval: yearly ? "yearly" : "monthly" }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || "Failed to start checkout");
+        setCheckoutLoading(null);
+      }
+    } catch {
+      alert("Something went wrong");
+      setCheckoutLoading(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -312,7 +335,8 @@ export default function SubscriptionPage() {
                 <p className="mb-5 text-lg text-white/30 italic">Best for: {plan.bestFor}</p>
 
                 <button
-                  disabled={isCurrent}
+                  disabled={isCurrent || checkoutLoading === plan.id}
+                  onClick={() => handleSubscribe(plan.id)}
                   className={`w-full py-3 rounded-xl text-lg font-bold transition-all ${
                     isCurrent
                       ? "bg-white/5 text-white/30 cursor-not-allowed"
@@ -321,7 +345,7 @@ export default function SubscriptionPage() {
                         : "bg-white/10 text-white hover:bg-white/15"
                   }`}
                 >
-                  {isCurrent ? "Current Plan" : "Get Started"}
+                  {isCurrent ? "Current Plan" : checkoutLoading === plan.id ? "Redirecting..." : "Get Started"}
                 </button>
               </div>
             );
