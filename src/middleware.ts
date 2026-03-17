@@ -54,6 +54,18 @@ export async function middleware(req: NextRequest) {
     // Path already starts with /copilot — fall through to normal copilot auth below
   }
 
+  // Redirect /copilot/* on main domain to copilot subdomain
+  if (!isCopilotSubdomain(req) && pathname.startsWith("/copilot")) {
+    const host = req.headers.get("host") || "";
+    // Only redirect in production (when we have a real domain, not localhost)
+    if (!host.includes("localhost") && !host.includes("127.0.0.1")) {
+      const subPath = pathname.replace(/^\/copilot/, "") || "/";
+      const subdomainUrl = new URL(`https://copilot.${host.replace(/^www\./, "")}${subPath}`);
+      subdomainUrl.search = req.nextUrl.search;
+      return NextResponse.redirect(subdomainUrl);
+    }
+  }
+
   // Admin routes — use NextAuth
   if (pathname.startsWith("/admin")) {
     const session = await auth();
