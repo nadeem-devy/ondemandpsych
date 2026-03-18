@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   FileText,
@@ -84,6 +85,7 @@ const navGroups = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [openTickets, setOpenTickets] = useState(0);
 
   useEffect(() => {
@@ -165,15 +167,13 @@ export function AdminSidebar() {
           <Globe size={20} />
           View Site
         </Link>
-        <form action="/api/auth/signout" method="POST">
-          <button
-            type="submit"
-            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-base text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-colors w-full"
-          >
-            <LogOut size={20} />
-            Sign Out
-          </button>
-        </form>
+        <button
+          onClick={() => signOut({ redirect: false }).then(() => router.push("/"))}
+          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-base text-white/40 hover:text-red-400 hover:bg-red-400/5 transition-colors w-full"
+        >
+          <LogOut size={20} />
+          Sign Out
+        </button>
       </div>
     </aside>
   );
