@@ -144,65 +144,67 @@ export default function PlansPage() {
         ) : plans.length === 0 ? (
           <div className="text-center py-12 text-white/30">No plans created yet. Click "New Plan" to start.</div>
         ) : (
-          plans.map((plan) => {
-            const categories = getCategoriesForPlan(plan.name);
-            const catCount = categories ? categories.length : "All";
-            const isExpanded = expandedCategories === plan.id;
+          <>
+            {plans.map((plan) => {
+              const categories = getCategoriesForPlan(plan.name);
+              const catCount = categories ? categories.length : "All";
+              const isExpanded = expandedCategories === plan.id;
 
-            return (
-              <div key={plan.id} className={`rounded-2xl border p-6 ${plan.isActive ? "bg-[#0D1B4B]/40 border-white/10" : "bg-white/[0.02] border-white/5 opacity-50"}`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center">
-                      <Package size={18} className="text-[#FDB02F]" />
+              return (
+                <div key={plan.id} className={`rounded-2xl border p-6 ${plan.isActive ? "bg-[#0D1B4B]/40 border-white/10" : "bg-white/[0.02] border-white/5 opacity-50"}`}>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#FDB02F]/10 flex items-center justify-center">
+                        <Package size={18} className="text-[#FDB02F]" />
+                      </div>
+                      <div>
+                        <h3 className="text-white font-semibold text-lg">{plan.displayName}</h3>
+                        <p className="text-white/30 text-lg">{plan.name} • {plan.isActive ? "Active" : "Inactive"}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-white font-semibold text-lg">{plan.displayName}</h3>
-                      <p className="text-white/30 text-lg">{plan.name} • {plan.isActive ? "Active" : "Inactive"}</p>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => handleUpdate(plan.id, { isActive: !plan.isActive })} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/50 text-lg hover:bg-white/10">
+                        {plan.isActive ? "Deactivate" : "Activate"}
+                      </button>
+                      <button onClick={() => handleDelete(plan.id)} className="p-1.5 rounded-lg text-red-400/50 hover:text-red-400 hover:bg-red-400/10"><Trash2 size={14} /></button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => handleUpdate(plan.id, { isActive: !plan.isActive })} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/50 text-lg hover:bg-white/10">
-                      {plan.isActive ? "Deactivate" : "Activate"}
+                  <div className="mt-4 grid grid-cols-4 gap-4">
+                    <div><p className="text-base text-white/30">Monthly</p><p className="text-white text-lg font-bold">${plan.priceMonthly}</p></div>
+                    <div><p className="text-base text-white/30">Yearly</p><p className="text-white text-lg font-bold">${plan.priceYearly}</p></div>
+                    <div><p className="text-base text-white/30">Message Limit</p><p className="text-white text-lg font-bold">{plan.messageLimit === -1 ? "Unlimited" : plan.messageLimit}</p></div>
+                    <div><p className="text-base text-white/30">Features</p><p className="text-white/50 text-lg">{plan.features ? JSON.parse(plan.features).join(", ") : "—"}</p></div>
+                  </div>
+                  {plan.description && <p className="mt-2 text-white/25 text-base">{plan.description}</p>}
+
+                  {/* Categories section */}
+                  <div className="mt-4 border-t border-white/5 pt-4">
+                    <button
+                      onClick={() => setExpandedCategories(isExpanded ? null : plan.id)}
+                      className="flex items-center gap-2 text-base text-white/50 hover:text-white/70 transition-colors"
+                    >
+                      <FolderOpen size={16} />
+                      <span className="font-medium">RAG Categories: {catCount === "All" ? "All (Unlimited)" : `${catCount} categories`}</span>
+                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                     </button>
-                    <button onClick={() => handleDelete(plan.id)} className="p-1.5 rounded-lg text-red-400/50 hover:text-red-400 hover:bg-red-400/10"><Trash2 size={14} /></button>
+                    {isExpanded && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {categories === null ? (
+                          <p className="text-base text-purple-400">Premium plan has access to all categories (current + future)</p>
+                        ) : (
+                          categories.map((cat) => (
+                            <span key={cat} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-sm text-white/60">
+                              {formatCategoryName(cat)}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="mt-4 grid grid-cols-4 gap-4">
-                  <div><p className="text-base text-white/30">Monthly</p><p className="text-white text-lg font-bold">${plan.priceMonthly}</p></div>
-                  <div><p className="text-base text-white/30">Yearly</p><p className="text-white text-lg font-bold">${plan.priceYearly}</p></div>
-                  <div><p className="text-base text-white/30">Message Limit</p><p className="text-white text-lg font-bold">{plan.messageLimit === -1 ? "Unlimited" : plan.messageLimit}</p></div>
-                  <div><p className="text-base text-white/30">Features</p><p className="text-white/50 text-lg">{plan.features ? JSON.parse(plan.features).join(", ") : "—"}</p></div>
-                </div>
-                {plan.description && <p className="mt-2 text-white/25 text-base">{plan.description}</p>}
-
-                {/* Categories section */}
-                <div className="mt-4 border-t border-white/5 pt-4">
-                  <button
-                    onClick={() => setExpandedCategories(isExpanded ? null : plan.id)}
-                    className="flex items-center gap-2 text-base text-white/50 hover:text-white/70 transition-colors"
-                  >
-                    <FolderOpen size={16} />
-                    <span className="font-medium">RAG Categories: {catCount === "All" ? "All (Unlimited)" : `${catCount} categories`}</span>
-                    {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                  </button>
-                  {isExpanded && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {categories === null ? (
-                        <p className="text-base text-purple-400">Premium plan has access to all categories (current + future)</p>
-                      ) : (
-                        categories.map((cat) => (
-                          <span key={cat} className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-sm text-white/60">
-                            {formatCategoryName(cat)}
-                          </span>
-                        ))
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }))
+              );
+            })}
+          </>
         )}
       </div>
     </div>
