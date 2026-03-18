@@ -1,7 +1,50 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText, Layers, MessageSquare, Clock, Zap, ThumbsUp, ThumbsDown, FolderOpen } from "lucide-react";
+import { FileText, Layers, MessageSquare, Clock, Zap, ThumbsUp, ThumbsDown, FolderOpen, Shield } from "lucide-react";
+
+const BASIC_CATEGORIES = [
+  "appsanddevices", "treatmentprotocol", "medication", "sideeffects", "labmonitoring",
+  "tapering", "diagnosis", "patienteducation", "psychotherapy", "mentalstatusexam",
+  "assessment", "ratingscales", "erdisposition", "questions", "teachingpoints",
+  "references", "generalinformation", "dietaryandherbals", "links",
+];
+
+const ADVANCED_ONLY_CATEGORIES = [
+  "billingandcoding", "complexcases", "documentation", "druginteractions", "guidelines",
+  "letters", "nofdaapproved", "preauthorization", "riskassessment",
+  "somaticorinvasiveinterventions", "functionalimpairmentanddisabilitysupport",
+  "ethicalandlegal", "settings", "dischargeplanningandcontinuityofcare",
+  "administrativesupervisoryandteaching", "childandadolescentpsychiatry",
+  "emergencypsychiatry", "followupandrelapseprevention", "geriatricpsychiatry",
+  "inpatientpsychiatry", "integratedcareandcollaborativepsychiatry",
+  "ismytreatmentright", "outpatientpsychiatry", "pharmacogenomicsandprecisionmedicine",
+  "psychiatricevaluations", "psychiatricrehabilitationandfunctionalrecovery",
+  "psychiatricresearchtrainingandcontinuingeducation", "qualityassuranceauditandpeerreview",
+  "substanceabuseandaddictionpsychiatry", "telepsychiatryanddigitalpracticestandards",
+  "medicalemergenciesonthepsychiatricunit", "educationmaterialsandlearningresources",
+];
+
+const PREMIUM_ONLY_CATEGORIES = [
+  "drugseekingbehavior", "miscellaneousquestions", "summary", "finalrecommendation",
+];
+
+function getPlanTier(categoryName: string): string {
+  const lower = categoryName.toLowerCase();
+  if (BASIC_CATEGORIES.includes(lower)) return "Basic";
+  if (ADVANCED_ONLY_CATEGORIES.includes(lower)) return "Advanced";
+  if (PREMIUM_ONLY_CATEGORIES.includes(lower)) return "Premium";
+  return "Unassigned";
+}
+
+function getTierColor(tier: string): string {
+  switch (tier) {
+    case "Basic": return "bg-green-500/15 text-green-400 border-green-500/30";
+    case "Advanced": return "bg-blue-500/15 text-blue-400 border-blue-500/30";
+    case "Premium": return "bg-purple-500/15 text-purple-400 border-purple-500/30";
+    default: return "bg-red-500/15 text-red-400 border-red-500/30";
+  }
+}
 
 interface CategoryStat {
   name: string;
@@ -92,23 +135,60 @@ export default function RAGAnalyticsPage() {
         ))}
       </div>
 
-      {/* Categories breakdown */}
-      {data.categories && data.categories.length > 0 && (
-        <div>
-          <h2 className="text-lg font-bold text-white mb-4">Categories ({data.categories.length})</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {data.categories.map((cat) => (
-              <div key={cat.name} className="rounded-xl border border-white/10 bg-[#0D1B4B]/50 p-3">
-                <p className="text-base font-medium text-white capitalize">
-                  {cat.name.replace(/([A-Z])/g, " $1").replace(/and/gi, " & ").trim()}
-                </p>
-                <p className="text-lg font-bold text-[#FDB02F] font-mono mt-1">{cat.chunk_count.toLocaleString()}</p>
-                <p className="text-base text-white/30">chunks</p>
+      {/* Categories breakdown by plan tier */}
+      {data.categories && data.categories.length > 0 && (() => {
+        const grouped = { Basic: [] as CategoryStat[], Advanced: [] as CategoryStat[], Premium: [] as CategoryStat[], Unassigned: [] as CategoryStat[] };
+        data.categories.forEach((cat) => {
+          const tier = getPlanTier(cat.name);
+          grouped[tier as keyof typeof grouped].push(cat);
+        });
+
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-bold text-white">Categories ({data.categories.length})</h2>
+              <div className="flex gap-2">
+                <span className="px-2 py-0.5 rounded text-xs font-medium bg-green-500/15 text-green-400">Basic: {grouped.Basic.length}</span>
+                <span className="px-2 py-0.5 rounded text-xs font-medium bg-blue-500/15 text-blue-400">Advanced: {grouped.Advanced.length}</span>
+                <span className="px-2 py-0.5 rounded text-xs font-medium bg-purple-500/15 text-purple-400">Premium: {grouped.Premium.length}</span>
+                {grouped.Unassigned.length > 0 && <span className="px-2 py-0.5 rounded text-xs font-medium bg-red-500/15 text-red-400">Unassigned: {grouped.Unassigned.length}</span>}
               </div>
-            ))}
+            </div>
+
+            {(["Basic", "Advanced", "Premium", "Unassigned"] as const).map((tier) => {
+              const cats = grouped[tier];
+              if (cats.length === 0) return null;
+              return (
+                <div key={tier}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Shield size={16} className={tier === "Basic" ? "text-green-400" : tier === "Advanced" ? "text-blue-400" : tier === "Premium" ? "text-purple-400" : "text-red-400"} />
+                    <h3 className="text-base font-semibold text-white">{tier} Plan Categories ({cats.length})</h3>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {cats.map((cat) => {
+                      const tier = getPlanTier(cat.name);
+                      return (
+                        <div key={cat.name} className="rounded-xl border border-white/10 bg-[#0D1B4B]/50 p-3">
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-base font-medium text-white capitalize truncate">
+                              {cat.name.replace(/([A-Z])/g, " $1").replace(/and/gi, " & ").trim()}
+                            </p>
+                            <span className={`px-1.5 py-0.5 rounded text-xs font-medium border ${getTierColor(tier)}`}>
+                              {tier}
+                            </span>
+                          </div>
+                          <p className="text-lg font-bold text-[#FDB02F] font-mono mt-1">{cat.chunk_count.toLocaleString()}</p>
+                          <p className="text-base text-white/30">chunks</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Recent queries */}
       <div>
