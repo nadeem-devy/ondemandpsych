@@ -97,7 +97,7 @@ export default function RAGAnalyticsPage() {
   const stats = [
     { icon: FileText, label: "Documents", value: data.totalDocuments, sub: `${data.indexedDocs} indexed · ${data.failedDocs} failed` },
     { icon: Layers, label: "Chunks", value: data.totalChunks.toLocaleString(), sub: "Total indexed chunks" },
-    { icon: FolderOpen, label: "Categories", value: data.totalCategories || 0, sub: "Knowledge base categories" },
+    { icon: FolderOpen, label: "Categories", value: BASIC_CATEGORIES.length + ADVANCED_ONLY_CATEGORIES.length + PREMIUM_ONLY_CATEGORIES.length, sub: `${data.totalCategories || 0} with documents` },
     { icon: MessageSquare, label: "Queries", value: data.totalQueries, sub: `Last ${days} days` },
     { icon: Clock, label: "Avg Latency", value: `${data.avgLatencyMs}ms`, sub: "Per query" },
     { icon: ThumbsUp, label: "Feedback", value: `${thumbsUp} / ${thumbsDown}`, sub: "Positive / Negative" },
@@ -136,17 +136,47 @@ export default function RAGAnalyticsPage() {
       </div>
 
       {/* Categories breakdown by plan tier */}
-      {data.categories && data.categories.length > 0 && (() => {
+      {(() => {
+        // Merge DO API categories (with chunks) with full plan category list
+        const chunkMap = new Map<string, number>();
+        (data.categories || []).forEach((cat) => {
+          chunkMap.set(cat.name.toLowerCase(), cat.chunk_count);
+        });
+
+        // Build full list: all plan categories + any DO categories not in plans
+        const allCategories: CategoryStat[] = [];
+        const seen = new Set<string>();
+
+        [...BASIC_CATEGORIES, ...ADVANCED_ONLY_CATEGORIES, ...PREMIUM_ONLY_CATEGORIES].forEach((name) => {
+          if (!seen.has(name)) {
+            seen.add(name);
+            allCategories.push({ name, chunk_count: chunkMap.get(name) ?? 0 });
+          }
+        });
+
+        // Add any DO categories not in our plan lists
+        (data.categories || []).forEach((cat) => {
+          const lower = cat.name.toLowerCase();
+          if (!seen.has(lower)) {
+            seen.add(lower);
+            allCategories.push({ name: lower, chunk_count: cat.chunk_count });
+          }
+        });
+
         const grouped = { Basic: [] as CategoryStat[], Advanced: [] as CategoryStat[], Premium: [] as CategoryStat[], Unassigned: [] as CategoryStat[] };
-        data.categories.forEach((cat) => {
+        allCategories.forEach((cat) => {
           const tier = getPlanTier(cat.name);
           grouped[tier as keyof typeof grouped].push(cat);
         });
 
+        const totalCategories = allCategories.length;
+        const withDocs = allCategories.filter((c) => c.chunk_count > 0).length;
+
         return (
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold text-white">Categories ({data.categories.length})</h2>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="text-lg font-bold text-white">Categories ({totalCategories})</h2>
+              <span className="px-2 py-0.5 rounded text-xs font-medium bg-white/10 text-white/50">{withDocs} with documents · {totalCategories - withDocs} empty</span>
               <div className="flex gap-2">
                 <span className="px-2 py-0.5 rounded text-xs font-medium bg-green-500/15 text-green-400">Basic: {grouped.Basic.length}</span>
                 <span className="px-2 py-0.5 rounded text-xs font-medium bg-blue-500/15 text-blue-400">Advanced: {grouped.Advanced.length}</span>
@@ -166,19 +196,22 @@ export default function RAGAnalyticsPage() {
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {cats.map((cat) => {
-                      const tier = getPlanTier(cat.name);
+                      const catTier = getPlanTier(cat.name);
+                      const isEmpty = cat.chunk_count === 0;
                       return (
-                        <div key={cat.name} className="rounded-xl border border-white/10 bg-[#0D1B4B]/50 p-3">
+                        <div key={cat.name} className={`rounded-xl border p-3 ${isEmpty ? "border-white/5 bg-[#0D1B4B]/25 opacity-60" : "border-white/10 bg-[#0D1B4B]/50"}`}>
                           <div className="flex items-center justify-between mb-1">
                             <p className="text-base font-medium text-white capitalize truncate">
                               {cat.name.replace(/([A-Z])/g, " $1").replace(/and/gi, " & ").trim()}
                             </p>
-                            <span className={`px-1.5 py-0.5 rounded text-xs font-medium border ${getTierColor(tier)}`}>
-                              {tier}
+                            <span className={`px-1.5 py-0.5 rounded text-xs font-medium border ${getTierColor(catTier)}`}>
+                              {catTier}
                             </span>
                           </div>
-                          <p className="text-lg font-bold text-[#FDB02F] font-mono mt-1">{cat.chunk_count.toLocaleString()}</p>
-                          <p className="text-base text-white/30">chunks</p>
+                          <p className={`text-lg font-bold font-mono mt-1 ${isEmpty ? "text-white/20" : "text-[#FDB02F]"}`}>
+                            {isEmpty ? "—" : cat.chunk_count.toLocaleString()}
+                          </p>
+                          <p className="text-base text-white/30">{isEmpty ? "no documents" : "chunks"}</p>
                         </div>
                       );
                     })}
