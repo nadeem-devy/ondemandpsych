@@ -1,7 +1,65 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Upload, FileText, CheckCircle2, AlertCircle, ArrowLeft, X, Film, Loader2 } from "lucide-react";
+import { Upload, FileText, CheckCircle2, AlertCircle, ArrowLeft, X, Film, Loader2, ChevronDown } from "lucide-react";
+
+const CATEGORIES = [
+  { value: "appsanddevices", label: "Apps & Devices" },
+  { value: "assessment", label: "Assessment" },
+  { value: "billingandcoding", label: "Billing & Coding" },
+  { value: "childandadolescentpsychiatry", label: "Child & Adolescent Psychiatry" },
+  { value: "complexcases", label: "Complex Cases" },
+  { value: "diagnosis", label: "Diagnosis" },
+  { value: "dietaryandherbals", label: "Dietary & Herbals" },
+  { value: "dischargeplanningandcontinuityofcare", label: "Discharge Planning & Continuity of Care" },
+  { value: "documentation", label: "Documentation" },
+  { value: "druginteractions", label: "Drug Interactions" },
+  { value: "drugseekingbehavior", label: "Drug Seeking Behavior" },
+  { value: "educationmaterialsandlearningresources", label: "Education Materials & Learning Resources" },
+  { value: "emergencypsychiatry", label: "Emergency Psychiatry" },
+  { value: "erdisposition", label: "ER Disposition" },
+  { value: "ethicalandlegal", label: "Ethical & Legal" },
+  { value: "finalrecommendation", label: "Final Recommendation" },
+  { value: "followupandrelapseprevention", label: "Follow-Up & Relapse Prevention" },
+  { value: "functionalimpairmentanddisabilitysupport", label: "Functional Impairment & Disability Support" },
+  { value: "generalinformation", label: "General Information" },
+  { value: "geriatricpsychiatry", label: "Geriatric Psychiatry" },
+  { value: "guidelines", label: "Guidelines" },
+  { value: "inpatientpsychiatry", label: "Inpatient Psychiatry" },
+  { value: "integratedcareandcollaborativepsychiatry", label: "Integrated Care & Collaborative Psychiatry" },
+  { value: "ismytreatmentright", label: "Is My Treatment Right?" },
+  { value: "labmonitoring", label: "Lab Monitoring" },
+  { value: "letters", label: "Letters" },
+  { value: "medicalemergenciesonthepsychiatricunit", label: "Medical Emergencies on the Psychiatric Unit" },
+  { value: "medication", label: "Medication" },
+  { value: "mentalstatusexam", label: "Mental Status Exam" },
+  { value: "miscellaneousquestions", label: "Miscellaneous Questions" },
+  { value: "nofdaapproved", label: "No FDA Approved" },
+  { value: "outpatientpsychiatry", label: "Outpatient Psychiatry" },
+  { value: "patienteducation", label: "Patient Education" },
+  { value: "pharmacogenomicsandprecisionmedicine", label: "Pharmacogenomics & Precision Medicine" },
+  { value: "preauthorization", label: "Pre-Authorization" },
+  { value: "psychiatricevaluations", label: "Psychiatric Evaluations" },
+  { value: "psychiatricrehabilitationandfunctionalrecovery", label: "Psychiatric Rehabilitation & Functional Recovery" },
+  { value: "psychiatricresearchtrainingandcontinuingeducation", label: "Psychiatric Research, Training & Continuing Education" },
+  { value: "psychotherapy", label: "Psychotherapy" },
+  { value: "qualityassuranceauditandpeerreview", label: "Quality Assurance, Audit & Peer Review" },
+  { value: "questions", label: "Questions" },
+  { value: "ratingscales", label: "Rating Scales" },
+  { value: "references", label: "References" },
+  { value: "riskassessment", label: "Risk Assessment" },
+  { value: "settings", label: "Settings" },
+  { value: "sideeffects", label: "Side Effects" },
+  { value: "somaticorinvasiveinterventions", label: "Somatic or Invasive Interventions" },
+  { value: "substanceabuseandaddictionpsychiatry", label: "Substance Abuse & Addiction Psychiatry" },
+  { value: "summary", label: "Summary" },
+  { value: "tapering", label: "Tapering" },
+  { value: "teachingpoints", label: "Teaching Points" },
+  { value: "telepsychiatryanddigitalpracticestandards", label: "Telepsychiatry & Digital Practice Standards" },
+  { value: "treatmentprotocol", label: "Treatment Protocol" },
+  { value: "administrativesupervisoryandteaching", label: "Administrative, Supervisory & Teaching" },
+  { value: "links", label: "Links" },
+];
 
 interface UploadResult {
   name: string;
@@ -168,14 +226,22 @@ export default function UploadDocumentPage() {
       <div className="space-y-4 p-6 rounded-xl border border-white/10 bg-[#0D1B4B]/50">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-base font-medium text-white/70 mb-1">Category</label>
-            <input
-              type="text"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              placeholder="e.g. Pharmacology, Diagnostics, Lectures"
-              className="w-full px-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base placeholder:text-white/30 focus:border-[#FDB02F]/50 focus:outline-none"
-            />
+            <label className="block text-base font-medium text-white/70 mb-1">Category <span className="text-red-400">*</span></label>
+            <div className="relative">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-lg bg-[#0D1B4B] border border-white/10 text-white text-base focus:border-[#FDB02F]/50 focus:outline-none appearance-none cursor-pointer"
+              >
+                <option value="" className="bg-[#0D1B4B] text-white/30">Select a category...</option>
+                {CATEGORIES.map((cat) => (
+                  <option key={cat.value} value={cat.value} className="bg-[#0D1B4B] text-white">
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" />
+            </div>
           </div>
           <div>
             <label className="block text-base font-medium text-white/70 mb-1">Tags</label>
@@ -325,7 +391,7 @@ export default function UploadDocumentPage() {
         <button
           onClick={handleUpload}
           disabled={
-            uploading ||
+            uploading || !category ||
             (mode === "file" ? files.length === 0 : mode === "paste" ? !pasteText.trim() : !videoTranscript.trim())
           }
           className="w-full px-4 py-3 rounded-lg bg-[#FDB02F] text-[#07123A] font-bold text-base hover:bg-[#FDB02F]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
