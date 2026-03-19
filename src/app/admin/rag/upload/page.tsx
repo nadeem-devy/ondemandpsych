@@ -103,11 +103,29 @@ export default function UploadDocumentPage() {
         setJobStatus({ jobId, status: data.status, progress: data.progress || 0, message: data.message || "", phase: data.phase || "" });
 
         if (data.status === "COMPLETED" || data.status === "SUCCESS") {
-          setResults((prev) => [...prev, { name: fileName, status: "indexed", chunks: data.total_chunks || data.chunks_processed || 0 }]);
+          const totalChunks = data.total_chunks || data.chunks_processed || 0;
+          const processedFiles = data.processed_files || 0;
+          const failedFiles = data.failed_files || 0;
+          const details = data.categories_details || {};
+
+          // Extract chunk counts from category details
+          let chunksFromDetails = 0;
+          for (const cat of Object.values(details) as Array<Record<string, unknown>>) {
+            chunksFromDetails += (cat.total_chunks_created as number) || 0;
+          }
+          const chunks = chunksFromDetails || totalChunks;
+
+          if (processedFiles === 0 && failedFiles === 0 && chunks === 0) {
+            setResults((prev) => [...prev, { name: fileName, status: "failed", error: "No files were processed. Ensure files are valid .docx format." }]);
+          } else if (failedFiles > 0 && processedFiles === 0) {
+            setResults((prev) => [...prev, { name: fileName, status: "failed", error: `All ${failedFiles} file(s) failed to process` }]);
+          } else {
+            setResults((prev) => [...prev, { name: fileName, status: "indexed", chunks }]);
+          }
           setJobStatus(null);
           return;
         } else if (data.status === "FAILED" || data.status === "ERROR") {
-          setResults((prev) => [...prev, { name: fileName, status: "failed", error: data.message || "Processing failed" }]);
+          setResults((prev) => [...prev, { name: fileName, status: "failed", error: data.message || data.error || "Processing failed" }]);
           setJobStatus(null);
           return;
         }
