@@ -6,6 +6,25 @@ const DO_API_TOKEN = process.env.DO_API_TOKEN || "sk-test-12345-abcdef-67890-ghi
 
 export const maxDuration = 300; // 5 min for large files
 
+export async function GET(req: NextRequest) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const jobId = req.nextUrl.searchParams.get("jobId");
+  if (!jobId) return NextResponse.json({ error: "Missing jobId" }, { status: 400 });
+
+  try {
+    const resp = await fetch(`${DO_RAG_URL}/api/chat/ingest/status/${jobId}`, {
+      headers: { Authorization: `Bearer ${DO_API_TOKEN}` },
+    });
+    if (!resp.ok) return NextResponse.json({ error: "Failed to get job status" }, { status: resp.status });
+    const data = await resp.json();
+    return NextResponse.json(data);
+  } catch {
+    return NextResponse.json({ error: "Failed to check job status" }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -68,6 +68,14 @@ interface UploadResult {
   error?: string;
 }
 
+interface JobStatus {
+  jobId: string;
+  status: string;
+  progress: number;
+  message: string;
+  phase: string;
+}
+
 export default function UploadDocumentPage() {
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState("");
@@ -82,7 +90,38 @@ export default function UploadDocumentPage() {
   const [progress, setProgress] = useState({ current: 0, total: 0 });
   const [results, setResults] = useState<UploadResult[]>([]);
   const [dragOver, setDragOver] = useState(false);
+  const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  async function pollJobStatus(jobId: string, fileName: string) {
+    setJobStatus({ jobId, status: "PENDING", progress: 0, message: "Waiting to process...", phase: "QUEUED" });
+
+    const poll = async (): Promise<void> => {
+      try {
+        const res = await fetch(`/api/admin/rag/upload?jobId=${jobId}`);
+        const data = await res.json();
+        setJobStatus({ jobId, status: data.status, progress: data.progress || 0, message: data.message || "", phase: data.phase || "" });
+
+        if (data.status === "COMPLETED" || data.status === "SUCCESS") {
+          setResults((prev) => [...prev, { name: fileName, status: "indexed", chunks: data.total_chunks || data.chunks_processed || 0 }]);
+          setJobStatus(null);
+          return;
+        } else if (data.status === "FAILED" || data.status === "ERROR") {
+          setResults((prev) => [...prev, { name: fileName, status: "failed", error: data.message || "Processing failed" }]);
+          setJobStatus(null);
+          return;
+        }
+
+        await new Promise((r) => setTimeout(r, 3000));
+        return poll();
+      } catch {
+        setResults((prev) => [...prev, { name: fileName, status: "failed", error: "Failed to check job status" }]);
+        setJobStatus(null);
+      }
+    };
+
+    await poll();
+  }
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -132,30 +171,31 @@ export default function UploadDocumentPage() {
       return;
     }
 
-    // Upload files one at a time to avoid timeouts on serverless
-    const allResults: UploadResult[] = [];
+    // Upload all files at once as a batch
     setProgress({ current: 0, total: files.length });
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const formData = new FormData();
+    const formData = new FormData();
+    for (const file of files) {
       formData.append("file", file);
-      if (category) formData.append("category", category);
-      if (tags) formData.append("tags", tags);
+    }
+    if (category) formData.append("category", category);
+    if (tags) formData.append("tags", tags);
 
-      try {
-        const res = await fetch("/api/admin/rag/upload", { method: "POST", body: formData });
-        const data = await res.json();
-        if (data.results) {
-          allResults.push(...data.results);
-        } else if (data.error) {
-          allResults.push({ name: file.name, status: "failed", error: data.error });
-        }
-      } catch (err) {
-        allResults.push({ name: file.name, status: "failed", error: err instanceof Error ? err.message : "Network error — function may have timed out" });
+    try {
+      const res = await fetch("/api/admin/rag/upload", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (data.error) {
+        setResults([{ name: `${files.length} file(s)`, status: "failed", error: data.error }]);
+      } else if (data.jobId) {
+        setProgress({ current: files.length, total: files.length });
+        const fileNames = files.map((f) => f.name).join(", ");
+        await pollJobStatus(data.jobId, fileNames);
+      } else if (data.results) {
+        setResults(data.results);
       }
-      setProgress({ current: i + 1, total: files.length });
-      setResults([...allResults]);
+    } catch (err) {
+      setResults([{ name: `${files.length} file(s)`, status: "failed", error: err instanceof Error ? err.message : "Network error" }]);
     }
 
     setFiles([]);
@@ -269,13 +309,13 @@ export default function UploadDocumentPage() {
             >
               <Upload size={32} className={dragOver ? "text-[#FDB02F]" : "text-white/30"} />
               <p className="text-base text-white/50">Drag & drop files here, or click to select</p>
-              <p className="text-base text-white/30">Supported: PDF, PPTX, PPT, DOCX, DOC, XLSX, TXT, MD, CSV</p>
+              <p className="text-base text-white/30">Supported: DOCX files only</p>
               <p className="text-base text-[#FDB02F]/60">Select multiple files for bulk upload</p>
             </div>
             <input
               ref={fileRef}
               type="file"
-              accept=".txt,.md,.csv,.pdf,.docx,.doc,.pptx,.ppt,.xlsx"
+              accept=".docx"
               multiple
               onChange={(e) => {
                 const selected = Array.from(e.target.files || []);
@@ -372,11 +412,11 @@ export default function UploadDocumentPage() {
           </>
         )}
 
-        {/* Upload progress */}
-        {uploading && progress.total > 0 && (
+        {/* Upload & processing progress */}
+        {uploading && progress.total > 0 && !jobStatus && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-base text-white/50">
-              <span className="flex items-center gap-2"><Loader2 size={16} className="animate-spin" /> Processing...</span>
+              <span className="flex items-center gap-2"><Loader2 size={16} className="animate-spin" /> Uploading...</span>
               <span>{progress.current} / {progress.total}</span>
             </div>
             <div className="h-2 rounded-full bg-white/10 overflow-hidden">
@@ -385,6 +425,26 @@ export default function UploadDocumentPage() {
                 style={{ width: `${(progress.current / progress.total) * 100}%` }}
               />
             </div>
+          </div>
+        )}
+
+        {/* Job processing status */}
+        {jobStatus && (
+          <div className="space-y-2 p-4 rounded-xl border border-[#FDB02F]/20 bg-[#FDB02F]/5">
+            <div className="flex items-center justify-between text-base">
+              <span className="flex items-center gap-2 text-[#FDB02F]">
+                <Loader2 size={16} className="animate-spin" />
+                {jobStatus.phase === "QUEUED" ? "Queued for processing..." : "Processing & chunking documents..."}
+              </span>
+              <span className="text-white/50">{jobStatus.progress}%</span>
+            </div>
+            <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full bg-[#FDB02F] rounded-full transition-all duration-500"
+                style={{ width: `${Math.max(jobStatus.progress, 5)}%` }}
+              />
+            </div>
+            <p className="text-sm text-white/40">{jobStatus.message}</p>
           </div>
         )}
 
