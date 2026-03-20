@@ -417,24 +417,46 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
 
                           {/* References hidden */}
 
-                          {/* Follow-up Questions */}
+                          {/* Follow-up Questions — Animated Tiles */}
                           {prompts.length > 0 && (
-                            <div className="mt-4 flex flex-col gap-2">
-                              <p className={`text-xs font-semibold ${isDark ? "text-white/30" : "text-gray-400"}`}>Follow-up Questions</p>
-                              {prompts.map((prompt, i) => (
-                                <button
-                                  key={i}
-                                  onClick={() => { setInput(prompt); textareaRef.current?.focus(); }}
-                                  className={`text-left px-4 py-2.5 rounded-xl border transition-all group flex items-center gap-3 ${
-                                    isDark
-                                      ? "border-[#FDB02F]/15 bg-[#FDB02F]/5 hover:bg-[#FDB02F]/10 hover:border-[#FDB02F]/30 text-white/70 hover:text-white"
-                                      : "border-[#FDB02F]/20 bg-[#FDB02F]/5 hover:bg-[#FDB02F]/10 hover:border-[#FDB02F]/40 text-gray-600 hover:text-gray-900"
-                                  }`}
-                                >
-                                  <Sparkles size={14} className="shrink-0 text-[#FDB02F]/60 group-hover:text-[#FDB02F] transition-colors" />
-                                  <span className="text-sm">{prompt}</span>
-                                </button>
-                              ))}
+                            <div className="mt-5 space-y-3">
+                              <p className={`text-xs font-bold uppercase tracking-wider ${isDark ? "text-white/30" : "text-gray-400"}`}>
+                                Suggested Follow-ups
+                              </p>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                {prompts.map((prompt, i) => (
+                                  <button
+                                    key={i}
+                                    onClick={() => {
+                                      onSendMessage(prompt);
+                                    }}
+                                    className="group relative text-left rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                                    style={{ animationDelay: `${i * 80}ms` }}
+                                  >
+                                    {/* Animated gradient border */}
+                                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#FDB02F]/40 via-[#FDB02F]/10 to-[#FDB02F]/40 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-[borderShimmer_3s_ease-in-out_infinite]" />
+                                    <div className={`relative m-[1.5px] rounded-[10px] px-4 py-3 flex items-start gap-3 ${
+                                      isDark
+                                        ? "bg-[#1a1520] group-hover:bg-[#221d28]"
+                                        : "bg-white group-hover:bg-[#fffdf8]"
+                                    }`}>
+                                      <div className="shrink-0 mt-0.5 w-6 h-6 rounded-lg bg-gradient-to-br from-[#FDB02F]/20 to-[#FDB02F]/5 flex items-center justify-center group-hover:from-[#FDB02F]/30 group-hover:to-[#FDB02F]/15 transition-all duration-300">
+                                        <Sparkles size={12} className="text-[#FDB02F]/70 group-hover:text-[#FDB02F] transition-colors duration-300" />
+                                      </div>
+                                      <span className={`text-sm leading-snug ${
+                                        isDark
+                                          ? "text-white/60 group-hover:text-white/90"
+                                          : "text-gray-600 group-hover:text-gray-900"
+                                      } transition-colors duration-300`}>
+                                        {prompt}
+                                      </span>
+                                      <Send size={12} className={`shrink-0 mt-1 opacity-0 group-hover:opacity-60 transition-all duration-300 translate-x-[-4px] group-hover:translate-x-0 ${
+                                        isDark ? "text-[#FDB02F]" : "text-[#FDB02F]"
+                                      }`} />
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
                             </div>
                           )}
                         </>

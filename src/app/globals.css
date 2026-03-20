@@ -203,6 +203,11 @@ body::before {
   50% { opacity: 0; }
 }
 
+@keyframes borderShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 /* Copilot message formatting — compact document style */
 .copilot-message { color: #1a1a2e; font-size: var(--copilot-font-size, 14px); line-height: 1.5; }
 .copilot-message strong { color: #1a1a2e; font-weight: 700; }
