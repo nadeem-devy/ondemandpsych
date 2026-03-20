@@ -300,8 +300,17 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     const mainLines: string[] = [];
     let foundPrompts = false;
     for (let i = lines.length - 1; i >= 0; i--) {
-      const trimmed = lines[i].replace(/^[-•]\s*/, "").trim();
-      if (trimmed.startsWith("Would you like") || trimmed.startsWith("Do you want") || trimmed.startsWith("What additional")) {
+      const trimmed = lines[i].replace(/^[-•*\d.)\s]+/, "").trim();
+      if (
+        trimmed.startsWith("Would you like") ||
+        trimmed.startsWith("Do you want") ||
+        trimmed.startsWith("What additional") ||
+        trimmed.startsWith("Do you need") ||
+        trimmed.startsWith("Shall I") ||
+        trimmed.startsWith("Can I") ||
+        trimmed.startsWith("Should I") ||
+        (trimmed.endsWith("?") && prompts.length > 0)
+      ) {
         prompts.unshift(trimmed);
         foundPrompts = true;
       } else if (foundPrompts && trimmed === "") {
