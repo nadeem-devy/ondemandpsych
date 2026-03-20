@@ -300,7 +300,8 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     const mainLines: string[] = [];
     let foundPrompts = false;
     for (let i = lines.length - 1; i >= 0; i--) {
-      const trimmed = lines[i].replace(/^[-•*\d.)\s]+/, "").trim();
+      // Strip bullets, numbers, bold markers, and whitespace from start/end
+      const trimmed = lines[i].replace(/^[-•*\d.)\s]+/, "").replace(/\*+\s*$/g, "").replace(/\s{2,}$/g, "").trim();
       if (
         trimmed.startsWith("Would you like") ||
         trimmed.startsWith("Do you want") ||
