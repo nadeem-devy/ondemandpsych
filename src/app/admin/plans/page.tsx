@@ -24,6 +24,9 @@ const ADVANCED_CATEGORIES = [
   "psychiatricresearchtrainingandcontinuingeducation", "qualityassuranceauditandpeerreview",
   "substanceabuseandaddictionpsychiatry", "telepsychiatryanddigitalpracticestandards",
   "medicalemergenciesonthepsychiatricunit", "educationmaterialsandlearningresources",
+  "billingoptimizationandrevenuecycleinpsychiatry", "neuropsychiatricandcognitivedisorders",
+  "psychotherapynote", "sleepdisordersandinsomniamanagement",
+  "substanceusedisordersanddualdiagnosis", "traumaptsdandstressorrelateddisorders",
 ];
 
 const PREMIUM_CATEGORIES = [

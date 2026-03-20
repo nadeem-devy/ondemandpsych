@@ -70,6 +70,12 @@ const ADVANCED_CATEGORIES = [
   "telepsychiatryanddigitalpracticestandards",
   "medicalemergenciesonthepsychiatricunit",
   "educationmaterialsandlearningresources",
+  "billingoptimizationandrevenuecycleinpsychiatry",
+  "neuropsychiatricandcognitivedisorders",
+  "psychotherapynote",
+  "sleepdisordersandinsomniamanagement",
+  "substanceusedisordersanddualdiagnosis",
+  "traumaptsdandstressorrelateddisorders",
 ];
 
 const PREMIUM_CATEGORIES = [

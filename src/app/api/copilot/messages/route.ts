@@ -4,7 +4,7 @@ import { getCopilotUser } from "@/lib/copilot-auth";
 import { checkTrialLimit, incrementTrialCount, getAllowedCategories } from "@/lib/trial-guard";
 import OpenAI from "openai";
 
-const DO_RAG_URL = process.env.DO_RAG_URL || "http://167.99.229.148:8585";
+const DO_RAG_URL = process.env.DO_RAG_URL || "https://chat.ondemandpsych.com";
 const DO_API_TOKEN = process.env.DO_API_TOKEN || "sk-test-12345-abcdef-67890-ghijkl-mnopqr-stuvwx-yz1234";
 
 export const maxDuration = 120; // Allow up to 120 seconds for DO RAG streaming

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-const DO_RAG_URL = process.env.DO_RAG_URL || "http://167.99.229.148:8585";
+const NEW_RAG_URL = process.env.DO_RAG_URL || "https://chat.ondemandpsych.com";
 const DO_API_TOKEN = process.env.DO_API_TOKEN || "sk-test-12345-abcdef-67890-ghijkl-mnopqr-stuvwx-yz1234";
 
 export async function GET(req: NextRequest) {
@@ -13,15 +13,27 @@ export async function GET(req: NextRequest) {
   const since = new Date();
   since.setDate(since.getDate() - days);
 
-  // Get DO stats for document/chunk counts
-  let doStats: { total_chunks: number; total_documents: number; total_categories: number; categories?: { name: string; chunk_count: number }[] } = { total_chunks: 0, total_documents: 0, total_categories: 0 };
+  // Get stats from new API's categories endpoint
+  let doStats: { total_chunks: number; total_documents: number; total_categories: number; categories?: { name: string; chunk_count: number; document_count?: number }[] } = { total_chunks: 0, total_documents: 0, total_categories: 0 };
   try {
-    const resp = await fetch(`${DO_RAG_URL}/api/admin/stats`, {
+    const resp = await fetch(`${NEW_RAG_URL}/api/chat/ingest/available-categories`, {
       headers: { Authorization: `Bearer ${DO_API_TOKEN}` },
     });
-    if (resp.ok) doStats = await resp.json();
+    if (resp.ok) {
+      const data = await resp.json();
+      doStats = {
+        total_chunks: data.total_chunks || 0,
+        total_documents: data.total_documents || 0,
+        total_categories: data.total_categories || 0,
+        categories: (data.categories_details || []).map((c: { name: string; chunk_count: number; document_count?: number }) => ({
+          name: c.name,
+          chunk_count: c.chunk_count,
+          document_count: c.document_count,
+        })),
+      };
+    }
   } catch {
-    // DO service unreachable — use zeros
+    // RAG service unreachable — use zeros
   }
 
   // Get query analytics from local PostgreSQL (RagQueryLog)
