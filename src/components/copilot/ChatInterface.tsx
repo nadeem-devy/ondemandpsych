@@ -273,9 +273,9 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     const prompts: string[] = [];
     const references: string[] = [];
 
-    // Extract Knowledge Base References section
+    // Extract Knowledge Base References section (handle optional newlines before ---)
     let cleanText = text.replace(
-      /---\n📄\s*\*\*Knowledge Base References:\*\*\n((?:\d+\.\s*.+\n?)*)/g,
+      /\n*---\n+📄\s*\*\*Knowledge Base References:\*\*\n((?:\d+\.\s*.+\n?)*)/g,
       (_match, items: string) => {
         items.trim().split("\n").forEach((line: string) => {
           const ref = line.replace(/^\d+\.\s*/, "").trim();
@@ -314,7 +314,8 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
       ) {
         prompts.unshift(trimmed);
         foundPrompts = true;
-      } else if (foundPrompts && trimmed === "") {
+      } else if (foundPrompts && (trimmed === "" || trimmed === "---")) {
+        // Skip blank lines and horizontal rules between content and questions
         continue;
       } else {
         mainLines.unshift(...lines.slice(0, i + 1));
