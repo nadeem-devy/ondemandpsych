@@ -52,6 +52,7 @@ function getTierColor(tier: string): string {
 interface CategoryStat {
   name: string;
   chunk_count: number;
+  document_count?: number;
 }
 
 interface Analytics {
@@ -141,9 +142,9 @@ export default function RAGAnalyticsPage() {
       {/* Categories breakdown by plan tier */}
       {(() => {
         // Merge DO API categories (with chunks) with full plan category list
-        const chunkMap = new Map<string, number>();
-        (data.categories || []).forEach((cat) => {
-          chunkMap.set(cat.name.toLowerCase(), cat.chunk_count);
+        const catMap = new Map<string, { chunk_count: number; document_count?: number }>();
+        (data.categories || []).forEach((cat: CategoryStat) => {
+          catMap.set(cat.name.toLowerCase(), { chunk_count: cat.chunk_count, document_count: cat.document_count });
         });
 
         // Build full list: all plan categories + any DO categories not in plans
@@ -153,16 +154,17 @@ export default function RAGAnalyticsPage() {
         [...BASIC_CATEGORIES, ...ADVANCED_ONLY_CATEGORIES, ...PREMIUM_ONLY_CATEGORIES].forEach((name) => {
           if (!seen.has(name)) {
             seen.add(name);
-            allCategories.push({ name, chunk_count: chunkMap.get(name) ?? 0 });
+            const stats = catMap.get(name);
+            allCategories.push({ name, chunk_count: stats?.chunk_count ?? 0, document_count: stats?.document_count });
           }
         });
 
         // Add any DO categories not in our plan lists
-        (data.categories || []).forEach((cat) => {
+        (data.categories || []).forEach((cat: CategoryStat) => {
           const lower = cat.name.toLowerCase();
           if (!seen.has(lower)) {
             seen.add(lower);
-            allCategories.push({ name: lower, chunk_count: cat.chunk_count });
+            allCategories.push({ name: lower, chunk_count: cat.chunk_count, document_count: cat.document_count });
           }
         });
 
@@ -211,10 +213,22 @@ export default function RAGAnalyticsPage() {
                               {catTier}
                             </span>
                           </div>
-                          <p className={`text-lg font-bold font-mono mt-1 ${isEmpty ? "text-white/20" : "text-[#FDB02F]"}`}>
-                            {isEmpty ? "—" : cat.chunk_count.toLocaleString()}
-                          </p>
-                          <p className="text-base text-white/30">{isEmpty ? "no documents" : "chunks"}</p>
+                          <div className="flex items-center gap-3 mt-1">
+                            <div>
+                              <p className={`text-lg font-bold font-mono ${isEmpty ? "text-white/20" : "text-[#FDB02F]"}`}>
+                                {isEmpty ? "—" : cat.chunk_count.toLocaleString()}
+                              </p>
+                              <p className="text-xs text-white/30">chunks</p>
+                            </div>
+                            {!isEmpty && cat.document_count != null && (
+                              <div className="border-l border-white/10 pl-3">
+                                <p className="text-lg font-bold font-mono text-white/70">
+                                  {cat.document_count.toLocaleString()}
+                                </p>
+                                <p className="text-xs text-white/30">docs</p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       );
                     })}
