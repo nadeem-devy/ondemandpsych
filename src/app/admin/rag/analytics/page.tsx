@@ -23,6 +23,9 @@ const ADVANCED_ONLY_CATEGORIES = [
   "psychiatricresearchtrainingandcontinuingeducation", "qualityassuranceauditandpeerreview",
   "substanceabuseandaddictionpsychiatry", "telepsychiatryanddigitalpracticestandards",
   "medicalemergenciesonthepsychiatricunit", "educationmaterialsandlearningresources",
+  "billingoptimizationandrevenuecycleinpsychiatry", "neuropsychiatricandcognitivedisorders",
+  "psychotherapynote", "sleepdisordersandinsomniamanagement",
+  "substanceusedisordersanddualdiagnosis", "traumaptsdandstressorrelateddisorders",
 ];
 
 const PREMIUM_ONLY_CATEGORIES = [
@@ -97,7 +100,7 @@ export default function RAGAnalyticsPage() {
   const stats = [
     { icon: FileText, label: "Documents", value: data.totalDocuments, sub: `${data.indexedDocs} indexed · ${data.failedDocs} failed` },
     { icon: Layers, label: "Chunks", value: data.totalChunks.toLocaleString(), sub: "Total indexed chunks" },
-    { icon: FolderOpen, label: "Categories", value: BASIC_CATEGORIES.length + ADVANCED_ONLY_CATEGORIES.length + PREMIUM_ONLY_CATEGORIES.length, sub: `${data.totalCategories || 0} with documents` },
+    { icon: FolderOpen, label: "Categories", value: data.totalCategories || 0, sub: `${data.totalCategories || 0} with documents` },
     { icon: MessageSquare, label: "Queries", value: data.totalQueries, sub: `Last ${days} days` },
     { icon: Clock, label: "Avg Latency", value: `${data.avgLatencyMs}ms`, sub: "Per query" },
     { icon: ThumbsUp, label: "Feedback", value: `${thumbsUp} / ${thumbsDown}`, sub: "Positive / Negative" },
