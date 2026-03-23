@@ -626,57 +626,67 @@ function TypingMessage({
   );
 }
 
-// Clinical loading indicator with rotating medical status words
+// Clinical loading indicator with smooth animated steps
 const clinicalLoadingSteps = [
-  { text: "Receiving query...", icon: "🔍" },
-  { text: "Searching knowledge base...", icon: "📚" },
-  { text: "Retrieving clinical evidence...", icon: "🧬" },
-  { text: "Analyzing differential diagnosis...", icon: "🧠" },
-  { text: "Reviewing pharmacotherapy...", icon: "💊" },
-  { text: "Assessing risk factors...", icon: "🛡️" },
-  { text: "Cross-referencing DSM-5-TR...", icon: "📋" },
-  { text: "Formulating treatment plan...", icon: "📝" },
-  { text: "Compiling clinical report...", icon: "📊" },
-  { text: "Finalizing recommendations...", icon: "✅" },
+  "Analyzing your query",
+  "Searching knowledge base",
+  "Retrieving clinical evidence",
+  "Cross-referencing guidelines",
+  "Formulating response",
+  "Compiling clinical report",
 ];
 
 function ClinicalLoadingIndicator({ isDark }: { isDark: boolean }) {
   const [stepIndex, setStepIndex] = useState(0);
+  const [dots, setDots] = useState("");
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setStepIndex((prev) => (prev + 1) % clinicalLoadingSteps.length);
-    }, 2000);
-    return () => clearInterval(interval);
+    const stepInterval = setInterval(() => {
+      setStepIndex((prev) => Math.min(prev + 1, clinicalLoadingSteps.length - 1));
+    }, 3000);
+    return () => clearInterval(stepInterval);
   }, []);
 
-  const step = clinicalLoadingSteps[stepIndex];
+  useEffect(() => {
+    const dotInterval = setInterval(() => {
+      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
+    }, 400);
+    return () => clearInterval(dotInterval);
+  }, []);
 
   return (
     <div className="flex gap-3 sm:gap-4">
-      <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden mt-1 animate-pulse">
+      <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden mt-1">
         <img src="/logo.webp" alt="Co-Pilot" className="w-full h-full object-cover" />
       </div>
-      <div className={`flex-1 rounded-2xl px-4 py-3 sm:px-5 sm:py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-[#fae5d0] border border-[#d9c4a8] shadow-sm"}`}>
-        <div className="flex items-center gap-3">
-          <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] animate-bounce" style={{ animationDelay: "0ms" }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] animate-bounce" style={{ animationDelay: "150ms" }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-[#FDB02F] animate-bounce" style={{ animationDelay: "300ms" }} />
-          </div>
-          <span
-            key={stepIndex}
-            className={`text-sm font-medium transition-opacity duration-300 ${isDark ? "text-white/50" : "text-gray-500"}`}
-            style={{ animation: "fadeInUp 0.4s ease-out" }}
-          >
-            {step.icon} {step.text}
-          </span>
-        </div>
-        <div className={`mt-2 h-1 rounded-full overflow-hidden ${isDark ? "bg-white/5" : "bg-gray-100"}`}>
-          <div
-            className="h-full bg-gradient-to-r from-[#FDB02F]/60 to-[#FDB02F] rounded-full transition-all duration-1000 ease-out"
-            style={{ width: `${((stepIndex + 1) / clinicalLoadingSteps.length) * 100}%` }}
-          />
+      <div className={`flex-1 max-w-sm rounded-2xl px-5 py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-[#fae5d0]/80 border border-[#e8d5be]"}`}>
+        <div className="space-y-2.5">
+          {clinicalLoadingSteps.map((step, i) => {
+            const isActive = i === stepIndex;
+            const isDone = i < stepIndex;
+            const isPending = i > stepIndex;
+            return (
+              <div
+                key={step}
+                className={`flex items-center gap-2.5 transition-all duration-500 ${isPending ? "opacity-0 h-0 overflow-hidden" : "opacity-100"}`}
+              >
+                {isDone ? (
+                  <div className={`w-4 h-4 rounded-full flex items-center justify-center ${isDark ? "bg-green-500/20" : "bg-green-500/15"}`}>
+                    <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke={isDark ? "#4ade80" : "#22c55e"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </div>
+                ) : (
+                  <div className="w-4 h-4 rounded-full border-2 border-[#FDB02F] border-t-transparent animate-spin" />
+                )}
+                <span className={`text-sm font-medium ${
+                  isActive
+                    ? isDark ? "text-white/70" : "text-[#1a1a2e]"
+                    : isDark ? "text-white/30" : "text-gray-400"
+                }`}>
+                  {step}{isActive ? dots : ""}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
