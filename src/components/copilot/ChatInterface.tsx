@@ -549,7 +549,7 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
             </div>
           ))}
 
-          {loading && <ClinicalLoadingIndicator isDark={isDark} />}
+          {loading && <ClinicalLoadingIndicator isDark={isDark} lastQuery={messages.filter(m => m.role === "user").pop()?.content || ""} />}
 
           <div ref={messagesEndRef} />
         </div>
@@ -626,67 +626,84 @@ function TypingMessage({
   );
 }
 
-// Clinical loading indicator with smooth animated steps
-const clinicalLoadingSteps = [
-  "Analyzing your query",
-  "Searching knowledge base",
-  "Retrieving clinical evidence",
-  "Cross-referencing guidelines",
-  "Formulating response",
-  "Compiling clinical report",
-];
+// Generate 5 contextual words from the user's query
+function getSpinWords(query: string): string[] {
+  const q = query.toLowerCase();
+  // Topic-specific word sets
+  if (q.includes("medication") || q.includes("drug") || q.includes("prescri") || q.includes("dose") || q.includes("mg")) {
+    return ["Pharmacology", "Interactions", "Dosing", "Contraindications", "Efficacy"];
+  }
+  if (q.includes("diagnos") || q.includes("differential") || q.includes("dsm") || q.includes("icd")) {
+    return ["DSM-5-TR", "Differential", "Criteria", "Comorbidity", "Assessment"];
+  }
+  if (q.includes("risk") || q.includes("suicid") || q.includes("safety") || q.includes("harm")) {
+    return ["Risk Factors", "C-SSRS", "Safety Plan", "Protective", "Intervention"];
+  }
+  if (q.includes("er ") || q.includes("emergency") || q.includes("crisis") || q.includes("agitat")) {
+    return ["Triage", "Stabilization", "Disposition", "De-escalation", "Assessment"];
+  }
+  if (q.includes("child") || q.includes("adolescent") || q.includes("pediatric") || q.includes("year old")) {
+    return ["Development", "Pediatric", "Family", "School", "Growth"];
+  }
+  if (q.includes("depress") || q.includes("mood") || q.includes("mdd") || q.includes("bipolar")) {
+    return ["Mood", "PHQ-9", "Antidepressant", "Remission", "Response"];
+  }
+  if (q.includes("anxiety") || q.includes("panic") || q.includes("gad") || q.includes("phobia")) {
+    return ["Anxiety", "GAD-7", "CBT", "Exposure", "Relaxation"];
+  }
+  if (q.includes("psycho") || q.includes("schizo") || q.includes("hallucinat") || q.includes("delusion")) {
+    return ["Psychosis", "Antipsychotic", "Reality Testing", "Negative Sx", "Cognition"];
+  }
+  if (q.includes("substance") || q.includes("alcohol") || q.includes("opioid") || q.includes("withdrawal")) {
+    return ["Detox", "CIWA/COWS", "MAT", "Relapse", "Recovery"];
+  }
+  if (q.includes("document") || q.includes("note") || q.includes("chart") || q.includes("soap")) {
+    return ["Documentation", "Compliance", "EMR", "Billing", "Coding"];
+  }
+  if (q.includes("therapy") || q.includes("cbt") || q.includes("dbt") || q.includes("psychotherapy")) {
+    return ["Modalities", "Evidence", "Techniques", "Outcomes", "Alliance"];
+  }
+  // Default clinical words
+  return ["Evidence", "Guidelines", "Clinical", "Analysis", "Formulation"];
+}
 
-function ClinicalLoadingIndicator({ isDark }: { isDark: boolean }) {
-  const [stepIndex, setStepIndex] = useState(0);
-  const [dots, setDots] = useState("");
+function ClinicalLoadingIndicator({ isDark, lastQuery }: { isDark: boolean; lastQuery: string }) {
+  const [wordIndex, setWordIndex] = useState(0);
+  const words = getSpinWords(lastQuery);
 
   useEffect(() => {
-    const stepInterval = setInterval(() => {
-      setStepIndex((prev) => Math.min(prev + 1, clinicalLoadingSteps.length - 1));
-    }, 3000);
-    return () => clearInterval(stepInterval);
-  }, []);
-
-  useEffect(() => {
-    const dotInterval = setInterval(() => {
-      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
-    }, 400);
-    return () => clearInterval(dotInterval);
-  }, []);
+    setWordIndex(0);
+    const interval = setInterval(() => {
+      setWordIndex((prev) => (prev + 1) % words.length);
+    }, 1800);
+    return () => clearInterval(interval);
+  }, [words.length]);
 
   return (
     <div className="flex gap-3 sm:gap-4">
       <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-xl overflow-hidden mt-1">
         <img src="/logo.webp" alt="Co-Pilot" className="w-full h-full object-cover" />
       </div>
-      <div className={`flex-1 max-w-sm rounded-2xl px-5 py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-[#fae5d0]/80 border border-[#e8d5be]"}`}>
-        <div className="space-y-2.5">
-          {clinicalLoadingSteps.map((step, i) => {
-            const isActive = i === stepIndex;
-            const isDone = i < stepIndex;
-            const isPending = i > stepIndex;
-            return (
-              <div
-                key={step}
-                className={`flex items-center gap-2.5 transition-all duration-500 ${isPending ? "opacity-0 h-0 overflow-hidden" : "opacity-100"}`}
+      <div className={`rounded-2xl px-5 py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-[#fae5d0]/80 border border-[#e8d5be]"}`}>
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 rounded-full border-2 border-[#FDB02F] border-t-transparent animate-spin" />
+          <div className="overflow-hidden h-6 relative min-w-[140px]">
+            {words.map((word, i) => (
+              <span
+                key={word}
+                className={`absolute left-0 text-sm font-semibold transition-all duration-500 ease-in-out ${
+                  i === wordIndex
+                    ? "opacity-100 translate-y-0"
+                    : i < wordIndex || (wordIndex === 0 && i === words.length - 1)
+                      ? "opacity-0 -translate-y-6"
+                      : "opacity-0 translate-y-6"
+                } ${isDark ? "text-[#FDB02F]" : "text-[#b8860b]"}`}
+                style={{ lineHeight: "24px" }}
               >
-                {isDone ? (
-                  <div className={`w-4 h-4 rounded-full flex items-center justify-center ${isDark ? "bg-green-500/20" : "bg-green-500/15"}`}>
-                    <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke={isDark ? "#4ade80" : "#22c55e"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </div>
-                ) : (
-                  <div className="w-4 h-4 rounded-full border-2 border-[#FDB02F] border-t-transparent animate-spin" />
-                )}
-                <span className={`text-sm font-medium ${
-                  isActive
-                    ? isDark ? "text-white/70" : "text-[#1a1a2e]"
-                    : isDark ? "text-white/30" : "text-gray-400"
-                }`}>
-                  {step}{isActive ? dots : ""}
-                </span>
-              </div>
-            );
-          })}
+                {word}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>
