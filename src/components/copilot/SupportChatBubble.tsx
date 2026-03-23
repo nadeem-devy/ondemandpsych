@@ -43,6 +43,37 @@ const quickTopics = [
   { icon: UserPlus, label: "Feature Request", message: "I have a feature suggestion for the platform." },
 ];
 
+// Typing effect for AI responses
+function TypingText({ text, onDone }: { text: string; onDone?: () => void }) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    setDisplayed("");
+    setDone(false);
+    let i = 0;
+    const words = text.split(" ");
+    const interval = setInterval(() => {
+      if (i < words.length) {
+        setDisplayed(words.slice(0, i + 1).join(" "));
+        i++;
+      } else {
+        setDone(true);
+        clearInterval(interval);
+        onDone?.();
+      }
+    }, 30);
+    return () => clearInterval(interval);
+  }, [text, onDone]);
+
+  return (
+    <span className="whitespace-pre-wrap">
+      {displayed}
+      {!done && <span className="inline-block w-1.5 h-4 ml-0.5 bg-current opacity-60 animate-pulse align-text-bottom" />}
+    </span>
+  );
+}
+
 export function SupportChatBubble({ open, onClose, theme }: SupportChatBubbleProps) {
   const [messages, setMessages] = useState<SupportMsg[]>([]);
   const [input, setInput] = useState("");
@@ -55,6 +86,7 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
   const [hoverRating, setHoverRating] = useState(0);
   const [ratingFeedback, setRatingFeedback] = useState("");
   const [submittingRating, setSubmittingRating] = useState(false);
+  const [typingMsgId, setTypingMsgId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastMessageCountRef = useRef(0);
@@ -145,6 +177,9 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
       if (data.ticket) {
         setTicketId(data.ticket.id);
         const msgs = data.ticket.messages || [];
+        // Find the latest admin message to animate
+        const lastAdminMsg = [...msgs].reverse().find((m: SupportMsg) => m.sender === "admin");
+        if (lastAdminMsg) setTypingMsgId(lastAdminMsg.id);
         setMessages(msgs);
         lastMessageCountRef.current = msgs.length;
         setShowTopics(false);
@@ -368,7 +403,11 @@ export function SupportChatBubble({ open, onClose, theme }: SupportChatBubblePro
                           Support Team
                         </p>
                       )}
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
+                      {msg.sender === "admin" && msg.id === typingMsgId ? (
+                        <TypingText text={msg.content} onDone={() => setTypingMsgId(null)} />
+                      ) : (
+                        <p className="whitespace-pre-wrap">{msg.content}</p>
+                      )}
                       <p className={`text-base mt-1 ${
                         msg.sender === "user" ? "text-[#07123A]/40" : isDark ? "text-white/20" : "text-gray-400"
                       }`}>
