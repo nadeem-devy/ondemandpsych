@@ -626,58 +626,145 @@ function TypingMessage({
   );
 }
 
-// Generate 5 contextual words from the user's query
-function getSpinWords(query: string): string[] {
+// Generate contextual loading steps from the user's query — each with an icon
+function getLoadingSteps(query: string): { icon: string; text: string }[] {
   const q = query.toLowerCase();
-  // Topic-specific word sets
+
+  const base = [
+    { icon: "🔍", text: "Analyzing your query" },
+    { icon: "📚", text: "Searching knowledge base" },
+  ];
+
   if (q.includes("medication") || q.includes("drug") || q.includes("prescri") || q.includes("dose") || q.includes("mg")) {
-    return ["Pharmacology", "Interactions", "Dosing", "Contraindications", "Efficacy"];
+    return [...base,
+      { icon: "💊", text: "Reviewing pharmacology" },
+      { icon: "⚠️", text: "Checking interactions" },
+      { icon: "📋", text: "Compiling dosing guidelines" },
+      { icon: "🧬", text: "Cross-referencing efficacy data" },
+      { icon: "📝", text: "Formulating recommendations" },
+    ];
   }
   if (q.includes("diagnos") || q.includes("differential") || q.includes("dsm") || q.includes("icd")) {
-    return ["DSM-5-TR", "Differential", "Criteria", "Comorbidity", "Assessment"];
+    return [...base,
+      { icon: "🧠", text: "Evaluating differential diagnosis" },
+      { icon: "📋", text: "Cross-referencing DSM-5-TR criteria" },
+      { icon: "🔬", text: "Mapping comorbidities" },
+      { icon: "📊", text: "Assessing diagnostic confidence" },
+      { icon: "📝", text: "Compiling diagnostic formulation" },
+    ];
   }
   if (q.includes("risk") || q.includes("suicid") || q.includes("safety") || q.includes("harm")) {
-    return ["Risk Factors", "C-SSRS", "Safety Plan", "Protective", "Intervention"];
+    return [...base,
+      { icon: "🛡️", text: "Applying C-SSRS framework" },
+      { icon: "⚖️", text: "Weighing risk factors" },
+      { icon: "🟢", text: "Identifying protective factors" },
+      { icon: "📋", text: "Building safety plan" },
+      { icon: "📝", text: "Finalizing risk stratification" },
+    ];
   }
-  if (q.includes("er ") || q.includes("emergency") || q.includes("crisis") || q.includes("agitat")) {
-    return ["Triage", "Stabilization", "Disposition", "De-escalation", "Assessment"];
+  if (q.includes("er ") || q.includes("emergency") || q.includes("crisis") || q.includes("agitat") || q.includes("disposition")) {
+    return [...base,
+      { icon: "🚨", text: "Assessing acute presentation" },
+      { icon: "💉", text: "Reviewing stabilization protocols" },
+      { icon: "🏥", text: "Determining disposition level" },
+      { icon: "📋", text: "Compiling crisis management plan" },
+      { icon: "📝", text: "Generating ER disposition report" },
+    ];
   }
   if (q.includes("child") || q.includes("adolescent") || q.includes("pediatric") || q.includes("year old")) {
-    return ["Development", "Pediatric", "Family", "School", "Growth"];
+    return [...base,
+      { icon: "👶", text: "Reviewing developmental factors" },
+      { icon: "🏫", text: "Assessing school/family context" },
+      { icon: "📊", text: "Applying pediatric guidelines" },
+      { icon: "👨‍👩‍👧", text: "Considering family dynamics" },
+      { icon: "📝", text: "Formulating treatment plan" },
+    ];
   }
   if (q.includes("depress") || q.includes("mood") || q.includes("mdd") || q.includes("bipolar")) {
-    return ["Mood", "PHQ-9", "Antidepressant", "Remission", "Response"];
+    return [...base,
+      { icon: "📊", text: "Scoring mood assessment scales" },
+      { icon: "💊", text: "Reviewing antidepressant options" },
+      { icon: "🧬", text: "Analyzing treatment response data" },
+      { icon: "🔄", text: "Evaluating remission criteria" },
+      { icon: "📝", text: "Building treatment strategy" },
+    ];
   }
   if (q.includes("anxiety") || q.includes("panic") || q.includes("gad") || q.includes("phobia")) {
-    return ["Anxiety", "GAD-7", "CBT", "Exposure", "Relaxation"];
+    return [...base,
+      { icon: "📊", text: "Applying GAD-7 framework" },
+      { icon: "🧠", text: "Reviewing CBT protocols" },
+      { icon: "💊", text: "Evaluating pharmacotherapy" },
+      { icon: "🎯", text: "Mapping exposure strategies" },
+      { icon: "📝", text: "Compiling anxiety management plan" },
+    ];
   }
   if (q.includes("psycho") || q.includes("schizo") || q.includes("hallucinat") || q.includes("delusion")) {
-    return ["Psychosis", "Antipsychotic", "Reality Testing", "Negative Sx", "Cognition"];
+    return [...base,
+      { icon: "🧠", text: "Assessing psychotic features" },
+      { icon: "💊", text: "Reviewing antipsychotic options" },
+      { icon: "🔬", text: "Evaluating negative symptoms" },
+      { icon: "📊", text: "Checking cognitive domains" },
+      { icon: "📝", text: "Formulating treatment approach" },
+    ];
   }
   if (q.includes("substance") || q.includes("alcohol") || q.includes("opioid") || q.includes("withdrawal")) {
-    return ["Detox", "CIWA/COWS", "MAT", "Relapse", "Recovery"];
+    return [...base,
+      { icon: "🧪", text: "Applying CIWA/COWS protocols" },
+      { icon: "💊", text: "Reviewing MAT options" },
+      { icon: "🔄", text: "Assessing withdrawal severity" },
+      { icon: "🛡️", text: "Planning relapse prevention" },
+      { icon: "📝", text: "Building recovery roadmap" },
+    ];
   }
   if (q.includes("document") || q.includes("note") || q.includes("chart") || q.includes("soap")) {
-    return ["Documentation", "Compliance", "EMR", "Billing", "Coding"];
+    return [...base,
+      { icon: "📄", text: "Structuring clinical documentation" },
+      { icon: "✅", text: "Checking compliance requirements" },
+      { icon: "🏷️", text: "Applying billing codes" },
+      { icon: "📋", text: "Formatting EMR template" },
+      { icon: "📝", text: "Generating clinical note" },
+    ];
   }
   if (q.includes("therapy") || q.includes("cbt") || q.includes("dbt") || q.includes("psychotherapy")) {
-    return ["Modalities", "Evidence", "Techniques", "Outcomes", "Alliance"];
+    return [...base,
+      { icon: "🧠", text: "Matching therapy modalities" },
+      { icon: "📊", text: "Reviewing evidence base" },
+      { icon: "🎯", text: "Identifying target techniques" },
+      { icon: "📈", text: "Projecting therapy outcomes" },
+      { icon: "📝", text: "Compiling therapy recommendations" },
+    ];
   }
-  // Default clinical words
-  return ["Evidence", "Guidelines", "Clinical", "Analysis", "Formulation"];
+  // Default
+  return [...base,
+    { icon: "🧬", text: "Retrieving clinical evidence" },
+    { icon: "📊", text: "Cross-referencing guidelines" },
+    { icon: "🧠", text: "Analyzing clinical data" },
+    { icon: "📋", text: "Reviewing best practices" },
+    { icon: "📝", text: "Compiling clinical report" },
+  ];
 }
 
 function ClinicalLoadingIndicator({ isDark, lastQuery }: { isDark: boolean; lastQuery: string }) {
-  const [wordIndex, setWordIndex] = useState(0);
-  const words = getSpinWords(lastQuery);
+  const [stepIndex, setStepIndex] = useState(0);
+  const steps = getLoadingSteps(lastQuery);
+  const [stopped, setStopped] = useState(false);
 
   useEffect(() => {
-    setWordIndex(0);
-    const interval = setInterval(() => {
-      setWordIndex((prev) => (prev + 1) % words.length);
-    }, 1800);
-    return () => clearInterval(interval);
-  }, [words.length]);
+    setStepIndex(0);
+    setStopped(false);
+  }, [lastQuery]);
+
+  useEffect(() => {
+    if (stopped) return;
+    if (stepIndex >= steps.length - 1) {
+      setStopped(true);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setStepIndex((prev) => prev + 1);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [stepIndex, steps.length, stopped]);
 
   return (
     <div className="flex gap-3 sm:gap-4">
@@ -687,20 +774,21 @@ function ClinicalLoadingIndicator({ isDark, lastQuery }: { isDark: boolean; last
       <div className={`rounded-2xl px-5 py-4 ${isDark ? "bg-white/[0.04] border border-white/5" : "bg-[#fae5d0]/80 border border-[#e8d5be]"}`}>
         <div className="flex items-center gap-3">
           <div className="w-5 h-5 rounded-full border-2 border-[#FDB02F] border-t-transparent animate-spin" />
-          <div className="overflow-hidden h-6 relative min-w-[140px]">
-            {words.map((word, i) => (
+          <div className="overflow-hidden h-6 relative min-w-[200px]">
+            {steps.map((step, i) => (
               <span
-                key={word}
-                className={`absolute left-0 text-sm font-semibold transition-all duration-500 ease-in-out ${
-                  i === wordIndex
+                key={step.text}
+                className={`absolute left-0 flex items-center gap-2 text-sm font-medium whitespace-nowrap transition-all duration-500 ease-in-out ${
+                  i === stepIndex
                     ? "opacity-100 translate-y-0"
-                    : i < wordIndex || (wordIndex === 0 && i === words.length - 1)
+                    : i < stepIndex
                       ? "opacity-0 -translate-y-6"
                       : "opacity-0 translate-y-6"
-                } ${isDark ? "text-[#FDB02F]" : "text-[#b8860b]"}`}
+                } ${isDark ? "text-white/60" : "text-[#1a1a2e]/70"}`}
                 style={{ lineHeight: "24px" }}
               >
-                {word}
+                <span className="text-base">{step.icon}</span>
+                <span>{step.text}</span>
               </span>
             ))}
           </div>
