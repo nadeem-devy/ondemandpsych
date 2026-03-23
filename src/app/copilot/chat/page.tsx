@@ -219,40 +219,107 @@ function CopilotChatInner() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/copilot/messages", {
+      const res = await fetch("/api/copilot/messages/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chatId: currentChatId, content }),
       });
-      const data = await res.json();
 
-      if (res.status === 403 && data.trialLimitReached) {
-        setLoading(false);
-        const resetInfo = data.resetDate
-          ? `Your free messages will reset on **${new Date(data.resetDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}**.`
-          : "";
-        const limitMsg: MessageItem = {
-          id: "limit-" + Date.now(),
-          role: "assistant",
-          content: `⚠️ **Free Message Limit Reached**\n\nYou've used all **${data.limit}** free messages this month. ${resetInfo}\n\n**Upgrade to a paid plan** for unlimited messages and access to advanced clinical tools.\n\n[View Plans →](/copilot/subscription)`,
-          createdAt: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev.filter((m) => m.id !== tempUserMsg.id), tempUserMsg, limitMsg]);
-        sendingRef.current = false;
-        return;
+      // Handle non-streaming error responses (401, 403, 404, etc.)
+      if (!res.ok) {
+        const data = await res.json();
+        if (res.status === 403 && data.trialLimitReached) {
+          setLoading(false);
+          const resetInfo = data.resetDate
+            ? `Your free messages will reset on **${new Date(data.resetDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}**.`
+            : "";
+          const limitMsg: MessageItem = {
+            id: "limit-" + Date.now(),
+            role: "assistant",
+            content: `⚠️ **Free Message Limit Reached**\n\nYou've used all **${data.limit}** free messages this month. ${resetInfo}\n\n**Upgrade to a paid plan** for unlimited messages and access to advanced clinical tools.\n\n[View Plans →](/copilot/subscription)`,
+            createdAt: new Date().toISOString(),
+          };
+          setMessages((prev) => [...prev.filter((m) => m.id !== tempUserMsg.id), tempUserMsg, limitMsg]);
+          sendingRef.current = false;
+          return;
+        }
+        throw new Error(data.error || "Request failed");
       }
 
-      setLoading(false);
-      setMessages((prev) => [
-        ...prev.filter((m) => m.id !== tempUserMsg.id),
-        data.userMessage,
-        data.assistantMessage,
-      ]);
-      loadChats();
+      // Process SSE stream
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error("No response body");
+
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let streamingContent = "";
+      const streamMsgId = "stream-" + Date.now();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
+
+        for (const chunk of lines) {
+          if (!chunk.startsWith("data: ")) continue;
+          const jsonStr = chunk.substring(6).trim();
+          if (!jsonStr) continue;
+
+          try {
+            const event = JSON.parse(jsonStr);
+
+            if (event.type === "user_message") {
+              // Replace temp user message with real one
+              setMessages((prev) =>
+                prev.map((m) => (m.id === tempUserMsg.id ? event.message : m))
+              );
+            } else if (event.type === "content") {
+              streamingContent += event.content;
+              // Show streaming assistant message
+              setLoading(false);
+              const streamMsg: MessageItem = {
+                id: streamMsgId,
+                role: "assistant",
+                content: streamingContent,
+                createdAt: new Date().toISOString(),
+              };
+              setMessages((prev) => {
+                const filtered = prev.filter((m) => m.id !== streamMsgId);
+                return [...filtered, streamMsg];
+              });
+            } else if (event.type === "replace") {
+              // Category access denied — replace streamed content
+              streamingContent = event.content;
+              const replaceMsg: MessageItem = {
+                id: streamMsgId,
+                role: "assistant",
+                content: streamingContent,
+                createdAt: new Date().toISOString(),
+              };
+              setMessages((prev) => {
+                const filtered = prev.filter((m) => m.id !== streamMsgId);
+                return [...filtered, replaceMsg];
+              });
+            } else if (event.type === "done") {
+              // Replace streaming message with the final saved message
+              setMessages((prev) =>
+                prev.map((m) => (m.id === streamMsgId ? event.assistantMessage : m))
+              );
+              loadChats();
+            }
+          } catch {
+            // Skip malformed events
+          }
+        }
+      }
     } catch {
       setLoading(false);
       setMessages((prev) => prev.filter((m) => m.id !== tempUserMsg.id));
     } finally {
+      setLoading(false);
       sendingRef.current = false;
     }
   }
@@ -261,7 +328,7 @@ function CopilotChatInner() {
 
   if (!authChecked) {
     return (
-      <div className={`h-screen flex items-center justify-center ${isDark ? "bg-[#07123A]" : "bg-gray-50"}`}>
+      <div className={`h-screen flex items-center justify-center ${isDark ? "bg-[#07123A]" : "bg-[#f5e6d0]"}`}>
         <div className="w-8 h-8 border-2 border-[#FDB02F]/30 border-t-[#FDB02F] rounded-full animate-spin" />
       </div>
     );
@@ -269,7 +336,7 @@ function CopilotChatInner() {
 
   return (
     <div
-      className={`flex h-screen overflow-hidden ${isDark ? "bg-[#07123A]" : "bg-gray-50"}`}
+      className={`flex h-screen overflow-hidden ${isDark ? "bg-[#07123A]" : "bg-[#f5e6d0]"}`}
       style={{ "--copilot-font-size": `${fontSize}px` } as React.CSSProperties}
     >
       {/* Mobile sidebar backdrop */}
@@ -307,7 +374,7 @@ function CopilotChatInner() {
       <div className={`flex-1 flex flex-col min-h-0 min-w-0 ${isDark ? "" : "copilot-light"}`}>
         {/* Mobile top bar */}
         <div className={`shrink-0 flex items-center gap-3 px-4 py-3 border-b md:hidden ${
-          isDark ? "border-white/5 bg-[#0A1628]" : "border-gray-200 bg-white"
+          isDark ? "border-white/5 bg-[#0A1628]" : "border-[#e8d5be] bg-[#f5e6d0]"
         }`}>
           <button
             onClick={() => setSidebarOpen(true)}
