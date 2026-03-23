@@ -228,6 +228,32 @@ export async function POST(req: NextRequest) {
   const chat = await prisma.chat.findFirst({ where: { id: chatId, userId: user.id } });
   if (!chat) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+  // Jailbreak / off-topic detection
+  const jailbreakPatterns = [
+    /system\s*prompt/i, /your\s*instructions/i, /your\s*rules/i, /ignore\s*(all\s*)?(previous|prior|above)/i,
+    /forget\s*(all\s*)?(previous|prior|your)/i, /pretend\s*you\s*are/i, /act\s*as\s*(if|a|an)/i,
+    /you\s*are\s*now/i, /new\s*persona/i, /override\s*(your|the)/i, /bypass\s*(your|the|any)/i,
+    /reveal\s*(your|the)/i, /show\s*me\s*(your|the)\s*(prompt|instructions|rules)/i,
+    /what\s*are\s*your\s*(instructions|rules|guidelines)/i, /output\s*(your|the)\s*(prompt|system)/i,
+    /repeat\s*(your|the)\s*(prompt|instructions)/i, /print\s*(your|the)\s*(prompt|instructions)/i,
+    /DAN\s*mode/i, /developer\s*mode/i, /jailbreak/i, /do\s*anything\s*now/i,
+    /how\s*(are|were)\s*you\s*built/i, /what\s*(tech|technology|stack|framework|model|llm|api)\s*(do\s*you|are\s*you)/i,
+    /build\s*(my|your|a)\s*(own\s*)?(copilot|chatbot|ai\s*bot|rag)/i, /your\s*(architecture|tech\s*stack|backend|source\s*code)/i,
+    /what\s*(database|vector\s*db|embedding|chromadb|pinecone|openai|gpt)/i,
+    /how\s*does\s*(your|the)\s*(rag|retrieval|embedding|chunking|ingestion)/i,
+    /give\s*me\s*(the|your)\s*(code|source|repo)/i, /what\s*model\s*(do\s*you|are\s*you)/i,
+    /replicate\s*(this|your)/i, /clone\s*(this|your)/i, /reverse\s*engineer/i,
+  ];
+
+  if (jailbreakPatterns.some((p) => p.test(content))) {
+    const userMessage = await prisma.message.create({ data: { chatId, role: "user", content } });
+    const blockedContent = "> **Disclaimer:** For licensed healthcare providers only. Educational use only. Not medical advice.\n\n" +
+      "🔒 **Request Denied**\n\nI'm the OnDemandPsych Clinical Co-Pilot. I do not share information about my internal configuration, architecture, technology stack, or development details.\n\n" +
+      "This platform's proprietary technology and features are confidential. I'm here exclusively to assist licensed healthcare providers with **psychiatric clinical decision support**.\n\nHow can I help you with a clinical question?";
+    const assistantMessage = await prisma.message.create({ data: { chatId, role: "assistant", content: blockedContent } });
+    return NextResponse.json({ userMessage, assistantMessage, blocked: true });
+  }
+
   // Trial limit enforcement
   const trial = await checkTrialLimit(user.id);
   if (!trial.allowed) {

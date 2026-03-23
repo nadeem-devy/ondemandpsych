@@ -225,8 +225,9 @@ function CopilotChatInner() {
         body: JSON.stringify({ chatId: currentChatId, content }),
       });
 
-      // Handle non-streaming error responses (401, 403, 404, etc.)
-      if (!res.ok) {
+      // Handle JSON responses (errors, blocked, trial limits)
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
         const data = await res.json();
         if (res.status === 403 && data.trialLimitReached) {
           setLoading(false);
@@ -243,7 +244,18 @@ function CopilotChatInner() {
           sendingRef.current = false;
           return;
         }
-        throw new Error(data.error || "Request failed");
+        if (data.blocked) {
+          // Jailbreak or off-topic blocked response
+          setLoading(false);
+          setMessages((prev) => [
+            ...prev.filter((m) => m.id !== tempUserMsg.id),
+            data.userMessage,
+            data.assistantMessage,
+          ]);
+          sendingRef.current = false;
+          return;
+        }
+        if (!res.ok) throw new Error(data.error || "Request failed");
       }
 
       // Process SSE stream
