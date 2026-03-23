@@ -273,17 +273,20 @@ export function ChatInterface({ chatId, messages, onSendMessage, loading, userNa
     const prompts: string[] = [];
     const references: string[] = [];
 
-    // Extract Knowledge Base References section (handle optional newlines before ---)
+    // Extract all Knowledge Base References sections (numbered or bulleted, handle optional newlines)
     let cleanText = text.replace(
-      /\n*---\n+📄\s*\*\*Knowledge Base References:\*\*\n((?:\d+\.\s*.+\n?)*)/g,
+      /\n*---\n+📄\s*\*\*Knowledge Base References:\*\*\n((?:(?:\d+\.\s*|[-•]\s*).+\n?)*)/g,
       (_match, items: string) => {
         items.trim().split("\n").forEach((line: string) => {
-          const ref = line.replace(/^\d+\.\s*/, "").trim();
+          const ref = line.replace(/^(?:\d+\.\s*|[-•]\s*)/, "").trim();
           if (ref) references.push(ref);
         });
         return "";
       }
     );
+
+    // Remove any remaining inline .docx filename lists
+    cleanText = cleanText.replace(/\n(?:[-•]\s*\w+_\w+.*\.docx\s*\n?)+/g, "\n");
 
     // Match "OPTIONAL PROMPTS" section
     const optionalSection = cleanText.match(/\*\*OPTIONAL PROMPTS\*\*\n((?:[-•]\s*.+\n?)*)/);

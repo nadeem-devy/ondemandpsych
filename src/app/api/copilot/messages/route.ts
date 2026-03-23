@@ -395,10 +395,14 @@ export async function POST(req: NextRequest) {
       `[Upgrade Now →](/copilot/subscription)`;
   }
 
-  // Append references if available
+  // Remove any inline document references the RAG included (bullet lists of .docx filenames)
+  aiContent = aiContent.replace(/\n+---\n+📄\s*\*\*Knowledge Base References:\*\*\n(?:[-•]\s*.+\.docx\n?)*/g, "");
+  aiContent = aiContent.replace(/\n(?:[-•]\s*\w+_\w+.*\.docx\s*\n?)+/g, "\n");
+
+  // Append clean references if available (without .docx filenames showing)
   if (ragSources.length > 0) {
-    aiContent += "\n\n---\n📄 **Knowledge Base References:**\n" +
-      ragSources.map((s, i) => `${i + 1}. ${s}`).join("\n");
+    // Don't append references — they clutter the response and show raw filenames
+    // The RAG response is self-contained with its clinical content
   }
 
   // Log RAG query for analytics
